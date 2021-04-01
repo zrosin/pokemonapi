@@ -21,13 +21,13 @@ router.get('/id/:id', function(req, res) {
     //console.log('id = ' + req.params.id);
     Pokemon.findById(req.params.id, function(err, pokemon) {
         if (err) {
-            res.status(400).json({'message': 'Did not find Pokemon with that ID'});
+            res.status(400).json({'message': `error: ${err}`});
         }
         else if (pokemon) {
             res.json(pokemon);
         }
         else {
-            res.sendStatus(404);
+            res.status(404).json({'message': `Couldn't find Pokemon with ID: ${req.params.id}`});
         }
     });
 });
@@ -40,16 +40,15 @@ router.get('/type/:types', function(req, res) {
     console.log('{ types: {  $in: [' + req.params.types + '] } } }');
     
     Pokemon.find({ types: { $in: [req.params.types] } } , function(err, pokemon) {
-        console.log(pokemon);
         if (err) {
             console.log(err);
-            res.status(400).json({'message': 'Did not find Pokemon with type ' + req.params.types});
+            res.status(400).json({'message': `error: ${err}`});
         }
         else if (pokemon) {
             res.json(pokemon);
         }
         else {
-            res.sendStatus(404);
+            res.status(404).json({pokemon, 'message': 'Did not find Pokemon with type ' + req.params.types}); 
         }
     });
 });
