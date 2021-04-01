@@ -23,7 +23,7 @@ router.get('/id/:id', function(req, res) {
         if (err) {
             res.status(400).json({'message': `error: ${err}`});
         }
-        else if (pokemon) {
+        else if (pokemon.length) {
             res.json(pokemon);
         }
         else {
@@ -44,7 +44,7 @@ router.get('/type/:types', function(req, res) {
             console.log(err);
             res.status(400).json({'message': `error: ${err}`});
         }
-        else if (pokemon) {
+        else if (pokemon.length) {
             res.json(pokemon);
         }
         else {
