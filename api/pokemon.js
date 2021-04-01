@@ -23,7 +23,7 @@ router.get('/id/:id', function(req, res) {
         if (err) {
             res.status(400).json({'message': `error: ${err}`});
         }
-        else if (pokemon.length) {
+        else if (pokemon) {
             res.json(pokemon);
         }
         else {
