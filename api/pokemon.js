@@ -120,7 +120,7 @@ router.put('/id/:id', function(req, res) {
                 res.sendStatus(200);
             }
         });
-    }
+     }
     else {
         res.status(404).json({ message: 'Pokedex Number is a required field' });
     }
@@ -153,4 +153,3 @@ router.delete('/id/:id', function(req, res) {
 
 
 module.exports = router
-
