@@ -54,12 +54,15 @@ router.get('/pokedex/:pokedex', function(req, res) {
     });
 });
 
-// Get all pokemon with given type
+// Get all pokemon with given types
 // http://localhost:8000/api/pokemon/type/grass
+// http://localhost:8000/api/pokemon/type/grass%2Cpoison
 router.get('/type/:types', function(req, res) {
-    //console.log('types = ' + req.params.types);
-    //console.log('{ types: {  $in: [' + req.params.types + '] } } }');
     
+    // if we were provided two types, we need to look for pokemon with both of them.
+    if(req.params.types.split(',').length === 2) {
+        req.params.types = req.params.types.split(',')
+    }
     Pokemon.find({ types: { $in: [req.params.types] } } , function(err, pokemon) {
         if (err) {
             console.log(err);
