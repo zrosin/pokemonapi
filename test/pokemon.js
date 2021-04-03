@@ -175,11 +175,11 @@ describe('Pokemon API', () => {
                     done();
                 });
         });
-        it('should return 404 with a bad id', (done) => {
+        it('should return 400 with a bad id', (done) => {
             chai.request(server)
                 .get('/api/pokemon/id/badid/')
                 .end((err, res) => {
-                    res.should.have.status(404);
+                    res.should.have.status(400);
                     res.body.should.be.a('object');
                     done();
                 });
@@ -328,7 +328,7 @@ describe('Pokemon API', () => {
                 .put('/api/pokemon/id/' + testPokemonDocs[4]._id)
                 .send(pokemon)
                 .end((err, res) => {
-                    res.should.have.status(204);
+                    res.should.have.status(200);
 
                     chai.request(server)
                         .get('/api/pokemon/id/' + testPokemonDocs[4]._id)
@@ -350,7 +350,7 @@ describe('Pokemon API', () => {
                 .put('/api/pokemon/id/' + testPokemonDocs[4]._id)
                 .send(pokemon)
                 .end((err, res) => {
-                    res.should.have.status(204);
+                    res.should.have.status(200);
 
                     chai.request(server)
                         .get('/api/pokemon/id/' + testPokemonDocs[4]._id)
