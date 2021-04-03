@@ -8,6 +8,7 @@ app.use(morgan('dev', { skip: (req, res) => process.env.NODE_ENV && process.env.
 app.use(express.json());
 
 // API routes
+app.use("/", express.static("static"));
 app.use("/api/pokemon", require("./api/pokemon"));
 
 app.listen(8000, () => console.log("Pokémon API is listening on port 8000!"));
