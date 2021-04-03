@@ -1,5 +1,7 @@
 # Pokemon API
 
+![tests](https://github.com/jedieaston/pokemonapi/actions/workflows/main.yml/badge.svg)
+
 Web Development 2, Spring 2021.
 
 By Zach Rosin and Easton Pillay.
