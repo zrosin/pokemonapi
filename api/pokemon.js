@@ -81,48 +81,117 @@ router.get('/type/:types', function(req, res) {
 // http://localhost:8000/api/pokemon/   
 // POST a JSON with Content-Type: application/json
 router.post('/', function(req, res) {
-    if(req.body.pokedexNumber !== null && req.body.pokedexNumber > 0 && !isNaN(req.body.pokedexNumber)){
-        // Create a new pokemon from JSON request body
-        const pokemon = new Pokemon({
-            pokedexNumber: req.body.pokedexNumber,
-            name: req.body.name,
-            height: req.body.height,
-            weight: req.body.weight,
-            types: req.body.types,
-            abilities: req.body.abilities
-        });
     
-        // Save pokemon and return it as JSON
-        pokemon.save(function(err, pokemon) {
-            if (err) {
-                res.status(400).send(err);
-            }
-            else {
-                res.status(201).json(pokemon);
-            }
-        });
-    }
-    else {
-        res.status(404).json({'message': 'Incorrectly formatted pokemon'});
-    }
+	
+
+	const types = [
+		"Normal",
+		"Fire",
+		"Water",
+		"Grass",
+		"Electric",
+		"Ice",
+		"Fighting",
+		"Poison",
+		"Ground",
+		"Flying",
+		"Psychic",
+		"Bug",
+		"Rock",
+		"Ghost",
+		"Dark",
+		"Dragon",
+		"Steel",
+		"Fairy"
+	]
+
+	if(req.body.pokedexNumber === null || req.body.pokedexNumber < 0 || isNaN(req.body.pokedexNumber) || !isInteger(req.body.pokeDexNumber){
+        	res.status(404).json({'message': 'Invalid Pokedex Number'});
+        }
+    	else if(req.body.height === null || req.body.height < 0 || isNan(req.body.height)) { 
+        	res.status(404).json({'message': 'Invalid Height'});
+    	}
+	else if(req.body.weight === null || req.body.weight < 0 || isNan(req.body.weight)) { 
+        	res.status(404).json({'message': 'Invalid Height'});
+    	}
+	else if(!types.includes(res.body.types)){
+		res.status(404).json({'message':'Invalid Type'});
+	}
+	else {
+		const pokemon = new Pokemon({
+            		pokedexNumber: req.body.pokedexNumber,
+            		name: req.body.name,
+            		height: req.body.height,
+            		weight: req.body.weight,
+            		types: req.body.types,
+            		abilities: req.body.abilities
+        	});
+	
+    
+        	// Save pokemon and return it as JSON
+        	pokemon.save(function(err, pokemon) {
+            		if (err) {
+                		res.status(400).send(err);
+            		}
+            		else {
+                		res.status(201).json(pokemon);
+            		}
+        	});
+	}
+    
 });
 
 // Update existing pokemon
 // http://localhost:8000/api/pokemon/id/6063cdb5f0af1b48c8a5218d
 router.put('/id/:id', function(req, res) {
-    if(req.body.pokedexNumber !== null){
-        // Update the student with values from the request
-        Pokemon.updateOne({ _id: req.params.id }, req.body, function(err, result) {
-            if (err) {
-                res.status(400).send({'message': `error: ${err}`});
-            }
-            else if (result.n === 0) {
-                res.status(404).json({ message: 'Pokemon not found' });
-            }
-            else {
-                res.sendStatus(200);
-            }
-        });
+
+	const types = [
+		"Normal",
+		"Fire",
+		"Water",
+		"Grass",
+		"Electric",
+		"Ice",
+		"Fighting",
+		"Poison",
+		"Ground",
+		"Flying",
+		"Psychic",
+		"Bug",
+		"Rock",
+		"Ghost",
+		"Dark",
+		"Dragon",
+		"Steel",
+		"Fairy"
+	]
+
+	if(req.body.pokedexNumber === null || req.body.pokedexNumber < 0 || isNaN(req.body.pokedexNumber) || !isInteger(req.body.pokeDexNumber){
+        	res.status(404).json({'message': 'Invalid Pokedex Number'});
+        }
+    	else if(req.body.height === null || req.body.height < 0 || isNan(req.body.height)) { 
+        	res.status(404).json({'message': 'Invalid Height'});
+    	}
+	else if(req.body.weight === null || req.body.weight < 0 || isNan(req.body.weight)) { 
+        	res.status(404).json({'message': 'Invalid Height'});
+    	}
+	else if(!types.includes(res.body.types)){
+		res.status(404).json({'message':'Invalid Type'});
+	}
+
+    	else {
+        	// Update the student with values from the request
+        	Pokemon.updateOne({ _id: req.params.id }, req.body, function(err, result) {
+            		if (err) {
+                		res.status(400).send({'message': `error: ${err}`});
+            		}
+            		else if (result.n === 0) {
+                		res.status(404).json({ message: 'Pokemon not found' });
+            		}
+            		else {
+                		res.sendStatus(200);
+            		}
+        	});
      }
     else {
         res.status(404).json({ message: 'Pokedex Number is a required field' });
