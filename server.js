@@ -4,7 +4,7 @@ const morgan = require('morgan');
 const app = express()
 
 // setup middleware.
-app.use(morgan('dev'));
+app.use(morgan('dev', { skip: (req, res) => process.env.NODE_ENV && process.env.NODE_ENV.trim() === 'test' }));
 app.use(express.json());
 
 // API routes
