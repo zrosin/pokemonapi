@@ -22,7 +22,7 @@ describe('Pokemon API', () => {
 
         // Add test students
         for (const p of testPokemon) {
-            const pokemon = new Student(p);
+            const pokemon = new Pokemon(p);
             const pokemonDoc = await pokemon.save();
             testPokemonDocs.push(pokemonDoc);
         } 
@@ -160,7 +160,7 @@ describe('Pokemon API', () => {
         it('should get a pokemon by id', (done) => {
             const pokemon = testPokemonDocs[0];
             chai.request(server)
-                .get('/api/pokemon/' + pokemon._id)
+                .get('/api/pokemon/id/' + pokemon._id)
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.body.should.be.a('object');
@@ -169,7 +169,7 @@ describe('Pokemon API', () => {
                     res.body.should.have.property('height').eql(pokemon.height);
                     res.body.should.have.property('weight').eql(pokemon.weight);
                     res.body.should.have.property('types').eql(pokemon.types);
-                    res.body.should.have.property('id').eql(pokemon.id.toString());
+                    res.body.should.have.property('_id').eql(pokemon.id.toString());
                     done();
                 });
         });
