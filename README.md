@@ -6,18 +6,22 @@ By Zach Rosin and Easton Pillay.
 
 How to use:
 
-npm start -- Runs server with all routes on http://localhost:8000/api/pokemon/. Initializes with 150 pokemon. These pokemon are overwritten every time npm start is called.
+` npm run init ` -- Initializes the database with the Kanto Pokedex. Unnecessary for running the mocha tests, but you may want to before trying the index.html file.
 
-npm test -- Runs test script. Displays results in console.
+`npm start` -- Runs server with all routes on http://localhost:8000/api/pokemon/. Initializes with 150 pokemon. These pokemon are overwritten every time npm start is called. Browse to http://localhost:8000/ to get to index.html.
+
+`npm test` -- Runs test script. Displays results in console.
 
 Routes:
+
     GET:
+        
         All Pokemon.
             http://localhost:8000/api/pokemon/
             Status Codes:
             200 OK
             400 Error
-            404 Not Found - No pokemon found
+            404 Not Found - No pokemon found.
 
         By ID.
             http://localhost:8000/api/pokemon/id/:id
@@ -66,8 +70,10 @@ Routes:
 
 In general, we use 400 for an unknown error, and 404 when we know error, and we return a json describing error whether there is a 404 or a 400.
 
-Contribution:
-    Zach - 50%:
+Contributions:
+    
+   Zach - 50%:
         Routes, Testing.
-    Easton - 50%:
+    
+   Easton - 50%:
         DB Schema, index.html file, project setup.
