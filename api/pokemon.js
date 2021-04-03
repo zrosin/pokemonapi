@@ -14,7 +14,7 @@ router.get("/", function(req, res) {
             res.status(200).json(pokemon);
         }
         else {
-            res.status(404).json({pokemon, 'message': 'Did not find Pokemon with type ' + req.params.types}); 
+            res.status(404).json({'message': "There are no Pokémon in the database!"}); 
         }
     });
  });
@@ -95,7 +95,7 @@ router.post('/', function(req, res) {
         // Save pokemon and return it as JSON
         pokemon.save(function(err, pokemon) {
             if (err) {
-                res.status(400).send(err);
+                res.status(400).send({'message': `error: ${err}`});
             }
             else {
                 res.status(201).json(pokemon);
