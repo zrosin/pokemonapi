@@ -70,3 +70,4 @@ Contribution:
     Zach - 50%:
         Routes, Testing.
     Easton - 50%:
+        DB Schema, index.html file, project setup.
