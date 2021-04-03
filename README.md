@@ -1,4 +1,4 @@
-# Pokemon API
+# Pokémon API
 
 ![tests](https://github.com/jedieaston/pokemonapi/actions/workflows/main.yml/badge.svg)
 
