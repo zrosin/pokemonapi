@@ -32,6 +32,24 @@ router.get('/id/:id', function(req, res) {
     });
 });
 
+
+// Get pokemon by pokedex number
+// http://localhost:8000/api/pokemon/pokedex/2
+router.get('/pokedex/:pokedex', function(req, res) {
+    Pokemon.findOne({ pokedexNumber: { $eq:  req.params.pokedex} } , function(err, pokemon) {
+        if (err) {
+            console.log(err);
+            res.status(404).json({'message': `error: ${err}`});
+        }
+        else if (pokemon) {
+            res.json(pokemon);
+        }
+        else {
+            res.status(404).json({pokemon, 'message': 'Did not find Pokemon with Pokedex Number ' + req.params.pokedex}); 
+        }
+    });
+});
+
 // Happy cases work. Unhappy cases fail with empty array. Probably pluralization.
 // Get all pokemon with given type
 // http://localhost:8000/api/pokemon/type/grass
