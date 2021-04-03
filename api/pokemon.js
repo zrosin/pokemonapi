@@ -1,4 +1,4 @@
-// API code goes here 
+// API routes go here.
 const Pokemon = require('../models/pokemon');
 const router = require('express').Router();
 
