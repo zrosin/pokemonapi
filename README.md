@@ -70,7 +70,6 @@ Routes:
             400 Error
             404 Not Found - Pokemon not found/Incorrect format
 
-In general, we use 400 for an unknown error, and 404 when we know error, and we return a json describing error whether there is a 404 or a 400.
 
 Contributions:
     
@@ -79,3 +78,7 @@ Contributions:
     
    Easton - 50%:
         DB Schema, index.html file, project setup.
+        
+Notes:
+    We are by no means experts in what status codes are used for what, but in general, we use 400 for an unknown error, and 404 when we know error, and we return a json describing error whether there is a 404 or a 400.
+    We did create a split with better data validation, but it fell behind the main tree, and had some errors, and we didn't have time to get that section done. You can see it in our issues and pull requests.
