@@ -1,10 +1,12 @@
-name: Run tests
+name: Run backend tests.
 
 on: push
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      working-directory: ./webapi
     strategy:
       matrix:
         node-version: [15.x]
@@ -25,7 +27,9 @@ jobs:
         mongodb-version: ${{ matrix.mongodb-version }}
 
     - run: npm install
+      working-directory: ${{env.working-directory}}
 
     - run: npm test
+      working-directory: ${{env.working-directory}}
       env:
         test: true
