@@ -42,12 +42,7 @@ function Navbar() {
   );
 }
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
+function App() {
     return (
       <Router>
         <Navbar></Navbar>
@@ -67,40 +62,30 @@ class App extends React.Component {
           </Route>
         </Switch>      
 	    </Router>);
-    }
 }
 
-class About extends React.Component {
-
-  render() {
-    return(
-      <div>
-        <p>This is another test</p>
-      </div>
-    );
-  }
+function About() {
+  return(
+    <div>
+      <p>This is another test</p>
+    </div>
+  );
 }
 
-class Widgets extends React.Component {
-
-  render() {
-    return(
-      <div>
-        <p>This is an extra test</p>
-      </div>
-    );
-  }
+function Widgets() {
+  return(
+    <div>
+      <p>This is an extra test</p>
+    </div>
+  );
 }
 
-class Home extends React.Component {
-
-  render() {
-    return(
-      <div>
-        <p>This is a test</p>
-      </div>
-    );
-  }
+function Home() {
+  return(
+    <div>
+      <p>This is a test</p>
+    </div>
+  );
 }
 
 export default App;
