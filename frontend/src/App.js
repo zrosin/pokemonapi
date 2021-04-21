@@ -1,7 +1,7 @@
 //import logo from './logo.svg';
 import './App.css';
 import { BrowserRouter as Router, Switch, Route, Link, useParams } from 'react-router-dom';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 /* function App() {
   return (
     <div className="App">
@@ -65,10 +65,20 @@ function App() {
 }
 
 function About() {
+
+  const [pokeDexNum, setPokeDexNum] = useState(1);
+
+  function findPokemon() {
+    console.log(pokeDexNum);
+  }
+
   return(
-    <div>
-      <p>This is another test</p>
-    </div>
+    <>
+      <div>
+        <input onChange={e => setPokeDexNum(e.target.value)} type="text" id="pokeDexNum "name="pokeDexNum"></input>
+        <button onClick={() => findPokemon()}type="submit" name="getPokemon" value="Submit">Find</button>
+      </div>
+    </>  
   );
 }
 
