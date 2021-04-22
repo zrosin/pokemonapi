@@ -116,11 +116,29 @@ function GetPokemon() {
     if(pokeType !== "") {
       async function getPokeTypes() {
         const response = await fetch(`/api/pokemon/type/${pokeType}`).then((r) => r.json());
-        let text = "";
+        let text = "<tr><th>Pokédex Number</th><th>Name</th><th>Height (m)</th><th>Weight</th><th>Type(s)</th><th>Abilities</th></tr><tr>"
         for (let pokemon of response) {
-          text += "<p>" + pokemon.name + "</p>";
+          text += "<tr><td>" + pokemon.name + "</td>";
+          text += "<td>" + pokemon.pokedexNumber + "</td>";
+          text += "<td>" + pokemon.height + "</td>";
+          text += "<td>" + pokemon.weight + "</td>";
+          if(pokemon.types[1] == null) {
+              text += "<td>" + pokemon.types[0] + "</td>";
+          }
+          else {
+            text += "<td>" + pokemon.types[0] + ", " + pokemon.types[1] + "</td>";
+          }
+          text += "<td>";
+          for (let ability of pokemon.abilities) {
+            if(pokemon.abilities.indexOf(ability) == pokemon.abilities.length - 1) {
+              text += ability + "</td></tr>";
+            }
+            else {
+              text += ability + ", ";
+            }
+          }
         }
-        document.getElementById("test").innerHTML = text;
+        document.getElementById("test").innerHTML = "<table><tbody>" + text + "</tbody></table>";
       }
       getPokeTypes();
     }
