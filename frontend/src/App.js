@@ -78,11 +78,13 @@ function GetPokemon() {
         console.log(response.name);
         let typeList = "";
         for (let type of response.types) {
-          if (response.types.indexOf(type) == response.types.length - 1) {
-            typeList += type;
-          }
-          else {
-            typeList += type + ", ";
+          if (type !== "null") {
+            if (response.types.indexOf(type) == response.types.length - 1) {
+              typeList += type;
+            }
+            else {
+              typeList += type + ", ";
+            }
           }
         }
         let abilityList = "";
@@ -114,7 +116,11 @@ function GetPokemon() {
     if(pokeType !== "") {
       async function getPokeTypes() {
         const response = await fetch(`/api/pokemon/type/${pokeType}`).then((r) => r.json());
-        setPokeInfo2(`<ol></ol>`)
+        let text = "";
+        for (let pokemon of response) {
+          text += "<p>" + pokemon.name + "</p>";
+        }
+        document.getElementById("test").innerHTML = text;
       }
       getPokeTypes();
     }
@@ -151,8 +157,7 @@ function GetPokemon() {
           <option value="ice">Ice</option>
         </select>
       </div>
-      <div>
-        {pokeInfo2}
+      <div id="test">
       </div>
     </>  
   );
