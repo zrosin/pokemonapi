@@ -71,6 +71,7 @@ function GetPokemon() {
   const [pokeType, setPokeType] = useState("");
   const [pokeID, setPokeID] = useState("");
   const [pokeInfo2, setPokeInfo2] = useState("");
+  const [isPressed, setIsPressed] = useState(false);
 
   useEffect (() => {
     if(pokeDexNum > 0) {
@@ -213,7 +214,41 @@ function GetPokemon() {
     else {
       setPokeInfo2("");
     }
-  }, [pokeDexNum, pokeType, pokeID]);
+    if(isPressed == true) {
+      async function getAllPokemon() {
+        const response = await fetch("/api/pokemon/").then((r) => r.json());
+        if (!('message' in response)) {
+          let tableContent = "<tr><th>Pokédex Number</th><th>Name</th><th>Height (m)</th><th>Weight</th><th>Type(s)</th><th>Abilities</th></tr><tr>"
+          for (let pokemon of response) {
+            tableContent += "<tr><td>" + pokemon.name + "</td>";
+            tableContent += "<td>" + pokemon.pokedexNumber + "</td>";
+            tableContent += "<td>" + pokemon.height + "</td>";
+            tableContent += "<td>" + pokemon.weight + "</td>";
+            if(pokemon.types[1] == null) {
+                tableContent += "<td>" + pokemon.types[0] + "</td>";
+            }
+            else {
+              tableContent += "<td>" + pokemon.types[0] + ", " + pokemon.types[1] + "</td>";
+            }
+            tableContent += "<td>";
+            for (let ability of pokemon.abilities) {
+              if(pokemon.abilities.indexOf(ability) == pokemon.abilities.length - 1) {
+                tableContent += ability + "</td></tr>";
+              }
+              else {
+                tableContent += ability + ", ";
+              }
+            }
+          }
+          document.getElementById("allPokemon").innerHTML = "<table><tbody>" + tableContent + "</tbody></table>";
+        }
+      }
+      getAllPokemon();
+    }
+    else {
+      document.getElementById("allPokemon").innerHTML = "";
+    }
+  }, [pokeDexNum, pokeType, pokeID, isPressed]);
 
   return(
     <>
@@ -258,6 +293,12 @@ function GetPokemon() {
         </select>
       </div>
       <div id="pokeType">
+      </div>
+      <div>
+        <h4>Get all Pokemon!</h4>
+        <button onClick={() => setIsPressed(true)}>Get all Pokemon!</button> <button onClick={() => setIsPressed(false)}>Hide</button>
+      </div>
+      <div id="allPokemon">
       </div>
     </>  
   );
