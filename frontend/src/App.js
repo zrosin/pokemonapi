@@ -33,7 +33,7 @@ function Navbar() {
         <Link to="/home">Home</Link>
       </li>
       <li>
-        <Link to="/widgets">Widgets</Link>
+        <Link to="/postpokemon">Post Pokemon</Link>
       </li>
       <li>
         <Link to="/getpokemon">Get Pokemon</Link>
@@ -57,8 +57,8 @@ function App() {
           </Route>
         </Switch>
         <Switch>
-          <Route path="/widgets">
-            <Widgets />
+          <Route path="/postpokemon">
+            <PostPokemon />
           </Route>
         </Switch>      
 	    </Router>);
@@ -102,11 +102,11 @@ function GetPokemon() {
             <div>
               <h1>{response.name}</h1>
               <ul>
-                <li>Pokedex Number:{response.pokedexNumber}</li><br></br>
-                <li>Height (m): {response.height}</li><br></br>
-                <li>Weight (kg): {response.weight}</li><br></br>
-                <li>Types: {typeList}</li><br></br>
-                <li>Abilities: {abilityList}</li><br></br>
+                <li>Pokedex Number:{response.pokedexNumber}</li><br />
+                <li>Height (m): {response.height}</li><br />
+                <li>Weight (kg): {response.weight}</li><br />
+                <li>Types: {typeList}</li><br />
+                <li>Abilities: {abilityList}</li><br />
               </ul>
             </div>);
         }
@@ -126,7 +126,7 @@ function GetPokemon() {
             tableContent += "<td>" + pokemon.pokedexNumber + "</td>";
             tableContent += "<td>" + pokemon.height + "</td>";
             tableContent += "<td>" + pokemon.weight + "</td>";
-            if(pokemon.types[1] == null) {
+            if(pokemon.types[1] == null || pokemon.types[1] == "") {
                 tableContent += "<td>" + pokemon.types[0] + "</td>";
             }
             else {
@@ -200,11 +200,11 @@ function GetPokemon() {
             <div>
               <h1>{response.name}</h1>
               <ul>
-                <li>Pokedex Number:{response.pokedexNumber}</li><br></br>
-                <li>Height (m): {response.height}</li><br></br>
-                <li>Weight (kg): {response.weight}</li><br></br>
-                <li>Types: {typeList}</li><br></br>
-                <li>Abilities: {abilityList}</li><br></br>
+                <li>Pokedex Number:{response.pokedexNumber}</li><br />
+                <li>Height (m): {response.height}</li><br />
+                <li>Weight (kg): {response.weight}</li><br />
+                <li>Types: {typeList}</li><br />
+                <li>Abilities: {abilityList}</li><br />
               </ul>
             </div>);
         }
@@ -224,7 +224,7 @@ function GetPokemon() {
             tableContent += "<td>" + pokemon.pokedexNumber + "</td>";
             tableContent += "<td>" + pokemon.height + "</td>";
             tableContent += "<td>" + pokemon.weight + "</td>";
-            if(pokemon.types[1] == null) {
+            if(pokemon.types[1] == null || pokemon.types[1] == "") {
                 tableContent += "<td>" + pokemon.types[0] + "</td>";
             }
             else {
@@ -304,18 +304,136 @@ function GetPokemon() {
   );
 }
 
-function Widgets() {
+function PostPokemon() {
+  const [IsPosted, setIsPosted] = useState(false);
+  const [pokeDexNum1, setPokeDexNum1] = useState(0);
+  const [pokeName, setPokeName] = useState("");
+  const [pokeHeight, setPokeHeight] = useState(0);
+  const [pokeWeight, setPokeWeight] = useState(0);
+  const [pokeType1, setPokeType1] = useState("");
+  const [pokeType2, setPokeType2] = useState("");
+  const [pokeAbilities, setPokeAbilities] = useState("");
+
+  useEffect (() => {
+    if(IsPosted == true) {
+      console.log("bingo");
+      async function postPokemon() {
+        if(pokeDexNum1 !== 0 && pokeName !== "" && pokeHeight !== 0 && pokeWeight !== 0 && pokeType1 !== "" && pokeAbilities !== "") {
+          console.log("bingo");
+          let typeList = [];
+          let abilityList = pokeAbilities.split(",");
+          typeList.push(pokeType1);
+          if(pokeType1 != pokeType2) {
+            typeList.push(pokeType2);
+          }
+          let newPokemon = {};
+          newPokemon.pokedexNumber = pokeDexNum1;
+          newPokemon.name = pokeName;
+          newPokemon.height = pokeHeight;
+          newPokemon.weight = pokeWeight;
+          newPokemon.types = typeList;
+          newPokemon.abilities = abilityList;
+          let response = await fetch("/api/pokemon/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: (JSON.stringify(newPokemon))
+          }).then(r => r.json());
+          if (!('message' in response)) {
+            alert(newPokemon.name + " was successfully added!");
+          }
+          setIsPosted(false);
+        }
+        else {
+          alert("You missed a field! Try again!");
+        }
+      }
+      postPokemon();
+    }
+  }, [IsPosted, pokeDexNum1, pokeName, pokeHeight, pokeWeight, pokeType1, pokeType2, pokeAbilities]);
+
   return(
     <div>
-      <p>This is an extra test</p>
+      <h2>Add a Pokemon</h2>
+      <div>
+        <form onSubmit={() => setIsPosted(true)}>
+          <label>
+            Pokedex Number:
+            <input onChange={e => setPokeDexNum1(e.target.value)} type="number" value={pokeDexNum1}></input>
+          </label><br /><br />
+          <label>
+            Name:
+            <input onChange={e => setPokeName(e.target.value)} type="text" value={pokeName}></input>
+          </label><br /><br />
+          <label>
+            Height (m):
+            <input onChange={e => setPokeHeight(e.target.value)} type="number" value={pokeHeight}></input>
+          </label><br /><br />
+          <label>
+            Weight (kg):
+            <input onChange={e => setPokeWeight(e.target.value)} type="number" value={pokeWeight}></input>
+          </label><br /><br />
+          <label>
+            Type(s):
+            <select onChange={e => setPokeType1(e.target.value)}>
+              <option value="">Type 1</option>
+              <option value="grass">Grass</option>
+              <option value="water">Water</option>
+              <option value="fire">Fire</option>
+              <option value="poison">Poison</option>
+              <option value="flying">Flying</option>
+              <option value="rock">Rock</option>
+              <option value="ground">Ground</option>
+              <option value="electric">Electric</option>
+              <option value="ghost">Ghost</option>
+              <option value="dark">Dark</option>
+              <option value="bug">Bug</option>
+              <option value="steel">Steel</option>
+              <option value="normal">Normal</option>
+              <option value="psychic">Psychic</option>
+              <option value="fighting">Fighting</option>
+              <option value="fairy">Fairy</option>
+              <option value="dragon">Dragon</option>
+              <option value="ice">Ice</option>
+            </select>
+            <select onChange={e => setPokeType2(e.target.value)}>
+              <option value="">Type 2</option>
+              <option value="grass">Grass</option>
+              <option value="water">Water</option>
+              <option value="fire">Fire</option>
+              <option value="poison">Poison</option>
+              <option value="flying">Flying</option>
+              <option value="rock">Rock</option>
+              <option value="ground">Ground</option>
+              <option value="electric">Electric</option>
+              <option value="ghost">Ghost</option>
+              <option value="dark">Dark</option>
+              <option value="bug">Bug</option>
+              <option value="steel">Steel</option>
+              <option value="normal">Normal</option>
+              <option value="psychic">Psychic</option>
+              <option value="fighting">Fighting</option>
+              <option value="fairy">Fairy</option>
+              <option value="dragon">Dragon</option>
+              <option value="ice">Ice</option>
+            </select>
+          </label><br /><br />
+          <label>
+            Abilities (separated by commas, please):
+            <input onChange={e => setPokeAbilities(e.target.value)} type="text" value={pokeAbilities}></input>
+          </label><br /><br />
+          <input type="submit" value="Add Pokemon"/>
+        </form>
     </div>
+  </div>
   );
 }
 
 function Home() {
+
+
   return(
     <div>
-      <p>This is a test</p>
+      <p>This is an extra test</p>
     </div>
   );
 }
