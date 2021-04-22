@@ -66,17 +66,15 @@ function App() {
 
 function GetPokemon() {
 
-  const [pokeDexNum, setPokeDexNum] = useState(1);
-  const [pokeName, setPokeName] = useState("");
-  const [dexNumQuery, setDexNumQuery] = useState("");
+  const [pokeDexNum, setPokeDexNum] = useState(0);
+  const [pokeName1, setPokeName1] = useState("");
 
   useEffect (() => {
-    if(dexNumQuery !== "") {
-      console.log(dexNumQuery);
+    if(pokeDexNum > 0) {
       async function getPokeDexNumber() {
-        const response = await fetch(`api/pokemon/pokedex/${dexNumQuery}`).then((r) => r.json());
+        const response = await fetch(`api/pokemon/pokedex/${pokeDexNum}`).then((r) => r.json());
         console.log(response.name);
-        setPokeName(response.name);
+        setPokeName1(response.name);
       }
       getPokeDexNumber();
     }
@@ -85,11 +83,10 @@ function GetPokemon() {
   return(
     <>
       <div>
-        <input onChange={e => setPokeDexNum(e.target.value)} type="number" id="pokeDexNum "name="pokeDexNum" min={1} max={151}></input>
-        <button onClick={() => setDexNumQuery(pokeDexNum)}type="submit" name="getPokemon" value="Submit">Find</button>
+        <input onChange={e => setPokeDexNum(e.target.value)} type="number" id="pokeDexNum "name="pokeDexNum" min={1} max={151} value={pokeDexNum}></input>
       </div>
       <div>
-        <p>{pokeName}</p>
+        <p>{pokeName1}</p>
       </div>
     </>  
   );
