@@ -74,11 +74,42 @@ function GetPokemon() {
       async function getPokeDexNumber() {
         const response = await fetch(`api/pokemon/pokedex/${pokeDexNum}`).then((r) => r.json());
         console.log(response.name);
-        setPokeName1(response.name);
+        let typeList = "";
+        for (let type of response.types) {
+          if (response.types.indexOf(type) == response.types.length - 1) {
+            typeList += type;
+          }
+          else {
+            typeList += type + ", ";
+          }
+        }
+        let abilityList = "";
+        for (let ability of response.abilities) {
+          if (response.abilities.indexOf(ability) == response.abilities.length - 1) {
+            abilityList += ability;
+          }
+          else {
+            abilityList += ability + ", ";
+          }
+        }
+        setPokeName1(
+          <div>
+            <h1>{response.name}</h1>
+            <ul>
+              <li>Pokedex Number:{response.pokedexNumber}</li><br></br>
+              <li>Height (m): {response.height}</li><br></br>
+              <li>Weight (kg): {response.weight}</li><br></br>
+              <li>Types: {typeList}</li><br></br>
+              <li>Abilities: {abilityList}</li><br></br>
+            </ul>
+          </div>);
       }
       getPokeDexNumber();
     }
-  });
+    else {
+      setPokeName1("");
+    }
+  }, [pokeDexNum]);
 
   return(
     <>
