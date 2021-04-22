@@ -36,7 +36,7 @@ function Navbar() {
         <Link to="/widgets">Widgets</Link>
       </li>
       <li>
-        <Link to="/about">About</Link>
+        <Link to="/getpokemon">Get Pokemon</Link>
       </li>
     </ul>
   );
@@ -47,8 +47,8 @@ function App() {
       <Router>
         <Navbar></Navbar>
         <Switch>     
-          <Route path="/about">
-            <About />
+          <Route path="/getpokemon">
+            <GetPokemon />
           </Route>
 	      </Switch>
         <Switch>
@@ -64,7 +64,7 @@ function App() {
 	    </Router>);
 }
 
-function About() {
+function GetPokemon() {
 
   const [pokeDexNum, setPokeDexNum] = useState(1);
   const [pokeName, setPokeName] = useState("");
