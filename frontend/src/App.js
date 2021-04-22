@@ -69,44 +69,44 @@ function GetPokemon() {
   const [pokeDexNum, setPokeDexNum] = useState(0);
   const [pokeInfo1, setPokeInfo1] = useState("");
   const [pokeType, setPokeType] = useState("");
-  const [pokeInfo2, setPokeInfo2] = useState("");
 
   useEffect (() => {
     if(pokeDexNum > 0) {
       async function getPokeDexNumber() {
         const response = await fetch(`api/pokemon/pokedex/${pokeDexNum}`).then((r) => r.json());
-        console.log(response.name);
-        let typeList = "";
-        for (let type of response.types) {
-          if (type !== "null") {
-            if (response.types.indexOf(type) == response.types.length - 1) {
-              typeList += type;
+        if (!('message' in response)) {
+          let typeList = "";
+          for (let type of response.types) {
+            if (type !== "null") {
+              if (response.types.indexOf(type) == response.types.length - 1) {
+                typeList += type;
+              }
+              else {
+                typeList += type + ", ";
+              }
+            }
+          }
+          let abilityList = "";
+          for (let ability of response.abilities) {
+            if (response.abilities.indexOf(ability) == response.abilities.length - 1) {
+              abilityList += ability;
             }
             else {
-              typeList += type + ", ";
+              abilityList += ability + ", ";
             }
           }
+          setPokeInfo1(
+            <div>
+              <h1>{response.name}</h1>
+              <ul>
+                <li>Pokedex Number:{response.pokedexNumber}</li><br></br>
+                <li>Height (m): {response.height}</li><br></br>
+                <li>Weight (kg): {response.weight}</li><br></br>
+                <li>Types: {typeList}</li><br></br>
+                <li>Abilities: {abilityList}</li><br></br>
+              </ul>
+            </div>);
         }
-        let abilityList = "";
-        for (let ability of response.abilities) {
-          if (response.abilities.indexOf(ability) == response.abilities.length - 1) {
-            abilityList += ability;
-          }
-          else {
-            abilityList += ability + ", ";
-          }
-        }
-        setPokeInfo1(
-          <div>
-            <h1>{response.name}</h1>
-            <ul>
-              <li>Pokedex Number:{response.pokedexNumber}</li><br></br>
-              <li>Height (m): {response.height}</li><br></br>
-              <li>Weight (kg): {response.weight}</li><br></br>
-              <li>Types: {typeList}</li><br></br>
-              <li>Abilities: {abilityList}</li><br></br>
-            </ul>
-          </div>);
       }
       getPokeDexNumber();
     }
@@ -116,31 +116,36 @@ function GetPokemon() {
     if(pokeType !== "") {
       async function getPokeTypes() {
         const response = await fetch(`/api/pokemon/type/${pokeType}`).then((r) => r.json());
-        let text = "<tr><th>Pokédex Number</th><th>Name</th><th>Height (m)</th><th>Weight</th><th>Type(s)</th><th>Abilities</th></tr><tr>"
-        for (let pokemon of response) {
-          text += "<tr><td>" + pokemon.name + "</td>";
-          text += "<td>" + pokemon.pokedexNumber + "</td>";
-          text += "<td>" + pokemon.height + "</td>";
-          text += "<td>" + pokemon.weight + "</td>";
-          if(pokemon.types[1] == null) {
-              text += "<td>" + pokemon.types[0] + "</td>";
-          }
-          else {
-            text += "<td>" + pokemon.types[0] + ", " + pokemon.types[1] + "</td>";
-          }
-          text += "<td>";
-          for (let ability of pokemon.abilities) {
-            if(pokemon.abilities.indexOf(ability) == pokemon.abilities.length - 1) {
-              text += ability + "</td></tr>";
+        if (!('message' in response)) {
+          let text = "<tr><th>Pokédex Number</th><th>Name</th><th>Height (m)</th><th>Weight</th><th>Type(s)</th><th>Abilities</th></tr><tr>"
+          for (let pokemon of response) {
+            text += "<tr><td>" + pokemon.name + "</td>";
+            text += "<td>" + pokemon.pokedexNumber + "</td>";
+            text += "<td>" + pokemon.height + "</td>";
+            text += "<td>" + pokemon.weight + "</td>";
+            if(pokemon.types[1] == null) {
+                text += "<td>" + pokemon.types[0] + "</td>";
             }
             else {
-              text += ability + ", ";
+              text += "<td>" + pokemon.types[0] + ", " + pokemon.types[1] + "</td>";
+            }
+            text += "<td>";
+            for (let ability of pokemon.abilities) {
+              if(pokemon.abilities.indexOf(ability) == pokemon.abilities.length - 1) {
+                text += ability + "</td></tr>";
+              }
+              else {
+                text += ability + ", ";
+              }
             }
           }
+          document.getElementById("test").innerHTML = "<table><tbody>" + text + "</tbody></table>";
         }
-        document.getElementById("test").innerHTML = "<table><tbody>" + text + "</tbody></table>";
       }
       getPokeTypes();
+    }
+    else {
+      document.getElementById("test").innerHTML = "";
     }
   }, [pokeDexNum, pokeType]);
 
