@@ -69,7 +69,7 @@ function GetPokemon() {
   const [pokeDexNum, setPokeDexNum] = useState(0);
   const [pokeInfo1, setPokeInfo1] = useState("");
   const [pokeType, setPokeType] = useState("");
-  const [pokeID, setPokeID] = useState(0);
+  const [pokeID, setPokeID] = useState("");
   const [pokeInfo2, setPokeInfo2] = useState("");
 
   useEffect (() => {
@@ -149,7 +149,7 @@ function GetPokemon() {
     else {
       document.getElementById("pokeType").innerHTML = "";
     }
-    if (pokeID == 0) {
+    if (pokeID === "") {
         async function getPokeIDs() {
         const dexNumbers = Array(5).fill(0).map(() => (Math.floor(Math.random() * 151) + 1));
         const pokemon = await Promise.all(dexNumbers.map(async i => {
@@ -163,7 +163,7 @@ function GetPokemon() {
               return null;
           }
         }));
-        let idChoices = "<option value=" + 0 + ">Please select an ID!</option>";
+        let idChoices = "<option value=" + "." + ">Please select an ID!</option>";
         for(let i of pokemon) {
           idChoices += "<option value=\"" + i._id + "\">" + i._id + "</option>";
         }
@@ -171,11 +171,54 @@ function GetPokemon() {
       }
       getPokeIDs();
     }
-  }, [pokeDexNum, pokeType]);
+    if (pokeID !== "." && pokeID !== "") {
+      async function getPokeID() {
+        const response = await fetch(`/api/pokemon/id/${pokeID}`).then((r) => r.json());
+        if (!('message' in response)) {
+          let typeList = "";
+          for (let type of response.types) {
+            if (type !== "null") {
+              if (response.types.indexOf(type) == response.types.length - 1) {
+                typeList += type;
+              }
+              else {
+                typeList += type + ", ";
+              }
+            }
+          }
+          let abilityList = "";
+          for (let ability of response.abilities) {
+            if (response.abilities.indexOf(ability) == response.abilities.length - 1) {
+              abilityList += ability;
+            }
+            else {
+              abilityList += ability + ", ";
+            }
+          }
+          setPokeInfo2(
+            <div>
+              <h1>{response.name}</h1>
+              <ul>
+                <li>Pokedex Number:{response.pokedexNumber}</li><br></br>
+                <li>Height (m): {response.height}</li><br></br>
+                <li>Weight (kg): {response.weight}</li><br></br>
+                <li>Types: {typeList}</li><br></br>
+                <li>Abilities: {abilityList}</li><br></br>
+              </ul>
+            </div>);
+        }
+      }
+      getPokeID();
+    }
+    else {
+      setPokeInfo2("");
+    }
+  }, [pokeDexNum, pokeType, pokeID]);
 
   return(
     <>
       <div>
+        <h4>Get By ID!</h4>
         <select id="idChoices" onChange={e => setPokeID(e.target.value)}>
         
         </select>
@@ -184,13 +227,15 @@ function GetPokemon() {
         {pokeInfo2}
       </div>
       <div>
+        <h4>Get By Dex Number!</h4>
         <input onChange={e => setPokeDexNum(e.target.value)} type="number" min={1} max={151} value={pokeDexNum}></input>
       </div>
       <div>
-        <p>{pokeInfo1}</p>
+        {pokeInfo1}
       </div>
       <div>
-      <select onChange={e => setPokeType(e.target.value)}>
+        <h4>Get By Type!</h4>
+        <select onChange={e => setPokeType(e.target.value)}>
           <option value="">Select a Pokemon Type</option>
           <option value="grass">Grass</option>
           <option value="water">Water</option>
