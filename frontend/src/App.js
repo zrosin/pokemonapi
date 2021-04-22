@@ -67,7 +67,9 @@ function App() {
 function GetPokemon() {
 
   const [pokeDexNum, setPokeDexNum] = useState(0);
-  const [pokeName1, setPokeName1] = useState("");
+  const [pokeInfo1, setPokeInfo1] = useState("");
+  const [pokeType, setPokeType] = useState("");
+  const [pokeInfo2, setPokeInfo2] = useState("");
 
   useEffect (() => {
     if(pokeDexNum > 0) {
@@ -92,7 +94,7 @@ function GetPokemon() {
             abilityList += ability + ", ";
           }
         }
-        setPokeName1(
+        setPokeInfo1(
           <div>
             <h1>{response.name}</h1>
             <ul>
@@ -107,17 +109,50 @@ function GetPokemon() {
       getPokeDexNumber();
     }
     else {
-      setPokeName1("");
+      setPokeInfo1("");
     }
-  }, [pokeDexNum]);
+    if(pokeType !== "") {
+      async function getPokeTypes() {
+        const response = await fetch(`/api/pokemon/type/${pokeType}`).then((r) => r.json());
+        setPokeInfo2(`<ol></ol>`)
+      }
+      getPokeTypes();
+    }
+  }, [pokeDexNum, pokeType]);
 
   return(
     <>
       <div>
-        <input onChange={e => setPokeDexNum(e.target.value)} type="number" id="pokeDexNum "name="pokeDexNum" min={1} max={151} value={pokeDexNum}></input>
+        <input onChange={e => setPokeDexNum(e.target.value)} type="number" min={1} max={151} value={pokeDexNum}></input>
       </div>
       <div>
-        <p>{pokeName1}</p>
+        <p>{pokeInfo1}</p>
+      </div>
+      <div>
+      <select onChange={e => setPokeType(e.target.value)}>
+          <option value="">Select a Pokemon Type</option>
+          <option value="grass">Grass</option>
+          <option value="water">Water</option>
+          <option value="fire">Fire</option>
+          <option value="poison">Poison</option>
+          <option value="flying">Flying</option>
+          <option value="rock">Rock</option>
+          <option value="ground">Ground</option>
+          <option value="electric">Electric</option>
+          <option value="ghost">Ghost</option>
+          <option value="dark">Dark</option>
+          <option value="bug">Bug</option>
+          <option value="steel">Steel</option>
+          <option value="normal">Normal</option>
+          <option value="psychic">Psychic</option>
+          <option value="fighting">Fighting</option>
+          <option value="fairy">Fairy</option>
+          <option value="dragon">Dragon</option>
+          <option value="ice">Ice</option>
+        </select>
+      </div>
+      <div>
+        {pokeInfo2}
       </div>
     </>  
   );
