@@ -69,6 +69,8 @@ function GetPokemon() {
   const [pokeDexNum, setPokeDexNum] = useState(0);
   const [pokeInfo1, setPokeInfo1] = useState("");
   const [pokeType, setPokeType] = useState("");
+  const [pokeID, setPokeID] = useState(0);
+  const [pokeInfo2, setPokeInfo2] = useState("");
 
   useEffect (() => {
     if(pokeDexNum > 0) {
@@ -117,40 +119,70 @@ function GetPokemon() {
       async function getPokeTypes() {
         const response = await fetch(`/api/pokemon/type/${pokeType}`).then((r) => r.json());
         if (!('message' in response)) {
-          let text = "<tr><th>Pokédex Number</th><th>Name</th><th>Height (m)</th><th>Weight</th><th>Type(s)</th><th>Abilities</th></tr><tr>"
+          let tableContent = "<tr><th>Pokédex Number</th><th>Name</th><th>Height (m)</th><th>Weight</th><th>Type(s)</th><th>Abilities</th></tr><tr>"
           for (let pokemon of response) {
-            text += "<tr><td>" + pokemon.name + "</td>";
-            text += "<td>" + pokemon.pokedexNumber + "</td>";
-            text += "<td>" + pokemon.height + "</td>";
-            text += "<td>" + pokemon.weight + "</td>";
+            tableContent += "<tr><td>" + pokemon.name + "</td>";
+            tableContent += "<td>" + pokemon.pokedexNumber + "</td>";
+            tableContent += "<td>" + pokemon.height + "</td>";
+            tableContent += "<td>" + pokemon.weight + "</td>";
             if(pokemon.types[1] == null) {
-                text += "<td>" + pokemon.types[0] + "</td>";
+                tableContent += "<td>" + pokemon.types[0] + "</td>";
             }
             else {
-              text += "<td>" + pokemon.types[0] + ", " + pokemon.types[1] + "</td>";
+              tableContent += "<td>" + pokemon.types[0] + ", " + pokemon.types[1] + "</td>";
             }
-            text += "<td>";
+            tableContent += "<td>";
             for (let ability of pokemon.abilities) {
               if(pokemon.abilities.indexOf(ability) == pokemon.abilities.length - 1) {
-                text += ability + "</td></tr>";
+                tableContent += ability + "</td></tr>";
               }
               else {
-                text += ability + ", ";
+                tableContent += ability + ", ";
               }
             }
           }
-          document.getElementById("test").innerHTML = "<table><tbody>" + text + "</tbody></table>";
+          document.getElementById("pokeType").innerHTML = "<table><tbody>" + tableContent + "</tbody></table>";
         }
       }
       getPokeTypes();
     }
     else {
-      document.getElementById("test").innerHTML = "";
+      document.getElementById("pokeType").innerHTML = "";
+    }
+    if (pokeID == 0) {
+        async function getPokeIDs() {
+        const dexNumbers = Array(5).fill(0).map(() => (Math.floor(Math.random() * 151) + 1));
+        const pokemon = await Promise.all(dexNumbers.map(async i => {
+          let r = await fetch(`/api/pokemon/pokedex/${i}`);
+          if (r.ok) {
+              let values = await r.json();
+              return values;
+          }
+          else {
+              // someone deleted one of these.
+              return null;
+          }
+        }));
+        let idChoices = "<option value=" + 0 + ">Please select an ID!</option>";
+        for(let i of pokemon) {
+          idChoices += "<option value=\"" + i._id + "\">" + i._id + "</option>";
+        }
+        document.getElementById("idChoices").innerHTML = idChoices;
+      }
+      getPokeIDs();
     }
   }, [pokeDexNum, pokeType]);
 
   return(
     <>
+      <div>
+        <select id="idChoices" onChange={e => setPokeID(e.target.value)}>
+        
+        </select>
+      </div>
+      <div>
+        {pokeInfo2}
+      </div>
       <div>
         <input onChange={e => setPokeDexNum(e.target.value)} type="number" min={1} max={151} value={pokeDexNum}></input>
       </div>
@@ -180,7 +212,7 @@ function GetPokemon() {
           <option value="ice">Ice</option>
         </select>
       </div>
-      <div id="test">
+      <div id="pokeType">
       </div>
     </>  
   );
