@@ -176,15 +176,15 @@ function GetPokemonOnType () {
           <td>{entry.name}</td>
           <td>{entry.weight}</td>
           <td>{entry.height}</td>
-          <td>{entry.types.length == 1 ? entry.types[0] + ", " + entry.types[1] : entry.types[0]}</td>
+          <td>{entry.types[1] == null ? entry.types[0] : entry.types[0]  + ", " + entry.types[1]}</td>
           <td>{formatAbilities(entry.abilities)}</td>
         </tr>
       ));
-      tableOfPokemon.unshift(<tr><th>Pokédex Number</th><th>Name</th><th>Height (m)</th><th>Weight</th><th>Type(s)</th><th>Abilities</th></tr>);
+      tableOfPokemon.unshift(<tr key={1}><th>Pokédex Number</th><th>Name</th><th>Height (m)</th><th>Weight</th><th>Type(s)</th><th>Abilities</th></tr>);
     }
     return (
       <div>
-        <table>
+        <table key={123}>
           <tbody>
             {tableOfPokemon}
           </tbody>
