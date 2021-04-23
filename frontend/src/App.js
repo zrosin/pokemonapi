@@ -1,6 +1,6 @@
 //import logo from './logo.svg';
 import './App.css';
-import { BrowserRouter as Router, Switch, Route, Link, useParams } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 /* function App() {
   return (
@@ -49,7 +49,8 @@ function App() {
         <Switch>     
           <Route path="/getpokemon">
             <GetPokemonOnDexNum />
-            <GetPokemonOnType />
+            <GetPokemonOnType /><br />
+            <GetPokemonOnID mons={5}/>
           </Route>
 	      </Switch>
         <Switch>
@@ -129,6 +130,19 @@ function GetPokemonOnDexNum() {
   );
 }
 
+function formatAbilities(abilityList) {
+  let formattedList = "";
+  for(let ability of abilityList) {
+    if(abilityList.indexOf(ability) == abilityList.length - 1) {
+      formattedList += ability;
+    }
+    else {
+      formattedList += (ability + ", ");
+    }
+  }
+  return formattedList;
+}
+
 function GetPokemonOnType () {
   const [pokeType, setPokeType] = useState("");
   const [initialInfo, setInitialInfo] = useState([]);
@@ -144,18 +158,6 @@ function GetPokemonOnType () {
     }
   }, [pokeType]);
 
-  function formatAbilities(abilityList) {
-    let formattedList = "";
-    for(let ability of abilityList) {
-      if(abilityList.indexOf(ability) == abilityList.length - 1) {
-        formattedList += ability;
-      }
-      else {
-        formattedList += (ability + ", ");
-      }
-    }
-    return formattedList;
-  }
 
   function TypeInfo() {
     let tableOfPokemon;
@@ -214,6 +216,65 @@ function GetPokemonOnType () {
       </div>
     </>
   );
+}
+
+function GetPokemonOnID(props) {
+  const [id, setID] = useState("");
+  const [possibleIds, setPossibleIds] = useState([]);
+  useEffect(() => {
+    async function getMons() {
+      const dexNumbers = Array(props.mons).fill(0).map(() => (Math.floor(Math.random() * 151) + 1));
+      const pokemon = await Promise.all(dexNumbers.map(async i => {
+        let r = await fetch(`/api/pokemon/pokedex/${i}`);
+        if (r.ok) {
+          let value = await r.json();
+          return value
+        }
+        else {
+          // someone deleted one of these.
+          return null
+        }
+      }));
+     setPossibleIds(pokemon);
+    }
+    getMons();
+  }, [props.mons]);
+
+  function IDInfo() {
+    let selectedPokemon = "";
+    if(id !== "") {
+      for(let i of possibleIds) {
+        if(i._id === id) {
+          selectedPokemon =
+          <div>
+            <h1>{i.name}</h1>
+            <ul>
+              <li>Pokedex Number: {i.pokedexNumber}</li>
+              <li>Weight: {i.weight}</li>
+              <li>Height: {i.height}</li>
+              <li>Type(s): {i.types.length == 1 ? i.types[0] : i.types[0] + ", " + i.types[1]}</li>
+              <li>Abilities: {formatAbilities(i.abilities)}</li>
+            </ul>
+          </div>;
+        }
+      }
+    }
+    return(selectedPokemon);
+  }
+
+  const options = possibleIds.map((i) => (
+    <option key={i._id} value={i._id}>Object {i._id}</option>
+  ));
+  return (
+    <>
+      <h4>Get By ID!</h4>
+      <select key={id} value={id} onChange={(e) => {setID(e.target.value)}}>
+        <option key={1} value={""}>Select a Mystery Pokemon</option>
+        {options}
+      </select>
+        <IDInfo />
+    </>
+  )
 }
 
 function PostPokemon() {
