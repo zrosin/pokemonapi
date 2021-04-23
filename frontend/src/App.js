@@ -81,9 +81,9 @@ function GetPokemonOnDexNum() {
   }
 
   useEffect (() => {
-    console.log("test");
     if(pokeDexNum > 0) {
       async function getPokeDexNumber() {
+        console.log("test");
         const response = await fetch(`api/pokemon/pokedex/${pokeDexNum}`).then((r) => r.json());
         if (!('message' in response)) {
           let typeList = "";
@@ -125,7 +125,7 @@ function GetPokemonOnDexNum() {
     else {
       setdexInfo("");
     }
-  }, [pokeDexNum, dexInfo]);
+  }, [pokeDexNum]);
   return(
     <>
       <div>
@@ -152,17 +152,43 @@ function GetPokemonOnType () {
       }
       getPokemonOnType();
     }
-  }, [initialInfo, pokeType]);
+  }, [pokeType]);
+
+  function formatAbilities(abilityList) {
+    let formattedList = "";
+    for(let ability of abilityList) {
+      if(abilityList.indexOf(ability) == abilityList.length - 1) {
+        formattedList += ability;
+      }
+      else {
+        formattedList += (ability + ", ");
+      }
+    }
+    return formattedList;
+  }
 
   function TypeInfo() {
+    let tableOfPokemon;
     if(initialInfo.length != 0) {
-      let tableOfPokemon = "";
-      console.log(initialInfo[0].types);
-
+      tableOfPokemon = initialInfo.map((entry) => (
+        <tr key={entry._id} >
+          <td>{entry.pokedexNumber}</td>
+          <td>{entry.name}</td>
+          <td>{entry.weight}</td>
+          <td>{entry.height}</td>
+          <td>{entry.types.length == 1 ? entry.types[0] + ", " + entry.types[1] : entry.types[0]}</td>
+          <td>{formatAbilities(entry.abilities)}</td>
+        </tr>
+      ));
+      tableOfPokemon.unshift(<tr><th>Pokédex Number</th><th>Name</th><th>Height (m)</th><th>Weight</th><th>Type(s)</th><th>Abilities</th></tr>);
     }
     return (
       <div>
-        <p>Hello!</p>
+        <table>
+          <tbody>
+            {tableOfPokemon}
+          </tbody>
+        </table>
       </div>
     );
   }
