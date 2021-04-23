@@ -80,7 +80,7 @@ function GetPokemonOnDexNum() {
           let typeList = "";
           for (let type of response.types) {
             if (type !== "null") {
-              if (response.types.indexOf(type) == response.types.length - 1) {
+              if (response.types.indexOf(type) === (response.types.length - 1)) {
                 typeList += type;
               }
               else {
@@ -90,7 +90,7 @@ function GetPokemonOnDexNum() {
           }
           let abilityList = "";
           for (let ability of response.abilities) {
-            if (response.abilities.indexOf(ability) == response.abilities.length - 1) {
+            if (response.abilities.indexOf(ability) === (response.abilities.length - 1)) {
               abilityList += ability;
             }
             else {
@@ -133,7 +133,7 @@ function GetPokemonOnDexNum() {
 function formatAbilities(abilityList) {
   let formattedList = "";
   for(let ability of abilityList) {
-    if(abilityList.indexOf(ability) == abilityList.length - 1) {
+    if(abilityList.indexOf(ability) === (abilityList.length - 1)) {
       formattedList += ability;
     }
     else {
@@ -161,7 +161,7 @@ function GetPokemonOnType () {
 
   function TypeInfo() {
     let tableOfPokemon;
-    if(initialInfo.length != 0) {
+    if(initialInfo.length !== 0) {
       tableOfPokemon = initialInfo.map((entry) => (
         <tr key={entry._id} >
           <td>{entry.pokedexNumber}</td>
@@ -252,7 +252,7 @@ function GetPokemonOnID(props) {
               <li>Pokedex Number: {i.pokedexNumber}</li>
               <li>Weight: {i.weight}</li>
               <li>Height: {i.height}</li>
-              <li>Type(s): {i.types.length == 1 ? i.types[0] : i.types[0] + ", " + i.types[1]}</li>
+              <li>Type(s): {i.types.length === 1 ? i.types[0] : i.types[0] + ", " + i.types[1]}</li>
               <li>Abilities: {formatAbilities(i.abilities)}</li>
             </ul>
           </div>;
@@ -288,14 +288,14 @@ function PostPokemon() {
   const [pokeAbilities, setPokeAbilities] = useState("");
 
   useEffect (() => {
-    if(IsPosted == true) {
+    if(IsPosted === true) {
       async function postPokemon() {
         console.log("bingo");
         if(pokeDexNum1 !== 0 && pokeName !== "" && pokeHeight !== 0 && pokeWeight !== 0 && pokeType1 !== "" && pokeAbilities !== "") {
           let typeList = [];
           let abilityList = pokeAbilities.split(",");
           typeList.push(pokeType1);
-          if(pokeType1 != pokeType2) {
+          if(pokeType1 !== pokeType2) {
             typeList.push(pokeType2);
           }
           let newPokemon = {};
@@ -441,7 +441,7 @@ function UpdatePokemon(props) {
             let typeList = [];
             let abilityList = PokeAbilities.split(',');
             typeList.push(PokeType1);
-            if(PokeType1 != PokeType2) {
+            if(PokeType1 !== PokeType2) {
               typeList.push(PokeType2);
             }
             let updatedPokemon = {};
@@ -468,7 +468,7 @@ function UpdatePokemon(props) {
         }
         putPokemon();
       }
-    }, [IsUpdated, PokeDexNum]);
+    }, [IsUpdated, PokeAbilities, PokeDexNum, PokeHeight, PokeName, PokeType1, PokeType2, PokeWeight]);
 
     let selectedForm = "";
     if(id !== "") {
