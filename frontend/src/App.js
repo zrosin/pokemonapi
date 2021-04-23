@@ -1,6 +1,6 @@
 //import logo from './logo.svg';
 import './App.css';
-import { BrowserRouter as Router, Switch, Route, Link, useParams } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 /* function App() {
   return (
@@ -30,7 +30,7 @@ function Navbar() {
   return (
     <ul>
       <li>
-        <Link to="/home">Home</Link>
+        <Link to="/updatepokemon">Update Pokemon</Link>
       </li>
       <li>
         <Link to="/postpokemon">Post Pokemon</Link>
@@ -48,12 +48,14 @@ function App() {
         <Navbar></Navbar>
         <Switch>     
           <Route path="/getpokemon">
-            <GetPokemon />
+            <GetPokemonOnDexNum />
+            <GetPokemonOnType /><br />
+            <GetPokemonOnID mons={5}/>
           </Route>
 	      </Switch>
         <Switch>
-          <Route path="/home">
-            <Home />
+          <Route path="/updatepokemon">
+            <UpdatePokemon mons={5}/>
           </Route>
         </Switch>
         <Switch>
@@ -64,24 +66,21 @@ function App() {
 	    </Router>);
 }
 
-function GetPokemon() {
+function GetPokemonOnDexNum() {
 
   const [pokeDexNum, setPokeDexNum] = useState(0);
-  const [pokeInfo1, setPokeInfo1] = useState("");
-  const [pokeType, setPokeType] = useState("");
-  const [pokeID, setPokeID] = useState("");
-  const [pokeInfo2, setPokeInfo2] = useState("");
-  const [isPressed, setIsPressed] = useState(false);
+  const [dexInfo, setdexInfo] = useState("");
 
   useEffect (() => {
     if(pokeDexNum > 0) {
       async function getPokeDexNumber() {
+        console.log("test");
         const response = await fetch(`api/pokemon/pokedex/${pokeDexNum}`).then((r) => r.json());
         if (!('message' in response)) {
           let typeList = "";
           for (let type of response.types) {
             if (type !== "null") {
-              if (response.types.indexOf(type) == response.types.length - 1) {
+              if (response.types.indexOf(type) === (response.types.length - 1)) {
                 typeList += type;
               }
               else {
@@ -91,14 +90,15 @@ function GetPokemon() {
           }
           let abilityList = "";
           for (let ability of response.abilities) {
-            if (response.abilities.indexOf(ability) == response.abilities.length - 1) {
+            if (response.abilities.indexOf(ability) === (response.abilities.length - 1)) {
               abilityList += ability;
             }
             else {
               abilityList += ability + ", ";
             }
           }
-          setPokeInfo1(
+          
+          setdexInfo(
             <div>
               <h1>{response.name}</h1>
               <ul>
@@ -114,164 +114,83 @@ function GetPokemon() {
       getPokeDexNumber();
     }
     else {
-      setPokeInfo1("");
+      setdexInfo("");
     }
-    if(pokeType !== "") {
-      async function getPokeTypes() {
-        const response = await fetch(`/api/pokemon/type/${pokeType}`).then((r) => r.json());
-        if (!('message' in response)) {
-          let tableContent = "<tr><th>Pokédex Number</th><th>Name</th><th>Height (m)</th><th>Weight</th><th>Type(s)</th><th>Abilities</th></tr><tr>"
-          for (let pokemon of response) {
-            tableContent += "<tr><td>" + pokemon.name + "</td>";
-            tableContent += "<td>" + pokemon.pokedexNumber + "</td>";
-            tableContent += "<td>" + pokemon.height + "</td>";
-            tableContent += "<td>" + pokemon.weight + "</td>";
-            if(pokemon.types[1] == null || pokemon.types[1] == "") {
-                tableContent += "<td>" + pokemon.types[0] + "</td>";
-            }
-            else {
-              tableContent += "<td>" + pokemon.types[0] + ", " + pokemon.types[1] + "</td>";
-            }
-            tableContent += "<td>";
-            for (let ability of pokemon.abilities) {
-              if(pokemon.abilities.indexOf(ability) == pokemon.abilities.length - 1) {
-                tableContent += ability + "</td></tr>";
-              }
-              else {
-                tableContent += ability + ", ";
-              }
-            }
-          }
-          document.getElementById("pokeType").innerHTML = "<table><tbody>" + tableContent + "</tbody></table>";
-        }
-      }
-      getPokeTypes();
-    }
-    else {
-      document.getElementById("pokeType").innerHTML = "";
-    }
-    if (pokeID === "") {
-        async function getPokeIDs() {
-        const dexNumbers = Array(5).fill(0).map(() => (Math.floor(Math.random() * 151) + 1));
-        const pokemon = await Promise.all(dexNumbers.map(async i => {
-          let r = await fetch(`/api/pokemon/pokedex/${i}`);
-          if (r.ok) {
-              let values = await r.json();
-              return values;
-          }
-          else {
-              // someone deleted one of these.
-              return null;
-          }
-        }));
-        let idChoices = "<option value=" + "." + ">Please select an ID!</option>";
-        for(let i of pokemon) {
-          idChoices += "<option value=\"" + i._id + "\">" + i._id + "</option>";
-        }
-        document.getElementById("idChoices").innerHTML = idChoices;
-      }
-      getPokeIDs();
-    }
-    if (pokeID !== "." && pokeID !== "") {
-      async function getPokeID() {
-        const response = await fetch(`/api/pokemon/id/${pokeID}`).then((r) => r.json());
-        if (!('message' in response)) {
-          let typeList = "";
-          for (let type of response.types) {
-            if (type !== "null") {
-              if (response.types.indexOf(type) == response.types.length - 1) {
-                typeList += type;
-              }
-              else {
-                typeList += type + ", ";
-              }
-            }
-          }
-          let abilityList = "";
-          for (let ability of response.abilities) {
-            if (response.abilities.indexOf(ability) == response.abilities.length - 1) {
-              abilityList += ability;
-            }
-            else {
-              abilityList += ability + ", ";
-            }
-          }
-          setPokeInfo2(
-            <div>
-              <h1>{response.name}</h1>
-              <ul>
-                <li>Pokedex Number:{response.pokedexNumber}</li><br />
-                <li>Height (m): {response.height}</li><br />
-                <li>Weight (kg): {response.weight}</li><br />
-                <li>Types: {typeList}</li><br />
-                <li>Abilities: {abilityList}</li><br />
-              </ul>
-            </div>);
-        }
-      }
-      getPokeID();
-    }
-    else {
-      setPokeInfo2("");
-    }
-    if(isPressed == true) {
-      async function getAllPokemon() {
-        const response = await fetch("/api/pokemon/").then((r) => r.json());
-        if (!('message' in response)) {
-          let tableContent = "<tr><th>Pokédex Number</th><th>Name</th><th>Height (m)</th><th>Weight</th><th>Type(s)</th><th>Abilities</th></tr><tr>"
-          for (let pokemon of response) {
-            tableContent += "<tr><td>" + pokemon.name + "</td>";
-            tableContent += "<td>" + pokemon.pokedexNumber + "</td>";
-            tableContent += "<td>" + pokemon.height + "</td>";
-            tableContent += "<td>" + pokemon.weight + "</td>";
-            if(pokemon.types[1] == null || pokemon.types[1] == "") {
-                tableContent += "<td>" + pokemon.types[0] + "</td>";
-            }
-            else {
-              tableContent += "<td>" + pokemon.types[0] + ", " + pokemon.types[1] + "</td>";
-            }
-            tableContent += "<td>";
-            for (let ability of pokemon.abilities) {
-              if(pokemon.abilities.indexOf(ability) == pokemon.abilities.length - 1) {
-                tableContent += ability + "</td></tr>";
-              }
-              else {
-                tableContent += ability + ", ";
-              }
-            }
-          }
-          document.getElementById("allPokemon").innerHTML = "<table><tbody>" + tableContent + "</tbody></table>";
-        }
-      }
-      getAllPokemon();
-    }
-    else {
-      document.getElementById("allPokemon").innerHTML = "";
-    }
-  }, [pokeDexNum, pokeType, pokeID, isPressed]);
-
+  }, [pokeDexNum]);
   return(
     <>
-      <div>
-        <h4>Get By ID!</h4>
-        <select id="idChoices" onChange={e => setPokeID(e.target.value)}>
-        
-        </select>
-      </div>
-      <div>
-        {pokeInfo2}
-      </div>
       <div>
         <h4>Get By Dex Number!</h4>
         <input onChange={e => setPokeDexNum(e.target.value)} type="number" min={1} max={151} value={pokeDexNum}></input>
       </div>
       <div>
-        {pokeInfo1}
+        {dexInfo}
       </div>
+    </>  
+  );
+}
+
+function formatAbilities(abilityList) {
+  let formattedList = "";
+  for(let ability of abilityList) {
+    if(abilityList.indexOf(ability) === (abilityList.length - 1)) {
+      formattedList += ability;
+    }
+    else {
+      formattedList += (ability + ", ");
+    }
+  }
+  return formattedList;
+}
+
+function GetPokemonOnType () {
+  const [pokeType, setPokeType] = useState("");
+  const [initialInfo, setInitialInfo] = useState([]);
+
+  useEffect(() => {
+    if(pokeType !== "") {
+      async function getPokemonOnType() {
+        const response = await fetch(`/api/pokemon/type/${pokeType}`).then((r) => r.json());
+        let result = response;
+        setInitialInfo(result);
+      }
+      getPokemonOnType();
+    }
+  }, [pokeType]);
+
+
+  function TypeInfo() {
+    let tableOfPokemon;
+    if(initialInfo.length !== 0) {
+      tableOfPokemon = initialInfo.map((entry) => (
+        <tr key={entry._id} >
+          <td>{entry.pokedexNumber}</td>
+          <td>{entry.name}</td>
+          <td>{entry.weight}</td>
+          <td>{entry.height}</td>
+          <td>{entry.types[1] == null ? entry.types[0] : entry.types[0]  + ", " + entry.types[1]}</td>
+          <td>{formatAbilities(entry.abilities)}</td>
+        </tr>
+      ));
+      tableOfPokemon.unshift(<tr key={1}><th>Pokédex Number</th><th>Name</th><th>Height (m)</th><th>Weight</th><th>Type(s)</th><th>Abilities</th></tr>);
+    }
+    return (
+      <div>
+        <table key={123}>
+          <tbody>
+            {tableOfPokemon}
+          </tbody>
+        </table>
+      </div>
+    );
+  }
+
+  return(
+    <>
       <div>
         <h4>Get By Type!</h4>
         <select onChange={e => setPokeType(e.target.value)}>
-          <option value="">Select a Pokemon Type</option>
+          <option value="">Select a type!</option>
           <option value="grass">Grass</option>
           <option value="water">Water</option>
           <option value="fire">Fire</option>
@@ -292,16 +211,70 @@ function GetPokemon() {
           <option value="ice">Ice</option>
         </select>
       </div>
-      <div id="pokeType">
-      </div>
       <div>
-        <h4>Get all Pokemon!</h4>
-        <button onClick={() => setIsPressed(true)}>Get all Pokemon!</button> <button onClick={() => setIsPressed(false)}>Hide</button>
+        <TypeInfo />
       </div>
-      <div id="allPokemon">
-      </div>
-    </>  
+    </>
   );
+}
+
+function GetPokemonOnID(props) {
+  const [id, setID] = useState("");
+  const [possibleIds, setPossibleIds] = useState([]);
+  useEffect(() => {
+    async function getMons() {
+      const dexNumbers = Array(props.mons).fill(0).map(() => (Math.floor(Math.random() * 151) + 1));
+      const pokemon = await Promise.all(dexNumbers.map(async i => {
+        let r = await fetch(`/api/pokemon/pokedex/${i}`);
+        if (r.ok) {
+          let value = await r.json();
+          return value
+        }
+        else {
+          // someone deleted one of these.
+          return null
+        }
+      }));
+     setPossibleIds(pokemon);
+    }
+    getMons();
+  }, [props.mons]);
+
+  function IDInfo() {
+    let selectedPokemon = "";
+    if(id !== "") {
+      for(let i of possibleIds) {
+        if(i._id === id) {
+          selectedPokemon =
+          <div>
+            <h1>{i.name}</h1>
+            <ul>
+              <li>Pokedex Number: {i.pokedexNumber}</li>
+              <li>Weight: {i.weight}</li>
+              <li>Height: {i.height}</li>
+              <li>Type(s): {i.types.length === 1 ? i.types[0] : i.types[0] + ", " + i.types[1]}</li>
+              <li>Abilities: {formatAbilities(i.abilities)}</li>
+            </ul>
+          </div>;
+        }
+      }
+    }
+    return(selectedPokemon);
+  }
+
+  const options = possibleIds.map((i) => (
+    <option key={i._id} value={i._id}>Object {i._id}</option>
+  ));
+  return (
+    <>
+      <h4>Get By ID!</h4>
+      <select key={id} value={id} onChange={(e) => {setID(e.target.value)}}>
+        <option key={1} value={""}>Select a Mystery Pokemon</option>
+        {options}
+      </select>
+        <IDInfo />
+    </>
+  )
 }
 
 function PostPokemon() {
@@ -315,15 +288,14 @@ function PostPokemon() {
   const [pokeAbilities, setPokeAbilities] = useState("");
 
   useEffect (() => {
-    if(IsPosted == true) {
-      console.log("bingo");
+    if(IsPosted === true) {
       async function postPokemon() {
+        console.log("bingo");
         if(pokeDexNum1 !== 0 && pokeName !== "" && pokeHeight !== 0 && pokeWeight !== 0 && pokeType1 !== "" && pokeAbilities !== "") {
-          console.log("bingo");
           let typeList = [];
           let abilityList = pokeAbilities.split(",");
           typeList.push(pokeType1);
-          if(pokeType1 != pokeType2) {
+          if(pokeType1 !== pokeType2) {
             typeList.push(pokeType2);
           }
           let newPokemon = {};
@@ -428,13 +400,173 @@ function PostPokemon() {
   );
 }
 
-function Home() {
+function UpdatePokemon(props) {
+  const [id, setID] = useState("");
+  const [possibleIds, setPossibleIds] = useState([]);
 
+  useEffect(() => {
+    async function getMons() {
+      const dexNumbers = Array(props.mons).fill(0).map(() => (Math.floor(Math.random() * 151) + 1));
+      const pokemon = await Promise.all(dexNumbers.map(async i => {
+        let r = await fetch(`/api/pokemon/pokedex/${i}`);
+        if (r.ok) {
+          let value = await r.json();
+          return value
+        }
+        else {
+          // someone deleted one of these.
+          return null
+        }
+      }));
+     setPossibleIds(pokemon);
+    }
+    getMons();
+  }, [props.mons]);
 
+  function IDForm() {
+    const [IsUpdated, setIsUpdated] = useState(false);
+    const [PokeDexNum, setPokeDexNum] = useState(0);
+    const [PokeName, setPokeName] = useState("");
+    const [PokeHeight, setPokeHeight] = useState(0);
+    const [PokeWeight, setPokeWeight] = useState(0);
+    const [PokeType1, setPokeType1] = useState("");
+    const [PokeType2, setPokeType2] = useState("");
+    const [PokeAbilities, setPokeAbilities] = useState("");
+
+    useEffect (() => {
+      if(IsUpdated) {
+
+        async function putPokemon() {
+          if(PokeDexNum !== 0 && PokeName !== "" && PokeHeight !== 0 && PokeWeight !== 0 && PokeType1 !== "" && PokeAbilities !== "") {
+            let typeList = [];
+            let abilityList = PokeAbilities.split(',');
+            typeList.push(PokeType1);
+            if(PokeType1 !== PokeType2) {
+              typeList.push(PokeType2);
+            }
+            let updatedPokemon = {};
+            updatedPokemon._id = id;
+            updatedPokemon.pokedexNumber = PokeDexNum;
+            updatedPokemon.name = PokeName;
+            updatedPokemon.height = PokeHeight;
+            updatedPokemon.weight = PokeWeight;
+            updatedPokemon.types = typeList;
+            updatedPokemon.abilities = abilityList;
+            let response = await fetch(`/api/pokemon/id/${updatedPokemon._id}`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: (JSON.stringify(updatedPokemon))
+            });
+            if (!('message' in response)) {
+              alert("Pokemon with ID " + updatedPokemon._id + " was successfully updated!");
+            }
+            setIsUpdated(false);
+          }
+          else {
+            alert("You missed a field!");
+          }
+        }
+        putPokemon();
+      }
+    }, [IsUpdated, PokeAbilities, PokeDexNum, PokeHeight, PokeName, PokeType1, PokeType2, PokeWeight]);
+
+    let selectedForm = "";
+    if(id !== "") {
+      for(let i of possibleIds) {
+        if(i._id === id) {
+          selectedForm = 
+          <div>
+            <form onSubmit={() => setIsUpdated(true)}>
+              <label>
+                Pokedex Number:
+                <input onChange={e => setPokeDexNum(e.target.value)} type="number" value={i.pokedexNumber}></input>
+              </label><br /><br />
+              <label>
+                Name:
+                <input onChange={e => setPokeName(e.target.value)} type="text" value={i.name}></input>
+              </label><br /><br />
+              <label>
+                Height (m):
+                <input onChange={e => setPokeHeight(e.target.value)} type="number" value={i.height}></input>
+              </label><br /><br />
+              <label>
+                Weight (kg):
+                <input onChange={e => setPokeWeight(e.target.value)} type="number" value={i.weight}></input>
+              </label><br /><br />
+              <label>
+                Type(s):
+                <select onChange={e => setPokeType1(e.target.value)}>
+                  <option value="">Type 1</option>
+                  <option value="grass">Grass</option>
+                  <option value="water">Water</option>
+                  <option value="fire">Fire</option>
+                  <option value="poison">Poison</option>
+                  <option value="flying">Flying</option>
+                  <option value="rock">Rock</option>
+                  <option value="ground">Ground</option>
+                  <option value="electric">Electric</option>
+                  <option value="ghost">Ghost</option>
+                  <option value="dark">Dark</option>
+                  <option value="bug">Bug</option>
+                  <option value="steel">Steel</option>
+                  <option value="normal">Normal</option>
+                  <option value="psychic">Psychic</option>
+                  <option value="fighting">Fighting</option>
+                  <option value="fairy">Fairy</option>
+                  <option value="dragon">Dragon</option>
+                  <option value="ice">Ice</option>
+                </select>
+                <select onChange={e => setPokeType2(e.target.value)}>
+                  <option value="">Type 2</option>
+                  <option value="grass">Grass</option>
+                  <option value="water">Water</option>
+                  <option value="fire">Fire</option>
+                  <option value="poison">Poison</option>
+                  <option value="flying">Flying</option>
+                  <option value="rock">Rock</option>
+                  <option value="ground">Ground</option>
+                  <option value="electric">Electric</option>
+                  <option value="ghost">Ghost</option>
+                  <option value="dark">Dark</option>
+                  <option value="bug">Bug</option>
+                  <option value="steel">Steel</option>
+                  <option value="normal">Normal</option>
+                  <option value="psychic">Psychic</option>
+                  <option value="fighting">Fighting</option>
+                  <option value="fairy">Fairy</option>
+                  <option value="dragon">Dragon</option>
+                  <option value="ice">Ice</option>
+                </select>
+              </label><br /><br />
+              <label>
+                Abilities (separated by commas, please):
+                <input onChange={e => setPokeAbilities(e.target.value)} type="text" value={formatAbilities(i.abilities)}></input>
+              </label><br /><br />
+              <input type="submit" value="Update Pokemon"/>
+            </form>
+          </div>;
+        }
+      }
+    }
+    return(
+      selectedForm
+    )
+  }
+
+  const options = possibleIds.map((i) => (
+    <option key={i._id} value={i._id}>Object {i._id}</option>
+  ));
+  
   return(
-    <div>
-      <p>This is an extra test</p>
-    </div>
+    <>
+      <div>
+        <select key={id} value={id} onChange={(e) => {setID(e.target.value)}}>
+          <option key={1} value={""}>Select a Mystery Pokemon to update</option>
+          {options}
+        </select>
+      </div>
+      <IDForm />
+    </>
   );
 }
 
