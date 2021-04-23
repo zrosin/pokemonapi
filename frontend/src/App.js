@@ -69,16 +69,6 @@ function GetPokemonOnDexNum() {
 
   const [pokeDexNum, setPokeDexNum] = useState(0);
   const [dexInfo, setdexInfo] = useState("");
-  const [hasViewed, setHasViewed] = useState(false);
-
-  function isViewing() {
-    if(!hasViewed) {
-      setHasViewed(true);
-    }
-    else {
-      setHasViewed(false);
-    }
-  }
 
   useEffect (() => {
     if(pokeDexNum > 0) {
