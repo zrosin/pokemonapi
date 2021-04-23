@@ -5,8 +5,12 @@ services:
         build: .
         ports:
             - 8000:8000
+        environment: 
+            - MONGO_CONNECTION_STRING=mongodb://mongo/pokemondb
         # command: "npm run init npm start"
         depends_on: 
             - mongo
     mongo:
         image: mongo
+        ports:
+            - 27017:27017
