@@ -55,7 +55,7 @@ function App() {
 	      </Switch>
         <Switch>
           <Route path="/updatepokemon">
-            <UpdatePokemon />
+            <UpdatePokemon mons={5}/>
           </Route>
         </Switch>
         <Switch>
@@ -289,10 +289,9 @@ function PostPokemon() {
 
   useEffect (() => {
     if(IsPosted == true) {
-      console.log("bingo");
       async function postPokemon() {
+        console.log("bingo");
         if(pokeDexNum1 !== 0 && pokeName !== "" && pokeHeight !== 0 && pokeWeight !== 0 && pokeType1 !== "" && pokeAbilities !== "") {
-          console.log("bingo");
           let typeList = [];
           let abilityList = pokeAbilities.split(",");
           typeList.push(pokeType1);
@@ -401,15 +400,172 @@ function PostPokemon() {
   );
 }
 
-function UpdatePokemon() {
-  const [isPressed, setIsPressed] = useState(false);
-  const [pokeID, setPokeID] = useState("");
-  const [pokeMenu, setPokeMenu] = useState("");
+function UpdatePokemon(props) {
+  const [id, setID] = useState("");
+  const [possibleIds, setPossibleIds] = useState([]);
 
+  useEffect(() => {
+    async function getMons() {
+      const dexNumbers = Array(props.mons).fill(0).map(() => (Math.floor(Math.random() * 151) + 1));
+      const pokemon = await Promise.all(dexNumbers.map(async i => {
+        let r = await fetch(`/api/pokemon/pokedex/${i}`);
+        if (r.ok) {
+          let value = await r.json();
+          return value
+        }
+        else {
+          // someone deleted one of these.
+          return null
+        }
+      }));
+     setPossibleIds(pokemon);
+    }
+    getMons();
+  }, [props.mons]);
+
+  function IDForm() {
+    const [IsUpdated, setIsUpdated] = useState(false);
+    const [PokeDexNum, setPokeDexNum] = useState(0);
+    const [PokeName, setPokeName] = useState("");
+    const [PokeHeight, setPokeHeight] = useState(0);
+    const [PokeWeight, setPokeWeight] = useState(0);
+    const [PokeType1, setPokeType1] = useState("");
+    const [PokeType2, setPokeType2] = useState("");
+    const [PokeAbilities, setPokeAbilities] = useState("");
+
+    useEffect (() => {
+      if(IsUpdated) {
+
+        async function putPokemon() {
+          if(PokeDexNum !== 0 && PokeName !== "" && PokeHeight !== 0 && PokeWeight !== 0 && PokeType1 !== "" && PokeAbilities !== "") {
+            let typeList = [];
+            let abilityList = PokeAbilities.split(',');
+            typeList.push(PokeType1);
+            if(PokeType1 != PokeType2) {
+              typeList.push(PokeType2);
+            }
+            let updatedPokemon = {};
+            updatedPokemon._id = id;
+            updatedPokemon.pokedexNumber = PokeDexNum;
+            updatedPokemon.name = PokeName;
+            updatedPokemon.height = PokeHeight;
+            updatedPokemon.weight = PokeWeight;
+            updatedPokemon.types = typeList;
+            updatedPokemon.abilities = abilityList;
+            let response = await fetch(`/api/pokemon/id/${updatedPokemon._id}`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: (JSON.stringify(updatedPokemon))
+            });
+            if (!('message' in response)) {
+              alert("Pokemon with ID " + updatedPokemon._id + " was successfully updated!");
+            }
+            setIsUpdated(false);
+          }
+          else {
+            alert("You missed a field!");
+          }
+        }
+        putPokemon();
+      }
+    }, [IsUpdated, PokeDexNum]);
+
+    let selectedForm = "";
+    if(id !== "") {
+      for(let i of possibleIds) {
+        if(i._id === id) {
+          selectedForm = 
+          <div>
+            <form onSubmit={() => setIsUpdated(true)}>
+              <label>
+                Pokedex Number:
+                <input onChange={e => setPokeDexNum(e.target.value)} type="number" value={i.pokedexNumber}></input>
+              </label><br /><br />
+              <label>
+                Name:
+                <input onChange={e => setPokeName(e.target.value)} type="text" value={i.name}></input>
+              </label><br /><br />
+              <label>
+                Height (m):
+                <input onChange={e => setPokeHeight(e.target.value)} type="number" value={i.height}></input>
+              </label><br /><br />
+              <label>
+                Weight (kg):
+                <input onChange={e => setPokeWeight(e.target.value)} type="number" value={i.weight}></input>
+              </label><br /><br />
+              <label>
+                Type(s):
+                <select onChange={e => setPokeType1(e.target.value)}>
+                  <option value="">Type 1</option>
+                  <option value="grass">Grass</option>
+                  <option value="water">Water</option>
+                  <option value="fire">Fire</option>
+                  <option value="poison">Poison</option>
+                  <option value="flying">Flying</option>
+                  <option value="rock">Rock</option>
+                  <option value="ground">Ground</option>
+                  <option value="electric">Electric</option>
+                  <option value="ghost">Ghost</option>
+                  <option value="dark">Dark</option>
+                  <option value="bug">Bug</option>
+                  <option value="steel">Steel</option>
+                  <option value="normal">Normal</option>
+                  <option value="psychic">Psychic</option>
+                  <option value="fighting">Fighting</option>
+                  <option value="fairy">Fairy</option>
+                  <option value="dragon">Dragon</option>
+                  <option value="ice">Ice</option>
+                </select>
+                <select onChange={e => setPokeType2(e.target.value)}>
+                  <option value="">Type 2</option>
+                  <option value="grass">Grass</option>
+                  <option value="water">Water</option>
+                  <option value="fire">Fire</option>
+                  <option value="poison">Poison</option>
+                  <option value="flying">Flying</option>
+                  <option value="rock">Rock</option>
+                  <option value="ground">Ground</option>
+                  <option value="electric">Electric</option>
+                  <option value="ghost">Ghost</option>
+                  <option value="dark">Dark</option>
+                  <option value="bug">Bug</option>
+                  <option value="steel">Steel</option>
+                  <option value="normal">Normal</option>
+                  <option value="psychic">Psychic</option>
+                  <option value="fighting">Fighting</option>
+                  <option value="fairy">Fairy</option>
+                  <option value="dragon">Dragon</option>
+                  <option value="ice">Ice</option>
+                </select>
+              </label><br /><br />
+              <label>
+                Abilities (separated by commas, please):
+                <input onChange={e => setPokeAbilities(e.target.value)} type="text" value={formatAbilities(i.abilities)}></input>
+              </label><br /><br />
+              <input type="submit" value="Update Pokemon"/>
+            </form>
+          </div>;
+        }
+      }
+    }
+    return(
+      selectedForm
+    )
+  }
+
+  const options = possibleIds.map((i) => (
+    <option key={i._id} value={i._id}>Object {i._id}</option>
+  ));
+  
   return(
     <>
       <div>
+        <select key={id} value={id} onChange={(e) => {setID(e.target.value)}}>
+          <option key={1} value={""}>Select a Mystery Pokemon to update</option>
+          {options}
+        </select>
       </div>
+      <IDForm />
     </>
   );
 }
