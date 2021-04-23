@@ -435,7 +435,6 @@ function UpdatePokemon(props) {
 
     useEffect (() => {
       if(IsUpdated) {
-
         async function putPokemon() {
           if(PokeDexNum !== 0 && PokeName !== "" && PokeHeight !== 0 && PokeWeight !== 0 && PokeType1 !== "" && PokeAbilities !== "") {
             let typeList = [];
@@ -468,6 +467,8 @@ function UpdatePokemon(props) {
         }
         putPokemon();
       }
+      else {
+      }
     }, [IsUpdated, PokeDexNum]);
 
     let selectedForm = "";
@@ -478,23 +479,23 @@ function UpdatePokemon(props) {
           <div>
             <form onSubmit={() => setIsUpdated(true)}>
               <label>
-                Pokedex Number:
-                <input onChange={e => setPokeDexNum(e.target.value)} type="number" value={i.pokedexNumber}></input>
+                Pokedex Number - was {i.pokedexNumber} :
+                <input onChange={e => setPokeDexNum(e.target.value)} type="number" value={PokeDexNum}></input>
               </label><br /><br />
               <label>
-                Name:
-                <input onChange={e => setPokeName(e.target.value)} type="text" value={i.name}></input>
+                Name - was {i.name} :
+                <input onChange={e => setPokeName(e.target.value)} type="text" value={PokeName}></input>
               </label><br /><br />
               <label>
-                Height (m):
-                <input onChange={e => setPokeHeight(e.target.value)} type="number" value={i.height}></input>
+                Height (m) - was {i.height} :
+                <input onChange={e => setPokeHeight(e.target.value)} type="number" value={PokeHeight}></input>
               </label><br /><br />
               <label>
-                Weight (kg):
-                <input onChange={e => setPokeWeight(e.target.value)} type="number" value={i.weight}></input>
+                Weight (kg) - was {i.weight} :
+                <input onChange={e => setPokeWeight(e.target.value)} type="number" value={PokeWeight}></input>
               </label><br /><br />
               <label>
-                Type(s):
+                Type(s) - was {i.types[1] == null ? i.types[0] : i.types[0] + ", " + i.types[1]} :
                 <select onChange={e => setPokeType1(e.target.value)}>
                   <option value="">Type 1</option>
                   <option value="grass">Grass</option>
@@ -539,8 +540,8 @@ function UpdatePokemon(props) {
                 </select>
               </label><br /><br />
               <label>
-                Abilities (separated by commas, please):
-                <input onChange={e => setPokeAbilities(e.target.value)} type="text" value={formatAbilities(i.abilities)}></input>
+                Abilities (separated by commas, please) - was {formatAbilities(i.abilities)} :<br />
+                <input onChange={e => setPokeAbilities(e.target.value)} type="text" value={PokeAbilities}></input>
               </label><br /><br />
               <input type="submit" value="Update Pokemon"/>
             </form>
@@ -550,7 +551,7 @@ function UpdatePokemon(props) {
     }
     return(
       selectedForm
-    )
+    );
   }
 
   const options = possibleIds.map((i) => (
