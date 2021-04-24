@@ -116,7 +116,7 @@ function GetPokemonOnDexNum() {
                 <li>Types: {typeList}</li><br />
                 <li>Abilities: {abilityList}</li><br />
               </ul>
-              <img src={response.img} alt=" "width="50" height="50" />
+              <img src={response.imgurl} alt=" "width="70" height="70" />
             </div>);
         }
       }
@@ -267,6 +267,7 @@ function GetPokemonOnID(props) {
               <li>Type(s): {i.types.length === 1 ? i.types[0] : i.types[0] + ", " + i.types[1]}</li>
               <li>Abilities: {formatAbilities(i.abilities)}</li>
             </ul>
+            <img src={i.imgurl} alt=" "width="70" height="70" />
           </div>;
         }
       }
