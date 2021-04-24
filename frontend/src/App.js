@@ -38,6 +38,9 @@ function Navbar() {
       <li>
         <Link to="/getpokemon">Get Pokemon</Link>
       </li>
+      <li>
+        <Link to="/deletepokemon">Delete Pokemon</Link>
+      </li>
     </ul>
   );
 }
@@ -62,7 +65,12 @@ function App() {
           <Route path="/postpokemon">
             <PostPokemon />
           </Route>
-        </Switch>      
+        </Switch>
+        <Switch>
+          <Route path="/deletepokemon">
+            <DeletePokemon mons={5}/>
+          </Route>
+        </Switch>       
 	    </Router>);
 }
 
@@ -155,6 +163,9 @@ function GetPokemonOnType () {
         setInitialInfo(result);
       }
       getPokemonOnType();
+    }
+    else {
+      setInitialInfo("");
     }
   }, [pokeType]);
 
@@ -565,6 +576,79 @@ function UpdatePokemon(props) {
         </select>
       </div>
       <IDForm />
+    </>
+  );
+}
+
+function DeletePokemon(props) {
+  const [id, setID] = useState("");
+  const [possibleIds, setPossibleIds] = useState([]);
+  const [isPressed, setIsPressed] = useState(false);
+
+  useEffect(() => {
+    async function getMons() {
+      const dexNumbers = Array(props.mons).fill(0).map(() => (Math.floor(Math.random() * 151) + 1));
+      const pokemon = await Promise.all(dexNumbers.map(async i => {
+        let r = await fetch(`/api/pokemon/pokedex/${i}`);
+        if (r.ok) {
+          let value = await r.json();
+          return value
+        }
+        else {
+          // someone deleted one of these.
+          return null
+        }
+      }));
+     setPossibleIds(pokemon);
+    }
+    getMons();
+  }, [props.mons]);
+
+  const options = possibleIds.map((i) => (
+    <option key={i._id} value={i._id}>Object {i._id}</option>
+  ));
+
+  function IDInfo() {
+
+    useEffect(() => {
+      if(isPressed) {
+        async function deletePokemon() {
+          const response = await fetch(`/api/pokemon/id/${id}`, {method: "DELETE"});
+          if (response.status === 204) {
+            alert(`Deleted object with objectID = ${id}`);
+        }
+        else if(response.status === 400) {
+            alert("Deletion failed. Try it again?");
+        }
+        else {
+            // it was a 404.
+            alert("Couldn't find the Pokémon with that object ID. Did you already delete it?");
+        }
+          setIsPressed(false);
+        }
+        deletePokemon();
+      }
+    });
+    let deletePokemon = "";
+    if(id !== "") {
+      for(let i of possibleIds) {
+        if(i._id === id) {
+          deletePokemon =
+              <button onClick={() => setIsPressed(true)}>Delete {i.name}</button>;
+        }
+      }
+    }
+    return(deletePokemon);
+  }
+
+  return(
+    <>
+      <h4>Delete By ID</h4>
+      <select key={id} value={id} onChange={(e) => {setID(e.target.value)}}>
+        <option key={1} value={""}>Select a Mystery Pokemon</option>
+        {options}
+      </select>
+        <IDInfo />
     </>
   );
 }
