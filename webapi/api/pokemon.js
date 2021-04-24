@@ -3,9 +3,9 @@ const Pokemon = require('../models/pokemon');
 const router = require('express').Router();
 
 // Get all pokemon
-// http://localhost:8000/api/pokemon/
+// http://localhost:8000/api/pokemon
 router.get("/", function(req, res) {
-    Pokemon.find(function(err, pokemon) {
+    Pokemon.find({ img:0 }, function(err, pokemon) {
        if (err) {
         console.log(err);
         res.status(400).json({'message': `error: ${err}`});
@@ -23,7 +23,7 @@ router.get("/", function(req, res) {
 // http://localhost:8000/api/pokemon/id/6063cdb5f0af1b48c8a5218d
 router.get('/id/:id', function(req, res) {
     //console.log('id = ' + req.params.id);
-    Pokemon.findById(req.params.id, function(err, pokemon) {
+    Pokemon.findOne( { _id: req.params.id }, { img:0 }, function(err, pokemon) {
         if (err) {
             res.status(400).json({'message': `error: ${err}`});
         }
@@ -40,13 +40,30 @@ router.get('/id/:id', function(req, res) {
 // Get pokemon by pokedex number
 // http://localhost:8000/api/pokemon/pokedex/2
 router.get('/pokedex/:pokedex', function(req, res) {
-    Pokemon.findOne({ pokedexNumber: { $eq:  req.params.pokedex} } , function(err, pokemon) {
+    Pokemon.findOne({ pokedexNumber: { $eq:  req.params.pokedex} } , { img:0 } , function(err, pokemon) {
         if (err) {
             console.log(err);
             res.status(400).json({'message': `error: ${err}`});
         }
         else if (pokemon) {
             res.status(200).json(pokemon);
+        }
+        else {
+            res.status(404).json({pokemon, 'message': 'Did not find Pokemon with Pokedex Number ' + req.params.pokedex}); 
+        }
+    });
+});
+
+// http://localhost:8000/api/pokemon/img/2
+router.get('/img/:pokedex', function(req, res) {
+    Pokemon.findOne({ pokedexNumber: { $eq:  req.params.pokedex} } , function(err, pokemon) {
+        if (err) {
+            console.log(err);
+            res.status(400).json({'message': `error: ${err}`});
+        }
+        else if (pokemon) {
+            res.contentType('image/png');
+            res.status(200).send(pokemon.img);
         }
         else {
             res.status(404).json({pokemon, 'message': 'Did not find Pokemon with Pokedex Number ' + req.params.pokedex}); 
@@ -63,7 +80,7 @@ router.get('/type/:types', function(req, res) {
     if(req.params.types.split(',').length === 2) {
         req.params.types = req.params.types.split(',')
     }
-    Pokemon.find({ types: { $in: [req.params.types] } } , function(err, pokemon) {
+    Pokemon.find({ types: { $in: [req.params.types] } } , { img:0 } , function(err, pokemon) {
         if (err) {
             console.log(err);
             res.status(400).json({'message': `error: ${err}`});
@@ -76,6 +93,7 @@ router.get('/type/:types', function(req, res) {
         }
     });
 });
+
 
 // Add new pokemon
 // http://localhost:8000/api/pokemon/   

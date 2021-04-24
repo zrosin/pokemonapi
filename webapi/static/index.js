@@ -256,7 +256,7 @@ async function getPokemon() {
     // Gets five pokemon, for demos that require the user to choose an object ID.
     // if one was deleted, we return a smaller list.
     // randomness oneliner stolen with some remorse from https://stackoverflow.com/a/34976932
-    const dexNumbers = Array(5).fill(0).map(() => (Math.floor(Math.random() * 897) + 1));
+    const dexNumbers = Array(5).fill(0).map(() => (Math.floor(Math.random() * 151) + 1));
     const pokemon = await Promise.all(dexNumbers.map(async i => {
         let r = await fetch(`/api/pokemon/pokedex/${i}`);
         if (r.ok) {
