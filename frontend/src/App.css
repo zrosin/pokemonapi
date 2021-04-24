@@ -2,6 +2,21 @@
   text-align: center;
 }
 
+.PostMenu {
+  padding-left: 20px;
+  padding-top: 15px;
+}
+
+.PutMenu {
+  padding-left: 30px;
+  padding-top: 15px;
+}
+
+.PutOptions {
+  padding-left: 20px;
+  padding-top: 15px;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;

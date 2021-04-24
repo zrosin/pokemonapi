@@ -5,6 +5,10 @@ import React, { useState, useEffect } from 'react';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import Table from 'react-bootstrap/Table';
+import Col from 'react-bootstrap/Col';
+
 /* function App() {
   return (
     <div className="App">
@@ -48,12 +52,12 @@ function App() {
         <Navigation></Navigation>
         <Switch>     
           <Route path="/getpokemon">
-            <GetPokemonOnDexNum />
+            <GetPokemonOnDexNum/>
             <GetPokemonOnType /><br />
             <GetPokemonOnID mons={5}/>
             <GetAllPokemon />
           </Route>
-	      </Switch>
+        </Switch>
         <Switch>
           <Route path="/updatepokemon">
             <UpdatePokemon mons={5}/>
@@ -69,7 +73,7 @@ function App() {
             <DeletePokemon mons={5}/>
           </Route>
         </Switch>       
-	    </Router>);
+      </Router>);
 }
 
 function GetPokemonOnDexNum() {
@@ -127,8 +131,12 @@ function GetPokemonOnDexNum() {
   return(
     <>
       <div>
-        <h4>Get By Dex Number!</h4>
-        <input onChange={e => setPokeDexNum(e.target.value)} type="number" min={1} max={151} value={pokeDexNum}></input>
+        <Form>
+          <Form.Group>
+            <Form.Label><h4>Get By Dex Number!</h4></Form.Label>
+            <Form.Control as="input" onChange={e => setPokeDexNum(e.target.value)} type="number" min={1} max={151} value={pokeDexNum} />
+          </Form.Group>
+        </Form>
       </div>
       <div>
         {dexInfo}
@@ -186,11 +194,11 @@ function GetPokemonOnType () {
     }
     return (
       <div>
-        <table key={123}>
+        <Table striped bordered hover size="sm" key={123}>
           <tbody>
             {tableOfPokemon}
           </tbody>
-        </table>
+        </Table>
       </div>
     );
   }
@@ -198,28 +206,32 @@ function GetPokemonOnType () {
   return(
     <>
       <div>
-        <h4>Get By Type!</h4>
-        <select onChange={e => setPokeType(e.target.value)}>
-          <option value="">Select a type!</option>
-          <option value="grass">Grass</option>
-          <option value="water">Water</option>
-          <option value="fire">Fire</option>
-          <option value="poison">Poison</option>
-          <option value="flying">Flying</option>
-          <option value="rock">Rock</option>
-          <option value="ground">Ground</option>
-          <option value="electric">Electric</option>
-          <option value="ghost">Ghost</option>
-          <option value="dark">Dark</option>
-          <option value="bug">Bug</option>
-          <option value="steel">Steel</option>
-          <option value="normal">Normal</option>
-          <option value="psychic">Psychic</option>
-          <option value="fighting">Fighting</option>
-          <option value="fairy">Fairy</option>
-          <option value="dragon">Dragon</option>
-          <option value="ice">Ice</option>
-        </select>
+        <Form>
+          <Form.Group>
+            <Form.Label><h4>Get By Type!</h4></Form.Label>
+            <Form.Control as="select" onChange={e => setPokeType(e.target.value)}>
+              <option value="">Select a type!</option>
+              <option value="grass">Grass</option>
+              <option value="water">Water</option>
+              <option value="fire">Fire</option>
+              <option value="poison">Poison</option>
+              <option value="flying">Flying</option>
+              <option value="rock">Rock</option>
+              <option value="ground">Ground</option>
+              <option value="electric">Electric</option>
+              <option value="ghost">Ghost</option>
+              <option value="dark">Dark</option>
+              <option value="bug">Bug</option>
+              <option value="steel">Steel</option>
+              <option value="normal">Normal</option>
+              <option value="psychic">Psychic</option>
+              <option value="fighting">Fighting</option>
+              <option value="fairy">Fairy</option>
+              <option value="dragon">Dragon</option>
+              <option value="ice">Ice</option>
+            </Form.Control>
+          </Form.Group>
+        </Form>
       </div>
       <div>
         <TypeInfo />
@@ -259,11 +271,11 @@ function GetPokemonOnID(props) {
           <div>
             <h1>{i.name}</h1>
             <ul>
-              <li>Pokedex Number: {i.pokedexNumber}</li>
-              <li>Weight: {i.weight}</li>
-              <li>Height: {i.height}</li>
-              <li>Type(s): {i.types.length === 1 ? i.types[0] : i.types[0] + ", " + i.types[1]}</li>
-              <li>Abilities: {formatAbilities(i.abilities)}</li>
+              <li>Pokedex Number: {i.pokedexNumber}</li><br />
+              <li>Weight: {i.weight}</li><br />
+              <li>Height: {i.height}</li><br />
+              <li>Type(s): {i.types.length === 1 ? i.types[0] : i.types[0] + ", " + i.types[1]}</li><br />
+              <li>Abilities: {formatAbilities(i.abilities)}</li><br />
             </ul>
             <img src={i.imgurl} alt=" "width="70" height="70" />
           </div>;
@@ -278,11 +290,15 @@ function GetPokemonOnID(props) {
   ));
   return (
     <>
-      <h4>Get By ID!</h4>
-      <select key={id} value={id} onChange={(e) => {setID(e.target.value)}}>
-        <option key={1} value={""}>Select a Mystery Pokemon</option>
-        {options}
-      </select>
+      <Form>
+        <Form.Group>
+          <Form.Label><h4>Get By ID!</h4></Form.Label>
+          <Form.Control as="select" key={id} value={id} onChange={(e) => {setID(e.target.value)}}>
+            <option key={1} value={""}>Select a Mystery Pokemon</option>
+            {options}
+          </Form.Control>
+        </Form.Group>
+      </Form>
         <IDInfo />
     </>
   )
@@ -324,11 +340,11 @@ function GetAllPokemon() {
 
     return (
       <div>
-        <table key={123}>
+        <Table striped bordered hover size="sm" key={123}>
           <tbody>
             {tableOfPokemon}
           </tbody>
-        </table>
+        </Table>
       </div>
     );
   }
@@ -337,8 +353,8 @@ function GetAllPokemon() {
     <>
       <div>
         <h4>Get all Pokemon!</h4>
-        <input type="button" onClick={() => setShowPressed(true)} value="Get all pokemon"/>
-        <input type="button" onClick={() => setShowPressed(false)} value="Hide"/>
+        <Button as="input" type="button" onClick={() => setShowPressed(true)} value="Get all pokemon"/>&nbsp;&nbsp;
+        <Button as="input" type="button" onClick={() => setShowPressed(false)} value="Hide"/>
       </div>
       <div>
         <AllInfo />
@@ -393,80 +409,93 @@ function PostPokemon() {
     }
   }, [IsPosted, pokeDexNum1, pokeName, pokeHeight, pokeWeight, pokeType1, pokeType2, pokeAbilities]);
 
+
   return(
-    <div>
-      <h2>Add a Pokemon</h2>
-      <div>
-        <form onSubmit={() => setIsPosted(true)}>
-          <label>
-            Pokedex Number:
-            <input onChange={e => setPokeDexNum1(e.target.value)} type="number" value={pokeDexNum1}></input>
-          </label><br /><br />
-          <label>
-            Name:
-            <input onChange={e => setPokeName(e.target.value)} type="text" value={pokeName}></input>
-          </label><br /><br />
-          <label>
-            Height (m):
-            <input onChange={e => setPokeHeight(e.target.value)} type="number" value={pokeHeight}></input>
-          </label><br /><br />
-          <label>
-            Weight (kg):
-            <input onChange={e => setPokeWeight(e.target.value)} type="number" value={pokeWeight}></input>
-          </label><br /><br />
-          <label>
-            Type(s):
-            <select onChange={e => setPokeType1(e.target.value)}>
-              <option value="">Type 1</option>
-              <option value="grass">Grass</option>
-              <option value="water">Water</option>
-              <option value="fire">Fire</option>
-              <option value="poison">Poison</option>
-              <option value="flying">Flying</option>
-              <option value="rock">Rock</option>
-              <option value="ground">Ground</option>
-              <option value="electric">Electric</option>
-              <option value="ghost">Ghost</option>
-              <option value="dark">Dark</option>
-              <option value="bug">Bug</option>
-              <option value="steel">Steel</option>
-              <option value="normal">Normal</option>
-              <option value="psychic">Psychic</option>
-              <option value="fighting">Fighting</option>
-              <option value="fairy">Fairy</option>
-              <option value="dragon">Dragon</option>
-              <option value="ice">Ice</option>
-            </select>
-            <select onChange={e => setPokeType2(e.target.value)}>
-              <option value="">Type 2</option>
-              <option value="grass">Grass</option>
-              <option value="water">Water</option>
-              <option value="fire">Fire</option>
-              <option value="poison">Poison</option>
-              <option value="flying">Flying</option>
-              <option value="rock">Rock</option>
-              <option value="ground">Ground</option>
-              <option value="electric">Electric</option>
-              <option value="ghost">Ghost</option>
-              <option value="dark">Dark</option>
-              <option value="bug">Bug</option>
-              <option value="steel">Steel</option>
-              <option value="normal">Normal</option>
-              <option value="psychic">Psychic</option>
-              <option value="fighting">Fighting</option>
-              <option value="fairy">Fairy</option>
-              <option value="dragon">Dragon</option>
-              <option value="ice">Ice</option>
-            </select>
-          </label><br /><br />
-          <label>
-            Abilities (separated by commas, please):
-            <input onChange={e => setPokeAbilities(e.target.value)} type="text" value={pokeAbilities}></input>
-          </label><br /><br />
-          <input type="submit" value="Add Pokemon"/>
-        </form>
+    <div className="PostMenu">
+        <h1>Add Pokemon</h1>
+        <Form onSubmit={() => setIsPosted(true)}>
+          <Form.Row>
+            <Form.Group>
+              <Form.Label>Pokedex Number:</Form.Label>
+              <Form.Control as="input" onChange={e => setPokeDexNum1(e.target.value)} type="number" value={pokeDexNum1} />
+            </Form.Group>
+            &nbsp;&nbsp;&nbsp;
+            <Form.Group>
+              <Form.Label>Pokemon Name:</Form.Label>
+              <Form.Control as="input" onChange={e => setPokeName(e.target.value)} type="text" value={pokeName} />
+            </Form.Group>
+            &nbsp;&nbsp;&nbsp;
+            <Form.Group>
+              <Form.Label>Pokemon Height:</Form.Label>
+              <Form.Control as="input" onChange={e => setPokeHeight(e.target.value)} type="number" value={pokeHeight} />
+            </Form.Group>
+            &nbsp;&nbsp;&nbsp;
+            <Form.Group>
+              <Form.Label>Pokemon Weight:</Form.Label>
+              <Form.Control as="input" onChange={e => setPokeWeight(e.target.value)} type="number" value={pokeWeight} />
+            </Form.Group>
+          </Form.Row>
+          <Form.Row>
+            <Form.Group>
+              <Form.Label>Type 1:</Form.Label>
+              <Form.Control as="select" onChange={e => setPokeType1(e.target.value)}>
+                <option value="">Type 1</option>
+                <option value="grass">Grass</option>
+                <option value="water">Water</option>
+                <option value="fire">Fire</option>
+                <option value="poison">Poison</option>
+                <option value="flying">Flying</option>
+                <option value="rock">Rock</option>
+                <option value="ground">Ground</option>
+                <option value="electric">Electric</option>
+                <option value="ghost">Ghost</option>
+                <option value="dark">Dark</option>
+                <option value="bug">Bug</option>
+                <option value="steel">Steel</option>
+                <option value="normal">Normal</option>
+                <option value="psychic">Psychic</option>
+                <option value="fighting">Fighting</option>
+                <option value="fairy">Fairy</option>
+                <option value="dragon">Dragon</option>
+                <option value="ice">Ice</option>
+              </Form.Control>
+            </Form.Group>
+            &nbsp;&nbsp;&nbsp;
+            <Form.Group>
+              <Form.Label>Type 2:</Form.Label>
+              <Form.Control as="select" onChange={e => setPokeType2(e.target.value)}>
+                <option value="">Type 2</option>
+                <option value="grass">Grass</option>
+                <option value="water">Water</option>
+                <option value="fire">Fire</option>
+                <option value="poison">Poison</option>
+                <option value="flying">Flying</option>
+                <option value="rock">Rock</option>
+                <option value="ground">Ground</option>
+                <option value="electric">Electric</option>
+                <option value="ghost">Ghost</option>
+                <option value="dark">Dark</option>
+                <option value="bug">Bug</option>
+                <option value="steel">Steel</option>
+                <option value="normal">Normal</option>
+                <option value="psychic">Psychic</option>
+                <option value="fighting">Fighting</option>
+                <option value="fairy">Fairy</option>
+                <option value="dragon">Dragon</option>
+                <option value="ice">Ice</option>
+              </Form.Control>
+            </Form.Group>
+            &nbsp;&nbsp;&nbsp;
+            <Form.Group>
+              <Form.Label>Pokemon Abilities (separated by commas, please): </Form.Label>
+              <Form.Control as="input" onChange={e => setPokeAbilities(e.target.value)} type="text" value={pokeAbilities} />
+            </Form.Group>
+          </Form.Row>
+          <Button variant="primary" type="submit">
+            Create Pokemon
+          </Button>
+        </Form>
     </div>
-  </div>
   );
 }
 
@@ -544,48 +573,57 @@ function UpdatePokemon(props) {
       for(let i of possibleIds) {
         if(i._id === id) {
           selectedForm = 
-          <div>
-            <form onSubmit={() => setIsUpdated(true)}>
-              <label>
-                Pokedex Number - was {i.pokedexNumber} :
-                <input onChange={e => setPokeDexNum(e.target.value)} type="number" value={PokeDexNum}></input>
-              </label><br /><br />
-              <label>
-                Name - was {i.name} :
-                <input onChange={e => setPokeName(e.target.value)} type="text" value={PokeName}></input>
-              </label><br /><br />
-              <label>
-                Height (m) - was {i.height} :
-                <input onChange={e => setPokeHeight(e.target.value)} type="number" value={PokeHeight}></input>
-              </label><br /><br />
-              <label>
-                Weight (kg) - was {i.weight} :
-                <input onChange={e => setPokeWeight(e.target.value)} type="number" value={PokeWeight}></input>
-              </label><br /><br />
-              <label>
-                Type(s) - was {i.types[1] == null ? i.types[0] : i.types[0] + ", " + i.types[1]} :
-                <select onChange={e => setPokeType1(e.target.value)}>
-                  <option value="">Type 1</option>
-                  <option value="grass">Grass</option>
-                  <option value="water">Water</option>
-                  <option value="fire">Fire</option>
-                  <option value="poison">Poison</option>
-                  <option value="flying">Flying</option>
-                  <option value="rock">Rock</option>
-                  <option value="ground">Ground</option>
-                  <option value="electric">Electric</option>
-                  <option value="ghost">Ghost</option>
-                  <option value="dark">Dark</option>
-                  <option value="bug">Bug</option>
-                  <option value="steel">Steel</option>
-                  <option value="normal">Normal</option>
-                  <option value="psychic">Psychic</option>
-                  <option value="fighting">Fighting</option>
-                  <option value="fairy">Fairy</option>
-                  <option value="dragon">Dragon</option>
-                  <option value="ice">Ice</option>
-                </select>
-                <select onChange={e => setPokeType2(e.target.value)}>
+          <Form onSubmit={() => setIsUpdated(true)}>
+            <Form.Row>
+              <Form.Group>
+                <Form.Label>Pokedex Number - Was {i.pokedexNumber}: </Form.Label>
+                <Form.Control as="input" onChange={e => setPokeDexNum(e.target.value)} type="number" min={1} max={151} value={PokeDexNum} />
+              </Form.Group>
+              &nbsp;&nbsp;&nbsp;
+              <Form.Group>
+                <Form.Label>Pokemon Name - Was {i.name}: </Form.Label>
+                <Form.Control as="input" onChange={e => setPokeName(e.target.value)} type="text"value={PokeName} />
+              </Form.Group>
+              &nbsp;&nbsp;&nbsp;
+              <Form.Group>
+                <Form.Label>Pokemon Height - Was {i.height}: </Form.Label>
+                <Form.Control as="input" onChange={e => setPokeHeight(e.target.value)} type="number" step=".1" value={PokeHeight} />
+              </Form.Group>
+              &nbsp;&nbsp;&nbsp;
+              <Form.Group>
+                <Form.Label>Pokemon Weight - Was {i.weight}: </Form.Label>
+                <Form.Control as="input" onChange={e => setPokeWeight(e.target.value)} type="number" step=".1" value={PokeWeight} />
+              </Form.Group>
+            </Form.Row>
+            <Form.Row>
+              <Form.Group>
+                <Form.Label>Type(s) - were {i.types[1] == null ? i.types[0] : i.types[0] + ", " + i.types[1]}: </Form.Label>
+                  <Form.Control as="select" onChange={e => setPokeType1(e.target.value)}>
+                    <option value="">Type 1</option>
+                    <option value="grass">Grass</option>
+                    <option value="water">Water</option>
+                    <option value="fire">Fire</option>
+                    <option value="poison">Poison</option>
+                    <option value="flying">Flying</option>
+                    <option value="rock">Rock</option>
+                    <option value="ground">Ground</option>
+                    <option value="electric">Electric</option>
+                    <option value="ghost">Ghost</option>
+                    <option value="dark">Dark</option>
+                    <option value="bug">Bug</option>
+                    <option value="steel">Steel</option>
+                    <option value="normal">Normal</option>
+                    <option value="psychic">Psychic</option>
+                    <option value="fighting">Fighting</option>
+                    <option value="fairy">Fairy</option>
+                    <option value="dragon">Dragon</option>
+                    <option value="ice">Ice</option>
+                  </Form.Control>
+                </Form.Group>
+              &nbsp;&nbsp;&nbsp;
+              <Form.Group>
+                <Form.Label>&nbsp; </Form.Label>
+                <Form.Control as="select" onChange={e => setPokeType2(e.target.value)}>
                   <option value="">Type 2</option>
                   <option value="grass">Grass</option>
                   <option value="water">Water</option>
@@ -605,15 +643,18 @@ function UpdatePokemon(props) {
                   <option value="fairy">Fairy</option>
                   <option value="dragon">Dragon</option>
                   <option value="ice">Ice</option>
-                </select>
-              </label><br /><br />
-              <label>
-                Abilities (separated by commas, please) - was {formatAbilities(i.abilities)} :<br />
-                <input onChange={e => setPokeAbilities(e.target.value)} type="text" value={PokeAbilities}></input>
-              </label><br /><br />
-              <input type="submit" value="Update Pokemon"/>
-            </form>
-          </div>;
+                </Form.Control>
+              </Form.Group>
+              &nbsp;&nbsp;&nbsp;
+              <Form.Group>
+                <Form.Label>Pokemon Abilities (separated by commas, please) - Was {formatAbilities(i.abilities)}: </Form.Label>
+                <Form.Control as="input" onChange={e => setPokeAbilities(e.target.value)} type="text" value={PokeAbilities} />
+              </Form.Group>
+            </Form.Row>
+            <Button variant="primary" type="submit">
+              Update Pokemon
+            </Button>
+          </Form>
         }
       }
     }
@@ -628,13 +669,20 @@ function UpdatePokemon(props) {
   
   return(
     <>
-      <div>
-        <select key={id} value={id} onChange={(e) => {setID(e.target.value)}}>
-          <option key={1} value={""}>Select a Mystery Pokemon to update</option>
-          {options}
-        </select>
+      <div className="PutOptions">
+        <Form>
+          <Form.Group>
+            <Form.Label><h4>Update By ID</h4></Form.Label>
+            <Form.Control as="select" key={id} value={id} onChange={(e) => {setID(e.target.value)}}>
+              <option key={1} value={""}>Select a Mystery Pokemon</option>
+              {options}
+            </Form.Control>
+          </Form.Group>
+        </Form>
       </div>
-      <IDForm />
+      <div className="PutMenu">
+        <IDForm />
+      </div>
     </>
   );
 }
