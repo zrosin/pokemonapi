@@ -105,7 +105,7 @@ function GetPokemonOnDexNum() {
               abilityList += ability + ", ";
             }
           }
-          
+          console.log(response.img);
           setdexInfo(
             <div>
               <h1>{response.name}</h1>
@@ -116,6 +116,7 @@ function GetPokemonOnDexNum() {
                 <li>Types: {typeList}</li><br />
                 <li>Abilities: {abilityList}</li><br />
               </ul>
+              <img src={response.img} alt=" "width="50" height="50" />
             </div>);
         }
       }
