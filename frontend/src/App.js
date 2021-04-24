@@ -2,6 +2,9 @@
 import './App.css';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
+import Navbar from 'react-bootstrap/Navbar';
+import Nav from 'react-bootstrap/Nav';
+import Button from 'react-bootstrap/Button';
 /* function App() {
   return (
     <div className="App">
@@ -26,34 +29,29 @@ import React, { useState, useEffect } from 'react';
 export default App; */
 
 
-function Navbar() {
+function Navigation() {
   return (
-    <ul>
-      <li>
-        <Link to="/updatepokemon">Update Pokemon</Link>
-      </li>
-      <li>
-        <Link to="/postpokemon">Post Pokemon</Link>
-      </li>
-      <li>
-        <Link to="/getpokemon">Get Pokemon</Link>
-      </li>
-      <li>
-        <Link to="/deletepokemon">Delete Pokemon</Link>
-      </li>
-    </ul>
+  <Navbar bg="dark" variant="dark">
+    <Nav className="mr-auto">
+      <Nav.Link href="/updatepokemon">Update Pokemon</Nav.Link>
+      <Nav.Link href="/getpokemon">Get Pokemon</Nav.Link>
+      <Nav.Link href="/postpokemon">Post Pokemon</Nav.Link>
+      <Nav.Link href="/deletepokemon">Delete Pokemon</Nav.Link>
+    </Nav>
+  </Navbar>
   );
 }
 
 function App() {
     return (
       <Router>
-        <Navbar></Navbar>
+        <Navigation></Navigation>
         <Switch>     
           <Route path="/getpokemon">
             <GetPokemonOnDexNum />
             <GetPokemonOnType /><br />
             <GetPokemonOnID mons={5}/>
+            <GetAllPokemon />
           </Route>
 	      </Switch>
         <Switch>
@@ -288,6 +286,17 @@ function GetPokemonOnID(props) {
         <IDInfo />
     </>
   )
+}
+
+function GetAllPokemon() {
+
+
+
+  return (
+    <div>
+      <p>hello</p>
+    </div>
+  );
 }
 
 function PostPokemon() {
