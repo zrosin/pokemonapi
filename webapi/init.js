@@ -1,12 +1,35 @@
 // init.js -- initialize the database.
 // Based on code from Dr. McCown's Canvas Announcement - https://harding.instructure.com/courses/1226504/discussion_topics/3177364
 
-const Pokemon = require("./models/pokemon")
+const Pokemon = require("./models/pokemon");
+const fetch = require('node-fetch');
+
+async function fetchResults(path) {
+  return fetch(path)
+    .then(res=>{return res.buffer();})
+    .then(blob=>{;
+      console.log(blob);
+      return blob;
+    })
+}
+
 
 async function initDB() {
     await Pokemon.deleteMany({});
+    let url = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/"
+    //path = url + "1" + ".png";
+    //console.log( await fetchResults(path));
     for (let i of kantoDex) {
         const pkmn = new Pokemon(i);
+        //image
+        path = url + pkmn.pokedexNumber + ".png";
+        //console.log(path);
+
+        pkmn.img = await fetchResults(path);
+        pkmn.img.contentType = "image/png"
+
+        pkmn.imgurl = "http://localhost:8000/api/pokemon/img/" + pkmn.pokedexNumber;
+
         const pkmnSave = await pkmn.save();
     }
     console.log("Database initialized with the Kanto Pokedex!")
