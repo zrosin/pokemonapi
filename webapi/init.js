@@ -5,24 +5,33 @@
 const {Pokemon, MoveSet, Move, Ability} = require("./models/pokemon");
 // const  = require("./models/moves");
 const fs = require('fs');
+const fetch = require('node-fetch');
 
+async function fetchResults(path) {
+    return fetch(path)
+      .then(res=>{return res.buffer();})
+      .then(blob=>{;
+        // console.log(blob);
+        return blob;
+      })
+  }
 
 async function initPkmn(dex) {
     await Pokemon.deleteMany({});
     let url = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/"
     //path = url + "1" + ".png";
-
+    console.log("Downloading images and importing Pokemon, this may take a moment.");
     await Promise.all(dex.map(async (i) => {
         const pkmn = new Pokemon(i);
         path = url + pkmn.pokedexNumber + ".png";
 
-        pkmn.img = await ((path) => fetch(path).then(res => res.buffer()))
-        pkmn.img.contentType = "image/png"
+        pkmn.image = await fetchResults(path);
+        pkmn.image.contentType = "image/png"
 
         await pkmn.save();
     })
     );
-    console.log("Database initialized with the National Pokedex!")
+    console.log("National Pokedex import complete!")
 }
 
 async function initAbilities(abilities) {
@@ -39,7 +48,6 @@ async function initMoves(moveSet, moves) {
     await MoveSet.deleteMany({});
     await Move.deleteMany({});
 
-    console.log("Importing moveSets, this may take a moment...")
     await Promise.all(moveSet.map(async (i) => {
         // console.log(i.pokedexNumber);
         const newMoveSet = new MoveSet(i);
@@ -58,20 +66,26 @@ async function initMoves(moveSet, moves) {
 // (The data was in 3NF, and I didn't completely denormalize, so Mongo isn't running as fast as it would like. Oh well.)
 // That project is licensed under the MIT License, but of course the contents (but not the formats) of the files are (c) Nintendo/Creatures/Game Freak.
 
+let promises = [];
 const rawPokemon = fs.readFileSync("test/data/basic.json");
 const natDex = JSON.parse(rawPokemon);
-initPkmn(natDex);
+promises.push(initPkmn(natDex));
 
 const rawAbility = fs.readFileSync("test/data/abilities.json");
 const abilities = JSON.parse(rawAbility);
-initAbilities(abilities);
+promises.push(initAbilities(abilities));
 
 const rawMoveSets = fs.readFileSync("test/data/moveset.json");
 const moveSets = JSON.parse(rawMoveSets);
 const rawMoves = fs.readFileSync("test/data/moves.json");
 const moves = JSON.parse(rawMoves);
-initMoves(moveSets, moves).then(() => {
-    console.log("Database initialized! Have fun! 🎉");
-    process.exit(); 
-});
+promises.push(initMoves(moveSets, moves));
 
+async function finish(arr) {
+    await Promise.all(arr).then(() => {
+        console.log("Database initialized! Have fun! 🎉");
+        process.exit(); 
+    });
+}
+finish(promises)
+// process.exit();
