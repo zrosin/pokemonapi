@@ -289,13 +289,61 @@ function GetPokemonOnID(props) {
 }
 
 function GetAllPokemon() {
+  const [showPressed, setShowPressed] = useState(false);
+  const [initialInfo, setInitialInfo] = useState([]);
 
+  useEffect(() => {
+    if(showPressed) {
+      async function getAllPokemon() {
+        let response = await fetch("/api/pokemon/").then(r => r.json());
+        let result = response;
+        setInitialInfo(result);
+      }
+      getAllPokemon();
+    }
+    else {
+      setInitialInfo("");
+    }
+  }, [showPressed]);
 
+  function AllInfo() {
+    let tableOfPokemon;
+    if(initialInfo.length !== 0) {
+      tableOfPokemon = initialInfo.map((entry) => (
+        <tr key={entry._id} >
+          <td>{entry.pokedexNumber}</td>
+          <td>{entry.name}</td>
+          <td>{entry.weight}</td>
+          <td>{entry.height}</td>
+          <td>{entry.types[1] == null ? entry.types[0] : entry.types[0]  + ", " + entry.types[1]}</td>
+          <td>{formatAbilities(entry.abilities)}</td>
+        </tr>
+      ));
+      tableOfPokemon.unshift(<tr key={1}><th>Pokédex Number</th><th>Name</th><th>Height (m)</th><th>Weight</th><th>Type(s)</th><th>Abilities</th></tr>);
+    }
+
+    return (
+      <div>
+        <table key={123}>
+          <tbody>
+            {tableOfPokemon}
+          </tbody>
+        </table>
+      </div>
+    );
+  }
 
   return (
-    <div>
-      <p>hello</p>
-    </div>
+    <>
+      <div>
+        <h4>Get all Pokemon!</h4>
+        <input type="button" onClick={() => setShowPressed(true)} value="Get all pokemon"/>
+        <input type="button" onClick={() => setShowPressed(false)} value="Hide"/>
+      </div>
+      <div>
+        <AllInfo />
+      </div>
+    </>
   );
 }
 
