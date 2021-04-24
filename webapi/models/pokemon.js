@@ -6,7 +6,9 @@ const PokemonSchema = new mongoose.Schema({
     height: {type: Number},
     weight: {type: Number},
     types: {type: [String]},
-    abilities: {type: [String]}
+    abilities: {type: [String]},
+    img: {type: Buffer, contentType: String},
+    imgurl: {type: String}
 })
 
 const Pokemon = mongoose.model('Pokemon', PokemonSchema);
