@@ -19,7 +19,11 @@ async function initDB() {
     let url = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/"
     //path = url + "1" + ".png";
     //console.log( await fetchResults(path));
-    for (let i of kantoDex) {
+    
+
+    // zach -- if you run the awaits one at a time you wait forever, wrapping them in a Promise.all creates all of the jobs at one time,
+    // allowing them to complete at their own pace.
+    await Promise.all(kantoDex.map(async (i) => {
         const pkmn = new Pokemon(i);
         //image
         path = url + pkmn.pokedexNumber + ".png";
@@ -31,7 +35,8 @@ async function initDB() {
         pkmn.imgurl = "http://localhost:8000/api/pokemon/img/" + pkmn.pokedexNumber;
 
         const pkmnSave = await pkmn.save();
-    }
+    })
+    );
     console.log("Database initialized with the Kanto Pokedex!")
     process.exit();
 }

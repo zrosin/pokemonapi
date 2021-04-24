@@ -63,7 +63,7 @@ router.get('/img/:pokedex', function(req, res) {
         }
         else if (pokemon) {
             res.contentType('image/png');
-            res.status(200).send(pokemon.img.data);
+            res.status(200).send(pokemon.img);
         }
         else {
             res.status(404).json({pokemon, 'message': 'Did not find Pokemon with Pokedex Number ' + req.params.pokedex}); 
