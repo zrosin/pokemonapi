@@ -36,11 +36,11 @@ function Navigation() {
   return (
   <Navbar bg="dark" variant="dark">
     <Nav className="mr-auto">
+      <Nav.Link href="/pokemon">Main Page</Nav.Link>
       <Nav.Link href="/updatepokemon">Update Pokemon</Nav.Link>
       <Nav.Link href="/getpokemon">Get Pokemon</Nav.Link>
       <Nav.Link href="/postpokemon">Post Pokemon</Nav.Link>
       <Nav.Link href="/deletepokemon">Delete Pokemon</Nav.Link>
-      <Nav.Link href="/pokemon">Main Page</Nav.Link>
     </Nav>
   </Navbar>
   );
@@ -50,6 +50,11 @@ function App() {
     return (
       <Router>
         <Navigation></Navigation>
+        <Switch>
+          <Route path="/pokemon">
+            <GetPokemonForMainPage/>
+          </Route>
+        </Switch>
         <Switch>     
           <Route path="/getpokemon">
             <GetPokemonOnDexNum/>
@@ -303,6 +308,51 @@ function GetPokemonOnID(props) {
     </>
   )
 }
+
+function GetPokemonForMainPage() {
+  const [initialInfo, setInitialInfo] = useState([]);
+  
+  
+  useEffect(() => {
+    async function getAllPokemon() {
+      setInitialInfo("")
+      let response = await fetch("/api/pokemon/").then(r => r.json());
+      let result = response;
+      setInitialInfo(result);
+    }
+    getAllPokemon();
+  }, []);
+
+  function AllPokemon() {
+    let PokemonDivs;
+    if(initialInfo.length !== 0) {
+      PokemonDivs = initialInfo.map((entry) => (
+          <div key={entry.pokedexNumber} className="PokemonElement">
+            <a href={"/pokemon/" + entry.pokedexNumber}>
+              <img src={entry.imgurl} alt={entry.name + " image"} />
+              <h4>{entry.name}</h4>
+              <h8>#{entry.pokedexNumber}</h8>
+            </a>
+          </div>
+        
+      ));
+    }
+    console.log(PokemonDivs);
+    return ( 
+      <span className="MainPageList">
+        {PokemonDivs} 
+      </span>
+      );
+  }
+
+  
+  return (
+        <AllPokemon />
+  );
+  
+}
+
+
 
 function GetAllPokemon() {
   const [showPressed, setShowPressed] = useState(false);
