@@ -23,7 +23,7 @@ router.get("/", function(req, res) {
 // http://localhost:8000/api/pokemon/id/6063cdb5f0af1b48c8a5218d
 router.get('/id/:id', function(req, res) {
     //console.log('id = ' + req.params.id);
-    Pokemon.findOne( { _id: req.params.id }, { img:0 }, function(err, pokemon) {
+    Pokemon.findOne( { _id: req.params.id }, {  image:0 }, function(err, pokemon) {
         if (err) {
             res.status(400).json({'message': `error: ${err}`});
         }
@@ -40,7 +40,7 @@ router.get('/id/:id', function(req, res) {
 // Get pokemon by pokedex number
 // http://localhost:8000/api/pokemon/pokedex/2
 router.get('/pokedex/:pokedex', function(req, res) {
-    Pokemon.findOne({ pokedexNumber: { $eq:  req.params.pokedex} } , { img:0 } , function(err, pokemon) {
+    Pokemon.findOne({ pokedexNumber: { $eq:  req.params.pokedex} } , {  image:0 } , function(err, pokemon) {
         if (err) {
             console.log(err);
             res.status(400).json({'message': `error: ${err}`});
@@ -81,7 +81,7 @@ router.get('/type/:types', function(req, res) {
     if(req.params.types.split(',').length === 2) {
         req.params.types = req.params.types.split(',')
     }
-    Pokemon.find({ types: { $in: [req.params.types] } } , { img:0 } , function(err, pokemon) {
+    Pokemon.find({ types: { $in: [req.params.types] } } , {  image:0 } , function(err, pokemon) {
         if (err) {
             console.log(err);
             res.status(400).json({'message': `error: ${err}`});
