@@ -7,7 +7,6 @@ import Nav from 'react-bootstrap/Nav';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Table from 'react-bootstrap/Table';
-import Col from 'react-bootstrap/Col';
 
 /* function App() {
   return (
