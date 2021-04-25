@@ -47,18 +47,22 @@ async function initAbilities(abilities) {
 async function initMoves(moveSet, moves) {
     await MoveSet.deleteMany({});
     await Move.deleteMany({});
+    let moveIds = {};
 
-    await Promise.all(moveSet.map(async (i) => {
-        // console.log(i.pokedexNumber);
-        const newMoveSet = new MoveSet(i);
-        await newMoveSet.save();
-    }));
-    console.log("moveSet import complete!");
     await Promise.all(moves.map(async (i) => {
         const newMove = new Move(i);
         await newMove.save();
+        moveIds[newMove.id] = newMove._id;
     }));
     console.log("Move import complete!")
+    await Promise.all(moveSet.map(async (i) => {
+        // console.log(i.pokedexNumber);
+        const newMoveSet = new MoveSet(i);
+        // setup the "relation" between a move in the moveset and the actual move object.
+        newMoveSet.move = moveIds[newMoveSet.moveId];
+        await newMoveSet.save();
+    }));
+    console.log("moveSet import complete!");
 }
 
 // The all new and improved dataset was provided by the lovely veekun/pokedex project on GitHub, which consists of a bunch of CSV files full of data dumped from the games.

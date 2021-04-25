@@ -2,6 +2,14 @@
   text-align: center;
 }
 
+ul {
+  display: inline-block;
+}
+
+.neat {
+  margin: auto;
+}
+
 .PostMenu {
   padding-left: 20px;
   padding-top: 15px;
