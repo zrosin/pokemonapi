@@ -1,6 +1,6 @@
 // Schemas for dealing with a Pokemon and related data about a Pokemon.
 
-const { Mongoose } = require("mongoose");
+const { Mongoose, Schema } = require("mongoose");
 const mongoose = require("../db");
 
 const pokemonSchema = new mongoose.Schema({
@@ -37,7 +37,8 @@ const moveSetSchema = new mongoose.Schema({
     pokedexNumber: {type: Number},
     moveId: {type: Number},
     learnedVia: {type: String},
-    level: {type: Number}
+    level: {type: Number},
+    move: [{type: Schema.Types.ObjectId, ref: "Move"}]
 })
 
 const MoveSet = mongoose.model('MoveSet', moveSetSchema);
