@@ -351,7 +351,7 @@ function GetPokemonForMainPage() {
     let Buttons=[];
     for(let i = 1; i <= pageNum; i++) {
       Buttons.push(
-        <button key={i} onClick={(i) => setCurrentPage(i)}>
+        <button key={i} onClick={() => setCurrentPage(i)}>
           {i}
         </button>
       );
