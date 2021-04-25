@@ -1,4 +1,4 @@
-// get.js -- ports of vanilla JS get widgets.
+// get.js -- all of the components for getting Pokemon.
 import React, { useState, useEffect } from 'react';
 import Form from 'react-bootstrap/Form';
 import Table from 'react-bootstrap/Table'
