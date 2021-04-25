@@ -2,6 +2,14 @@
   text-align: center;
 }
 
+ul {
+  display: inline-block;
+}
+
+.neat {
+  margin: auto;
+}
+
 .PostMenu {
   padding-left: 20px;
   padding-top: 15px;
@@ -50,4 +58,50 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.PokemonElement {
+  width: 19%;
+  border: 1px solid black;
+  text-align: center;
+  border-radius: 25px;
+  margin: .5%;
+}
+
+@media only screen and (max-width: 1280px){
+  .PokemonElement {
+    width: 24%;
+  }
+}
+
+@media only screen and (max-width: 720px){
+  .PokemonElement {
+    width: 49%;
+  }
+}
+
+.PokemonElement img {
+  width: 80%;
+  margin: auto;
+  
+}
+
+.PokemonElement a {
+  color: black;
+}
+
+.PokemonElement a:hover {
+  color: black;
+}
+
+.PokemonElement h4 {
+  margin: auto;
+  max-width: fit-content;
+}
+
+.MainPageList {
+  width: auto;
+  display: flex;
+  flex-wrap: wrap;
+  text-align: center;
 }

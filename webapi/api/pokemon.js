@@ -6,9 +6,26 @@ const router = require('express').Router();
 // http://localhost:8000/api/pokemon
 router.get("/", function(req, res) {
     Pokemon.find({},{ image:0 }, function(err, pokemon) {
-       if (err) {
-        console.log(err);
-        res.status(400).json({'message': `error: ${err}`});
+        if (err) {
+            console.log(err);
+            res.status(400).json({'message': `error: ${err}`});
+        }
+        else if (pokemon.length) {
+            res.status(200).json(pokemon);
+        }
+        else {
+            res.status(404).json({'message': "There are no Pokémon in the database!"}); 
+        }
+    });
+ });
+ 
+ // Get all pokemon in pages, with only relevant info for a title card
+ // http://localhost:8000/api/pokemon/small/:page
+ router.get('/small/:page', function(req, res) {
+    Pokemon.find({}, { _id:0, name:1, pokedexNumber:1, imgurl:1 }, { sort: {pokedexNumber: 1}, skip: (40 * req.params.page), limit: 40 }, function(err, pokemon) {
+        if (err) {
+            console.log(err);
+            res.status(400).json({'message': `error: ${err}`});
         }
         else if (pokemon.length) {
             res.status(200).json(pokemon);
@@ -23,7 +40,7 @@ router.get("/", function(req, res) {
 // http://localhost:8000/api/pokemon/id/6063cdb5f0af1b48c8a5218d
 router.get('/id/:id', function(req, res) {
     //console.log('id = ' + req.params.id);
-    Pokemon.findOne( { _id: req.params.id }, {  image:0 }, function(err, pokemon) {
+    Pokemon.findOne( { _id: req.params.id }, { image:0 }, function(err, pokemon) {
         if (err) {
             res.status(400).json({'message': `error: ${err}`});
         }
