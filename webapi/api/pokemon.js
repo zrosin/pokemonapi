@@ -1,11 +1,11 @@
 // API routes go here.
-const Pokemon = require('../models/pokemon');
+const { Pokemon, Ability, Move, MoveSet } = require('../models/pokemon');
 const router = require('express').Router();
 
 // Get all pokemon
 // http://localhost:8000/api/pokemon
 router.get("/", function(req, res) {
-    Pokemon.find(function(err, pokemon) {
+    Pokemon.find({},{ img:0 }, function(err, pokemon) {
        if (err) {
         console.log(err);
         res.status(400).json({'message': `error: ${err}`});
@@ -54,6 +54,7 @@ router.get('/pokedex/:pokedex', function(req, res) {
     });
 });
 
+// Get image for a Pokemon by its Pokedex number.
 // http://localhost:8000/api/pokemon/img/2
 router.get('/img/:pokedex', function(req, res) {
     Pokemon.findOne({ pokedexNumber: { $eq:  req.params.pokedex} } , function(err, pokemon) {
@@ -63,7 +64,7 @@ router.get('/img/:pokedex', function(req, res) {
         }
         else if (pokemon) {
             res.contentType('image/png');
-            res.status(200).send(pokemon.img);
+            res.status(200).send(pokemon.image);
         }
         else {
             res.status(404).json({pokemon, 'message': 'Did not find Pokemon with Pokedex Number ' + req.params.pokedex}); 
@@ -172,5 +173,24 @@ router.delete('/id/:id', function(req, res) {
     });
 });
 
+// Watch out for dragons! The following routes aren't covered by unit tests.
+
+// Get a move by its id
+// http://localhost:8000/api/pokemon/move/1
+
+router.get('/move/:id', (req, res) => {
+    Move.findOne({ id: { $eq:  req.params.id} }, (err, move) => {
+        if(err) {
+            console.log(err);
+            res.status(400).json({'message': `error: ${err}`});
+        }
+        else if(move) {
+            res.status(200).json(move)
+        }
+        else {
+            res.status(404).json({'message': `Move not found!`});
+        }
+    })
+});
 
 module.exports = router

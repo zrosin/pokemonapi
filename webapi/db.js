@@ -8,6 +8,7 @@ const mongoConnectionString = process.env.MONGO_CONNECTION_STRING ? process.env.
 mongoose.set("useUnifiedTopology", true);
 mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
+mongoose.set('toJSON', { virtuals: true });
 mongoose.connect(mongoConnectionString, {useNewUrlParser: true});
 
 module.exports = mongoose

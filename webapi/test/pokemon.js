@@ -1,10 +1,10 @@
-const Pokemon = require('../models/pokemon');
+const {Pokemon} = require('../models/pokemon');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const server = require('../server');
 
 // Use should BDD-style syntax
-const should = chai.should();   
+const should = chai.should();
 
 // Use Chai HTTP
 chai.use(chaiHttp);
@@ -13,135 +13,234 @@ chai.use(chaiHttp);
 describe('Pokemon API', () => {
 
     // Initialize database before each test
-    beforeEach(async () => { 
+    beforeEach(async () => {
         // Clear database
         await Pokemon.deleteMany({});
-        
+
         // Clear array
-        testPokemonDocs.length = 0;       
+        testPokemonDocs.length = 0;
 
         // Add test pokemon
         for (const p of testPokemon) {
             const pokemon = new Pokemon(p);
             const pokemonDoc = await pokemon.save();
             testPokemonDocs.push(pokemonDoc);
-        } 
+        }
     });
 
     const testPokemonDocs = [];
     const testPokemon = [
         {
-        "pokedexNumber":1,
-        "name":"Bulbasaur",
-        "height":0.7,
-        "weight":6.9,
-        "types":[
-            "grass",
-            "poison"
-        ],
-        "abilities":["Overgrow", "Chlorophyll"]
+            name: 'Bulbasaur',
+            height: 7,
+            weight: 69,
+            baseExperience: 64,
+            flavorText: 'A strange seed was ' +
+                'planted on its ' +
+                'back at birth. The plant sprouts ' +
+                'and grows with ' +
+                'this POKéMON.',
+            pokedexNumber: 1,
+            hp: 45,
+            attack: 49,
+            defense: 49,
+            specialAttack: 65,
+            specialDefense: 65,
+            speed: 45,
+            types: ['Grass', 'Poison'],
+            abilities: ['Overgrow', null],
+            hiddenAbility: 'Chlorophyll'
         },
         {
-        "pokedexNumber":2,
-        "name":"Ivysaur",
-        "height":1.0,
-        "weight":13.0,
-        "types":[
-            "grass",
-            "poison"
-        ],
-        "abilities":["Overgrow", "Chlorophyll"]
+            name: 'Ivysaur',
+            height: 10,
+            weight: 130,
+            baseExperience: 142,
+            flavorText: 'When the bulb on ' +
+                'its back grows ' +
+                'large, it appears to lose the ' +
+                'ability to stand ' +
+                'on its hind legs.',
+            pokedexNumber: 2,
+            hp: 60,
+            attack: 62,
+            defense: 63,
+            specialAttack: 80,
+            specialDefense: 80,
+            speed: 60,
+            types: ['Grass', 'Poison'],
+            abilities: ['Overgrow', null],
+            hiddenAbility: 'Chlorophyll'
         },
         {
-        "pokedexNumber":3,
-        "name":"Venusaur",
-        "height":2.0,
-        "weight":100.0,
-        "types":[
-            "grass",
-            "poison"
-        ],
-        "abilities":["Overgrow", "Chlorophyll"]
+            name: 'Venusaur',
+            height: 20,
+            weight: 1000,
+            baseExperience: 263,
+            flavorText: 'The plant blooms ' +
+                'when it is ' +
+                'absorbing solar energy. It stays ' +
+                'on the move to ' +
+                'seek sunlight.',
+            pokedexNumber: 3,
+            hp: 80,
+            attack: 82,
+            defense: 83,
+            specialAttack: 100,
+            specialDefense: 100,
+            speed: 80,
+            types: ['Grass', 'Poison'],
+            abilities: ['Overgrow', null],
+            hiddenAbility: 'Chlorophyll'
         },
         {
-        "pokedexNumber":4,
-        "name":"Charmander",
-        "height":0.6,
-        "weight":8.5,
-        "types":[
-            "fire",
-            null
-        ],
-        "abilities":["Blaze", "Solar Power"]
+            name: 'Charmander',
+            height: 6,
+            weight: 85,
+            baseExperience: 62,
+            flavorText: 'Obviously prefers ' +
+                'hot places. When ' +
+                'it rains, steam is said to spout ' +
+                'from the tip of ' +
+                'its tail.',
+            pokedexNumber: 4,
+            hp: 39,
+            attack: 52,
+            defense: 43,
+            specialAttack: 60,
+            specialDefense: 50,
+            speed: 65,
+            types: ['Fire', null],
+            abilities: ['Blaze', null],
+            hiddenAbility: 'Solar Power'
         },
         {
-        "pokedexNumber":5,
-        "name":"Charmeleon",
-        "height":1.1,
-        "weight":19.0,
-        "types":[
-            "fire",
-            null
-        ],
-        "abilities":["Blaze", "Solar Power"]
+            name: 'Charmeleon',
+            height: 11,
+            weight: 190,
+            baseExperience: 142,
+            flavorText: 'When it swings ' +
+                'its burning tail, ' +
+                'it elevates the temperature to ' +
+                'unbearably high ' +
+                'levels.',
+            pokedexNumber: 5,
+            hp: 58,
+            attack: 64,
+            defense: 58,
+            specialAttack: 80,
+            specialDefense: 65,
+            speed: 80,
+            types: ['Fire', null],
+            abilities: ['Blaze', null],
+            hiddenAbility: 'Solar Power'
         },
         {
-        "pokedexNumber":6,
-        "name":"Charizard",
-        "height":1.7,
-        "weight":90.5,
-        "types":[
-            "fire",
-            "flying"
-        ],
-        "abilities":["Blaze", "Solar Power"]
+            name: 'Charizard',
+            height: 17,
+            weight: 905,
+            baseExperience: 267,
+            flavorText: 'Spits fire that ' +
+                'is hot enough to ' +
+                'melt boulders. Known to cause ' +
+                'forest fires ' +
+                'unintentionally.',
+            pokedexNumber: 6,
+            hp: 78,
+            attack: 84,
+            defense: 78,
+            specialAttack: 109,
+            specialDefense: 85,
+            speed: 100,
+            types: ['Fire', 'Flying'],
+            abilities: ['Blaze', null],
+            hiddenAbility: 'Solar Power'
         },
         {
-        "pokedexNumber":7,
-        "name":"Squirtle",
-        "height":0.5,
-        "weight":9.0,
-        "types":[
-            "water",
-            null
-        ],
-        "abilities":["Torrent", "Rain Dish"]
+            name: 'Squirtle',
+            height: 5,
+            weight: 90,
+            baseExperience: 63,
+            flavorText: 'After birth, its ' +
+                'back swells and ' +
+                'hardens into a shell. Powerfully ' +
+                'sprays foam from ' +
+                'its mouth.',
+            pokedexNumber: 7,
+            hp: 44,
+            attack: 48,
+            defense: 65,
+            specialAttack: 50,
+            specialDefense: 64,
+            speed: 43,
+            types: ['Water', null],
+            abilities: ['Torrent', null],
+            hiddenAbility: 'Rain Dish'
         },
         {
-        "pokedexNumber":8,
-        "name":"Wartortle",
-        "height":1.0,
-        "weight":22.5,
-        "types":[
-            "water",
-            null
-        ],
-        "abilities":["Torrent", "Rain Dish"]
+            name: 'Wartortle',
+            height: 10,
+            weight: 225,
+            baseExperience: 142,
+            flavorText: 'Often hides in ' +
+                'water to stalk ' +
+                'unwary prey. For swimming fast, it ' +
+                'moves its ears to ' +
+                'maintain balance.',
+            pokedexNumber: 8,
+            hp: 59,
+            attack: 63,
+            defense: 80,
+            specialAttack: 65,
+            specialDefense: 80,
+            speed: 58,
+            types: ['Water', null],
+            abilities: ['Torrent', null],
+            hiddenAbility: 'Rain Dish'
         },
         {
-        "pokedexNumber":9,
-        "name":"Blastoise",
-        "height":1.6,
-        "weight":85.5,
-        "types":[
-            "water",
-            null
-        ],
-        "abilities":["Torrent", "Rain Dish"]
+            name: 'Blastoise',
+            height: 16,
+            weight: 855,
+            baseExperience: 265,
+            flavorText: 'A brutal POKéMON ' +
+                'with pressurized ' +
+                'water jets on its shell. They are ' +
+                'used for high ' +
+                'speed tackles.',
+            pokedexNumber: 9,
+            hp: 79,
+            attack: 83,
+            defense: 100,
+            specialAttack: 85,
+            specialDefense: 105,
+            speed: 78,
+            types: ['Water', null],
+            abilities: ['Torrent', null],
+            hiddenAbility: 'Rain Dish'
         },
         {
-        "pokedexNumber":10,
-        "name":"Caterpie",
-        "height":0.3,
-        "weight":2.9,
-        "types":[
-            "bug",
-            null
-        ],
-        "abilities":["Shield Dust", "Run Away"]
+            name: 'Caterpie',
+            height: 3,
+            weight: 29,
+            baseExperience: 39,
+            flavorText: 'Its short feet ' +
+                'are tipped with ' +
+                'suction pads that enable it to ' +
+                'tirelessly climb ' +
+                'slopes and walls.',
+            pokedexNumber: 10,
+            hp: 45,
+            attack: 30,
+            defense: 35,
+            specialAttack: 20,
+            specialDefense: 20,
+            speed: 45,
+            types: ['Bug', null],
+            abilities: ['Shield Dust', null],
+            hiddenAbility: 'Run Away'
         }
     ]
-
 
     describe('GET /pokemon', () => {
         it('should get all the pokemon', (done) => {
@@ -184,7 +283,7 @@ describe('Pokemon API', () => {
                     done();
                 });
         });
-        
+
     });
 
     describe('GET /pokemon/pokedex/:pokedex', () => {
@@ -227,7 +326,7 @@ describe('Pokemon API', () => {
                     res.should.have.status(200);
                     res.body.should.be.a('array');
                     res.body.length.should.be.eql(3);
-                    res.body[0].types[0].should.be.eql("grass");
+                    res.body[0].types[0].should.be.eql("Grass");
                     done();
                 });
         });
