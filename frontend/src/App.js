@@ -40,7 +40,7 @@ function Navigation() {
       <Nav.Link href="/getpokemon">Get Pokemon</Nav.Link>
       <Nav.Link href="/postpokemon">Post Pokemon</Nav.Link>
       <Nav.Link href="/deletepokemon">Delete Pokemon</Nav.Link>
-      <Nav.Link href="/pokmon">Main Page</Nav.Link>
+      <Nav.Link href="/pokemon">Main Page</Nav.Link>
     </Nav>
   </Navbar>
   );
