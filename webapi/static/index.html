@@ -1,90 +1,12 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
     <head>
-        <title>Pokémon API demo page</title>
-        <script src="index.js"></script>
-        <style>
-            body {
-                font-family:Arial, Helvetica, sans-serif
-            }
-            .error {
-                color: red
-            }
-            .pokemon {
-                padding: 5px 5px 5px 5px;
-                border: 1px dashed green
-            }
-            p span {
-                font-weight: bold;
-            }
-            table, th, td {
-                border: 1px solid green;
-            }
-        </style>
+        <title>Pokémon API!</title>
     </head>
     <body>
-        <h1>Pokémon API demo.</h1>
-        <h5><i>Note: some of this page may break if you haven't ran npm run init.</i></h5>
-        <div id="idDemo">
-            <h4>Get Pokémon by objectID:</h4>
-            <select id="idChoice">
-                <option value="">Select a mystery Pokémon.</option>
-                <!-- filled in by fillIDChoices -->
-            </select>
-        </div>
-        <div id="dexNumDemo">
-            <h4>Get Pokémon by Pokedex Number: </h4>
-            <input id="dexNumChoice" type="number" min=1 max=151 value=0>
-        </div>
-        <div id="typeDemo">
-            <h4>Get Pokémon by Type: </h4>
-            <select id="typeChoice">
-                <option value="">Select a type!</option>
-                <!-- filled in by fillTypeChoices. -->
-            </select>
-        </div>
-        <div id="deleteDemo">
-            <h4>Delete a Pokémon.</h4>
-            <select id="deleteChoice">
-                <option value="">Select a mystery Pokémon to delete.</option>
-                <!-- filled in by fillIDChoices -->
-            </select>
-            <button id="deleteButton">Delete it!</button>
-        </div>
-        <div id="addDemo">
-            <h4>Add a Pokémon.</h4>
-            <form id="addForm">
-                <label for="addDexNumber">Pokédex Number: </label>
-                <input type="number" name="dexNumber" id="addDexNumber"><br>
-                <label for="addName">Name: </label>
-                <input type="text" id="addName" name="name"><br>
-                <label for="addHeight">Height (m): </label>
-                <input type=number id="addHeight" name="height"><br>
-                <label for="addWeight">Weight (lbs): </label>
-                <input type="number" id="addWeight" name="weight"><br><br>
-                <label for="addTypes">Type(s)</label>
-                <select multiple name="types" id="addTypes">
-                    <option value="" selected disabled>Select some types!</option>
-                    <!-- filled by fillTypeChoices -->
-                </select><br>
-                <label for="addAbilites">Abilities (separated by commas): </label>
-                <input type="text" id="addAbilities" name="abilities"><br><br><br>
-                <input type="button" id="addSubmit" value="Add this Pokémon!">
-            </form>
-        </div>
-        <div id="updateDemo">
-            <h4>Update a Pokémon.</h4>
-            <select id="updateChoice">
-                <option value="" selected disabled>Select a mystery Pokémon to update.</option>
-                <!-- filled in by fillIDChoices -->
-            </select>
-            <!-- filled in by createUpdateForm -->
-        </div>
-        <div id="getAllDemo">
-            <h4>Get all Pokémon.</h4>
-            <p>This takes up quite a bit of space, so it is at the bottom.</p>
-            <button id="getAllButton">Do it!</button>
-        </div>
+        <h1>Hello there!</h1>
+        <p>The Pokemon API is running. Woo-hoo! But you didn't copy a React build into the static folder, so instead of a nice interface, you got this instead.</p>
+        <p>If you have Docker installed, run docker-compose up from the root of the project, or else, just copy the files in here. Please?</p>
     </body>
 </html>

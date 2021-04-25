@@ -210,4 +210,38 @@ router.get('/move/:id', (req, res) => {
     })
 });
 
+// Get an ability by its name
+// http://localhost:8000/api/pokemon/ability/Competitive
+router.get('/ability/:name', (req, res) => {
+    Ability.findOne({name: {$eq: req.params.name } }, (err, ability) => {
+            if(err) {
+                console.log(err);
+                res.status(400).json({'message': `error: ${err}`});
+            }
+            else if(ability) {
+                res.status(200).json(ability)
+            }
+            else {
+                res.status(404).json({'message': `Ability not found!`});
+            }
+    })
+});
+
+// get the moveset for a Pokémon based on its Pokédex ID.
+// http://localhost:8000/api/pokemon/moveset/5
+router.get('/moveset/:dexNum', (req, res) => {
+    MoveSet.find({pokedexNumber: {$eq: req.params.dexNum } }).populate('move').exec( (err, moveset) => {
+            if(err) {
+                console.log(err);
+                res.status(400).json({'message': `error: ${err}`});
+            }
+            else if(moveset.length) {
+                res.status(200).json(moveset);
+            }
+            else {
+                res.status(404).json({'message': `No moves were found for this Pokémon!`});
+            }
+    })
+});
+
 module.exports = router
