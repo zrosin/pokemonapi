@@ -1,7 +1,7 @@
 //import logo from './logo.svg';
 import './App.css';
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
-import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Switch, Route, Link, useParams  } from 'react-router-dom';
+import React, { useState, useEffect} from 'react';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import Button from 'react-bootstrap/Button';
@@ -51,7 +51,7 @@ function App() {
       <Router>
         <Navigation></Navigation>
         <Switch>
-          <Route path="/pokemon">
+          <Route exact path="/pokemon">
             <GetPokemonForMainPage/>
           </Route>
         </Switch>
@@ -77,8 +77,87 @@ function App() {
           <Route path="/deletepokemon">
             <DeletePokemon mons={5}/>
           </Route>
+        </Switch>
+        <Switch>
+          <Route path="/pokemon/:dexNum">
+            <DetailedPokemon />
+          </Route>
         </Switch>       
       </Router>);
+}
+
+function checkNull(ability) {
+  return ability !== null;
+}
+
+function DetailedPokemon() {
+  const params = useParams();
+  const [DetailedInfo, setDetailedInfo] = useState("");
+
+  useEffect (() => {
+    if(DetailedInfo === "") {
+      async function getDetails() {
+        const response = await fetch(`../api/pokemon/pokedex/${params.dexNum}`).then((r) => r.json());
+        if (!('message' in response)) {
+          let typeList = response.types[1] == null ? response.types[0] : response.types[0] + ", " + response.types[1];
+          let initialAbilityList = response.abilities.filter(checkNull);
+          let abilityList = "";
+          for (let ability of initialAbilityList) {
+            if(initialAbilityList.indexOf(ability) === (initialAbilityList.length - 1)) {
+              abilityList += ability;
+            }
+            else {
+              abilityList += (ability + ", ");
+            }
+          }
+          setDetailedInfo(
+            <div>
+              <h1>{response.name}</h1>
+              <img src={response.imgurl} alt=" "width="400" height="400" />
+              <ul>
+                <li><h4>Pokedex Number:{response.pokedexNumber}</h4></li><br />
+                <li><h4>Height (m): {response.height}</h4></li><br />
+                <li><h4>Weight (kg): {response.weight}</h4></li><br />
+                <li><h4>Types: {typeList}</h4></li><br />
+                <li><h4>Abilities: {abilityList}</h4></li><br />
+                <p>
+                  <b>{response.flavorText}</b>
+                </p>
+                <Table>
+                  <thead>
+                    <tr>
+                      <th>HP</th>
+                      <th>Attack</th>
+                      <th>Defense</th>
+                      <th>Special Attack</th>
+                      <th>Special Defense</th>
+                      <th>Speed</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>{response.hp}</td>
+                      <td>{response.attack}</td>
+                      <td>{response.defense}</td>
+                      <td>{response.specialAttack}</td>
+                      <td>{response.specialDefense}</td>
+                      <td>{response.speed}</td>
+                    </tr>
+                  </tbody>
+                </Table>
+              </ul>
+            </div>);
+        }
+      }
+      getDetails();
+    }
+  });
+
+  return(
+    <div>
+      {DetailedInfo}
+    </div>
+  );
 }
 
 function GetPokemonOnDexNum() {
@@ -89,29 +168,10 @@ function GetPokemonOnDexNum() {
   useEffect (() => {
     if(pokeDexNum > 0) {
       async function getPokeDexNumber() {
-        console.log("test");
         const response = await fetch(`api/pokemon/pokedex/${pokeDexNum}`).then((r) => r.json());
         if (!('message' in response)) {
-          let typeList = "";
-          for (let type of response.types) {
-            if (type !== "null") {
-              if (response.types.indexOf(type) === (response.types.length - 1)) {
-                typeList += type;
-              }
-              else {
-                typeList += type + ", ";
-              }
-            }
-          }
-          let abilityList = "";
-          for (let ability of response.abilities) {
-            if (response.abilities.indexOf(ability) === (response.abilities.length - 1)) {
-              abilityList += ability;
-            }
-            else {
-              abilityList += ability + ", ";
-            }
-          }
+          let typeList = response.types[1] === null ? response.types[0] : response.types[0] + ", " + response.types[1];
+          let abilityList = formatAbilities(response.abilities);
           console.log(response.img);
           setdexInfo(
             <div>
@@ -123,7 +183,7 @@ function GetPokemonOnDexNum() {
                 <li>Types: {typeList}</li><br />
                 <li>Abilities: {abilityList}</li><br />
               </ul>
-              <img src={response.imgurl} alt=" "width="70" height="70" />
+              <img src={response.imgurl} alt=" "width="150" height="150" />
             </div>);
         }
       }
@@ -151,9 +211,10 @@ function GetPokemonOnDexNum() {
 }
 
 function formatAbilities(abilityList) {
+  let initialAbilityList = abilityList.filter(checkNull);
   let formattedList = "";
-  for(let ability of abilityList) {
-    if(abilityList.indexOf(ability) === (abilityList.length - 1)) {
+  for(let ability of initialAbilityList) {
+    if(initialAbilityList.indexOf(ability) === (initialAbilityList.length - 1)) {
       formattedList += ability;
     }
     else {
@@ -279,10 +340,10 @@ function GetPokemonOnID(props) {
               <li>Pokedex Number: {i.pokedexNumber}</li><br />
               <li>Weight: {i.weight}</li><br />
               <li>Height: {i.height}</li><br />
-              <li>Type(s): {i.types.length === 1 ? i.types[0] : i.types[0] + ", " + i.types[1]}</li><br />
+              <li>Type(s): {i.types[1] === null ? i.types[0] : i.types[0] + ", " + i.types[1]}</li><br />
               <li>Abilities: {formatAbilities(i.abilities)}</li><br />
             </ul>
-            <img src={i.imgurl} alt=" "width="70" height="70" />
+            <img src={i.imgurl} alt=" "width="150" height="150" />
           </div>;
         }
       }

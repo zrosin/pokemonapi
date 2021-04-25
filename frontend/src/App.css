@@ -2,6 +2,10 @@
   text-align: center;
 }
 
+ul {
+  display: inline-block;
+}
+
 .PostMenu {
   padding-left: 20px;
   padding-top: 15px;
