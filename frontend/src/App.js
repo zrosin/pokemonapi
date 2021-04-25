@@ -111,7 +111,7 @@ function DetailedPokemon() {
             }
           }
           setDetailedInfo(
-            <div>
+            <div className="neat">
               <h1>{response.name}</h1>
               <img src={response.imgurl} alt=" "width="400" height="400" />
               <ul>
