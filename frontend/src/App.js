@@ -10,6 +10,7 @@ import { DetailedPokemon } from './DetailedPokemon';
 function Navigation() {
   return (
   <Navbar bg="dark" variant="dark">
+    <Navbar.Brand as={Link} to="/">Pokédex!</Navbar.Brand>
     <Nav className="mr-auto">
       <Nav.Link as={Link} to="/">Main Page</Nav.Link>
       {/* links for disabled routes, uncomment routes to make sure these do anything if we want them back. */}
