@@ -311,17 +311,20 @@ function GetPokemonOnID(props) {
 
 function GetPokemonForMainPage() {
   const [initialInfo, setInitialInfo] = useState([]);
+  const [pageNum, setPageNum] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
   
   
   useEffect(() => {
     async function getAllPokemon() {
       setInitialInfo("")
-      let response = await fetch("/api/pokemon/").then(r => r.json());
+      let response = await fetch("/api/pokemon/small/" + currentPage).then(r => r.json());
       let result = response;
-      setInitialInfo(result);
+      setInitialInfo(result.pokemon);
+      setPageNum(result.pages);
     }
     getAllPokemon();
-  }, []);
+  }, [currentPage]);
 
   function AllPokemon() {
     let PokemonDivs;
@@ -337,17 +340,34 @@ function GetPokemonForMainPage() {
         
       ));
     }
-    console.log(PokemonDivs);
     return ( 
-      <span className="MainPageList">
+      <div className="MainPageList">
         {PokemonDivs} 
-      </span>
+      </div>
       );
   }
 
-  
+  function PageButtons() {
+    let Buttons=[];
+    for(let i = 1; i <= pageNum; i++) {
+      Buttons.push(
+        <button key={i} onClick={(i) => setCurrentPage(i)}>
+          {i}
+        </button>
+      );
+    }
+    console.log(Buttons);
+    return (
+      <div>
+        {Buttons}
+      </div>
+    );
+  }
   return (
+      <div>
         <AllPokemon />
+        <PageButtons />
+      </div>
   );
   
 }
