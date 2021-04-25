@@ -5,7 +5,7 @@ const router = require('express').Router();
 // Get all pokemon
 // http://localhost:8000/api/pokemon
 router.get("/", function(req, res) {
-    Pokemon.find({},{ image:0 }, function(err, pokemon) {
+    Pokemon.find({},{ image:0 }).sort({pokedexNumber: "ascending"}).exec( function(err, pokemon) {
         if (err) {
             console.log(err);
             res.status(400).json({'message': `error: ${err}`});
