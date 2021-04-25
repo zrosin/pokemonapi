@@ -115,7 +115,7 @@ function DetailedPokemon() {
               <h1>{response.name}</h1>
               <img src={response.imgurl} alt=" "width="400" height="400" />
               <ul>
-                <li><h4>Pokedex Number:{response.pokedexNumber}</h4></li><br />
+                <li><h4>Pokedex Number: {response.pokedexNumber}</h4></li><br />
                 <li><h4>Height (m): {response.height}</h4></li><br />
                 <li><h4>Weight (kg): {response.weight}</h4></li><br />
                 <li><h4>Types: {typeList}</h4></li><br />
