@@ -1,6 +1,6 @@
 //import logo from './logo.svg';
 import './App.css';
-import { BrowserRouter as Router, Switch, Route, Link, useParams  } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Link, useParams, NavLink  } from 'react-router-dom';
 import React, { useState, useEffect} from 'react';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
@@ -36,11 +36,11 @@ function Navigation() {
   return (
   <Navbar bg="dark" variant="dark">
     <Nav className="mr-auto">
-      <Nav.Link href="/pokemon">Main Page</Nav.Link>
-      <Nav.Link href="/updatepokemon">Update Pokemon</Nav.Link>
-      <Nav.Link href="/getpokemon">Get Pokemon</Nav.Link>
-      <Nav.Link href="/postpokemon">Post Pokemon</Nav.Link>
-      <Nav.Link href="/deletepokemon">Delete Pokemon</Nav.Link>
+      <Nav.Link as={Link} to="/">Main Page</Nav.Link>
+      <Nav.Link as={Link} to="/updatepokemon">Update Pokemon</Nav.Link>
+      <Nav.Link as={Link} to="/getpokemon">Get Pokemon</Nav.Link>
+      <Nav.Link as={Link} to="/postpokemon">Post Pokemon</Nav.Link>
+      <Nav.Link as={Link} to="/deletepokemon">Delete Pokemon</Nav.Link>
     </Nav>
   </Navbar>
   );
@@ -51,7 +51,10 @@ function App() {
       <Router>
         <Navigation></Navigation>
         <Switch>
-          <Route exact path="/pokemon">
+          <Route path="/pokemon/:dexNum">
+            <DetailedPokemon />
+          </Route>
+          <Route exact path={["/", "/pokemon"]}>
             <GetPokemonForMainPage/>
           </Route>
         </Switch>
@@ -77,12 +80,7 @@ function App() {
           <Route path="/deletepokemon">
             <DeletePokemon mons={5}/>
           </Route>
-        </Switch>
-        <Switch>
-          <Route path="/pokemon/:dexNum">
-            <DetailedPokemon />
-          </Route>
-        </Switch>       
+        </Switch>    
       </Router>);
 }
 
@@ -389,16 +387,15 @@ function GetPokemonForMainPage() {
     if(initialInfo.length !== 0) {
       PokemonDivs = initialInfo.map((entry) => (
           <div key={entry.pokedexNumber} className="PokemonElement">
-            <a href={"/pokemon/" + entry.pokedexNumber}>
+            <Link to={"/pokemon/" + entry.pokedexNumber}>
               <img src={entry.imgurl} alt={entry.name + " image"} />
               <h4>{entry.name}</h4>
               <h8>#{entry.pokedexNumber}</h8>
-            </a>
+            </Link>
           </div>
         
       ));
     }
-    console.log(PokemonDivs);
     return ( 
       <span className="MainPageList">
         {PokemonDivs} 
