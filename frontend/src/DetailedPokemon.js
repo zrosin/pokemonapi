@@ -2,19 +2,25 @@ import { useParams } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import Table from 'react-bootstrap/Table';
 import { checkNull } from './App';
+import BootstrapTable from 'react-bootstrap-table-next';
+import paginationFactory from 'react-bootstrap-table2-paginator';
+import filterFactory, { selectFilter } from 'react-bootstrap-table2-filter'
+import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
+import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
+
 
 export function formatAbilities(abilityList) {
-    let initialAbilityList = abilityList.filter(checkNull);
-    let formattedList = "";
-    for(let ability of initialAbilityList) {
-      if(initialAbilityList.indexOf(ability) === (initialAbilityList.length - 1)) {
-        formattedList += ability;
-      }
-      else {
-        formattedList += (ability + ", ");
-      }
+  let initialAbilityList = abilityList.filter(checkNull);
+  let formattedList = "";
+  for (let ability of initialAbilityList) {
+    if (initialAbilityList.indexOf(ability) === (initialAbilityList.length - 1)) {
+      formattedList += ability;
     }
-    return formattedList;
+    else {
+      formattedList += (ability + ", ");
+    }
+  }
+  return formattedList;
 }
 export function DetailedPokemon() {
   const params = useParams();
@@ -82,6 +88,91 @@ export function DetailedPokemon() {
   return (
     <div>
       {DetailedInfo}
+      <MoveSetTable mon={params.dexNum} />
     </div>
   );
+}
+
+
+export function MoveSetTable(props) {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const [tableData, setTableData] = useState([]);
+  const [filterableTypes, setFilterableTypes] = useState({});
+  const pagination = paginationFactory({
+    paginationSize: 10 
+  })
+  useEffect(() => {
+    async function getData() {
+      const moveSet = await fetch(`/api/pokemon/moveset/${props.mon}`).then(r => r.json());
+      let types = {};
+      const moveValues = moveSet.map((i) => {
+        i.move = i.move[0]
+        i.move.power = (i.move.power === null) ? 0 : i.move.power;
+        if (!(i.move.type in types)) {
+          types[i.move.type] = i.move.type;
+        }
+        return {
+          name: i.move.name,
+          type: i.move.type,
+          damageClass: i.move.damageClass,
+          pp: i.move.pp,
+          power: i.move.power,
+          level: i.level,
+          learnedVia: i.learnedVia,
+          flavorText: i.move.flavorText
+        }
+      });
+      console.log(types);
+      // don't ask me why React Bootstrap Table needs the filterables sent like this.
+      setFilterableTypes(types);
+      setTableData(moveValues);
+    }
+    getData();
+  }, [props.mon]);
+  const columns = [
+    {
+      text: 'Name',
+      dataField: 'name',
+    },
+    {
+      text: 'Type',
+      dataField: 'type',
+      formatter: cell => filterableTypes[cell],
+      filter: selectFilter({
+        options: filterableTypes
+      })
+    },
+    {
+      text: 'Damage Class',
+      dataField: 'damageClass'
+    },
+    {
+      text: 'PP',
+      dataField: 'pp',
+    },
+    {
+      text: 'Power',
+      dataField: 'power',
+    },
+    {
+      text: 'Level Learned',
+      dataField: 'level',
+    },
+    {
+      text: 'Learned Via',
+      dataField: 'learnedVia'
+    },
+    {
+      text: 'Description',
+      dataField: 'flavorText'
+    }
+  ];
+  return (
+    <>
+    <h4>Moveset:</h4>
+    <BootstrapTable bootstrap4 keyField='name' data={ tableData } columns={ columns }
+    pagination={ pagination } filter={ filterFactory() }/>
+    </>
+  );
+
 }
