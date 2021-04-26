@@ -104,12 +104,12 @@ export function MoveSetTable(props) {
   useEffect(() => {
     async function getData() {
       const moveSet = await fetch(`/api/pokemon/moveset/${props.mon}`).then(r => r.json());
-      let arr = {};
+      let types = {};
       const moveValues = moveSet.map((i) => {
         i.move = i.move[0]
         i.move.power = (i.move.power === null) ? 0 : i.move.power;
-        if (!(i.move.type in arr)) {
-          arr[i.move.type] = i.move.type;
+        if (!(i.move.type in types)) {
+          types[i.move.type] = i.move.type;
         }
         return {
           name: i.move.name,
@@ -122,9 +122,9 @@ export function MoveSetTable(props) {
           flavorText: i.move.flavorText
         }
       });
-      console.log(arr);
+      console.log(types);
       // don't ask me why React Bootstrap Table needs the filterables sent like this.
-      setFilterableTypes(arr);
+      setFilterableTypes(types);
       setTableData(moveValues);
     }
     getData();
