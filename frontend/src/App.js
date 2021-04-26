@@ -32,6 +32,7 @@ function App() {
             <DetailedPokemon />
           </Route>
           <Route exact path={["/", "/pokemon"]}>
+            <SeachBar/>
             <GetPokemonForMainPage/>
           </Route>
         </Switch>
@@ -67,6 +68,44 @@ export function checkNull(ability) {
 }
 
 
+//Works but causes page to rerender, which might actually kill the progress once its set up all the way. Still needs it query call and the be connected to intitalInfo.
+class SeachBar extends React.Component {
+  
+  constructor(props) {
+    super(props);
+    this.state = {value: ''};
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.getQuery = this.getQuery.bind(this);
+  }
+
+  handleChange(event) {    
+    this.setState({value: event.target.value});  
+  }
+
+  handleSubmit(event) {
+    this.getQuery();
+  }
+
+  async getQuery() {
+    let response = await fetch("/api/pokemon/small/query/" + this.state.value).then(r => r.json());
+    //Give result to initialInfo.
+  }
+  
+
+  render() {
+    return (
+      <div>
+        <form onSubmit={this.handleSubmit}>
+          <label>
+            <input type="text" value={this.state.value} onChange={this.handleChange} />
+          </label>
+          <input type="submit" value="Submit" />
+        </form>
+      </div>
+    );
+  }
+}
 
 function GetPokemonForMainPage() {
   const [initialInfo, setInitialInfo] = useState([]);
