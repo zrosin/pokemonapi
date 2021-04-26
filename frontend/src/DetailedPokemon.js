@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import Table from 'react-bootstrap/Table';
+import Alert from 'react-bootstrap/Alert'
 import { checkNull } from './App';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
@@ -96,6 +97,7 @@ export function DetailedPokemon() {
 
 export function MoveSetTable(props) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
+  const [requestOk, setRequestOk] = useState(true);
   const [tableData, setTableData] = useState([]);
   const [filterableTypes, setFilterableTypes] = useState({});
   const pagination = paginationFactory({
@@ -104,6 +106,10 @@ export function MoveSetTable(props) {
   useEffect(() => {
     async function getData() {
       const moveSet = await fetch(`/api/pokemon/moveset/${props.mon}`).then(r => r.json());
+      if ('message' in moveSet) {
+        setRequestOk(false);
+        return
+      }
       let types = {};
       const moveValues = moveSet.map((i) => {
         i.move = i.move[0]
@@ -129,6 +135,11 @@ export function MoveSetTable(props) {
     }
     getData();
   }, [props.mon]);
+  if (!requestOk) {
+    return (
+      <Alert variant="danger">No moves found.</Alert>
+    )
+  }
   const columns = [
     {
       text: 'Name',
