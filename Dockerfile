@@ -10,6 +10,7 @@ WORKDIR /app
 COPY ./webapi/ .
 COPY --from=build-react-app /app/build/ /app/static/
 RUN npm install
+# RUN chmod +x entrypoint.sh
 EXPOSE 8000
-CMD ["npm", "start"]
+ENTRYPOINT [ "/app/entrypoint.sh" ]
 

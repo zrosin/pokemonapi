@@ -1,11 +1,12 @@
 // API routes go here.
 const { Pokemon, Ability, Move, MoveSet } = require('../models/pokemon');
 const router = require('express').Router();
+const NUMBER_OF_POKEMON_IN_PAGE = 40;
 
 // Get all pokemon
 // http://localhost:8000/api/pokemon
 router.get("/", function(req, res) {
-    Pokemon.find({},{ image:0 }, function(err, pokemon) {
+    Pokemon.find({},{ image:0 }).sort({pokedexNumber: "ascending"}).exec( function(err, pokemon) {
         if (err) {
             console.log(err);
             res.status(400).json({'message': `error: ${err}`});
@@ -17,24 +18,52 @@ router.get("/", function(req, res) {
             res.status(404).json({'message': "There are no Pokémon in the database!"}); 
         }
     });
- });
+});
  
- // Get all pokemon in pages, with only relevant info for a title card
- // http://localhost:8000/api/pokemon/small/:page
- router.get('/small/:page', function(req, res) {
-    Pokemon.find({}, { _id:0, name:1, pokedexNumber:1, imgurl:1 }, { sort: {pokedexNumber: 1}, skip: (40 * req.params.page), limit: 40 }, function(err, pokemon) {
+// Get all pokemon in pages, with only relevant info for a title card
+// http://localhost:8000/api/pokemon/small/:page
+router.get('/small/:page', function(req, res) {
+    Pokemon.find({}, { _id:0, name:1, pokedexNumber:1, imgurl:1 }, { sort: {pokedexNumber: 1}, skip: (NUMBER_OF_POKEMON_IN_PAGE * (req.params.page - 1)), limit: NUMBER_OF_POKEMON_IN_PAGE }, function(err, pokemon) {
         if (err) {
             console.log(err);
             res.status(400).json({'message': `error: ${err}`});
         }
         else if (pokemon.length) {
-            res.status(200).json(pokemon);
+            Pokemon.count({}, function(err, count) {
+                if (err) {
+                    res.status(400).json({'message': `error: ${err}`});
+                }
+                else if (count) {
+                    res.status(200).json({  'pages' : Math.ceil(count / NUMBER_OF_POKEMON_IN_PAGE),
+                                            'page' : req.params.page,
+                                            'pokemon' : pokemon});
+                }
+                else {
+                    res.status(404).json({'message': "There are no Pokémon in the database!"}); 
+                }
+            });
         }
         else {
             res.status(404).json({'message': "There are no Pokémon in the database!"}); 
         }
     });
- });
+});
+
+// Return number of possible pages of pokemon.
+// http://localhost:8000/api/pokemon/pages
+router.get('/pages', function(req, res) {
+    Pokemon.count({}, function(err, count) {
+        if (err) {
+            res.status(400).json({'message': `error: ${err}`});
+        }
+        else if (count) {
+            res.status(200).json({'pages' :`${Math.ceil(count / NUMBER_OF_POKEMON_IN_PAGE)}`});
+        }
+        else {
+            res.status(404).json({'message': "There are no Pokémon in the database!"}); 
+        }
+    });
+});
 
 // Get pokemon with given ID
 // http://localhost:8000/api/pokemon/id/6063cdb5f0af1b48c8a5218d
@@ -230,7 +259,7 @@ router.get('/ability/:name', (req, res) => {
 // get the moveset for a Pokémon based on its Pokédex ID.
 // http://localhost:8000/api/pokemon/moveset/5
 router.get('/moveset/:dexNum', (req, res) => {
-    MoveSet.find({pokedexNumber: {$eq: req.params.dexNum } }).populate('move').exec( (err, moveset) => {
+    MoveSet.find({pokedexNumber: {$eq: req.params.dexNum } }).populate('move').sort({level: 'ascending'}).exec( (err, moveset) => {
             if(err) {
                 console.log(err);
                 res.status(400).json({'message': `error: ${err}`});
