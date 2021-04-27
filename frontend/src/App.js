@@ -4,6 +4,8 @@ import React, { useState, useEffect} from 'react';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import { DetailedPokemon } from './DetailedPokemon';
+import { MainPage } from './MainPage';
+
 
 
 
@@ -32,8 +34,7 @@ function App() {
             <DetailedPokemon />
           </Route>
           <Route exact path={["/", "/pokemon"]}>
-            <SeachBar/>
-            <GetPokemonForMainPage/>
+            <MainPage/>
           </Route>
         </Switch>
         {/* disabled routes. uncomment and fix imports to reenable. */}
@@ -66,115 +67,6 @@ function App() {
 export function checkNull(ability) {
   return ability !== null;
 }
-
-
-//Works but causes page to rerender, which might actually kill the progress once its set up all the way. Still needs it query call and the be connected to intitalInfo.
-class SeachBar extends React.Component {
-  
-  constructor(props) {
-    super(props);
-    this.state = {value: ''};
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.getQuery = this.getQuery.bind(this);
-  }
-
-  handleChange(event) {    
-    this.setState({value: event.target.value});  
-  }
-
-  handleSubmit(event) {
-    this.getQuery();
-  }
-
-  async getQuery() {
-    let response = await fetch("/api/pokemon/small/query/" + this.state.value).then(r => r.json());
-    //Give result to initialInfo.
-  }
-  
-
-  render() {
-    return (
-      <div>
-        <form onSubmit={this.handleSubmit}>
-          <label>
-            <input type="text" value={this.state.value} onChange={this.handleChange} />
-          </label>
-          <input type="submit" value="Submit" />
-        </form>
-      </div>
-    );
-  }
-}
-
-function GetPokemonForMainPage() {
-  const [initialInfo, setInitialInfo] = useState([]);
-  const [pageNum, setPageNum] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
-  
-  
-  useEffect(() => {
-    async function getAllPokemon() {
-      setInitialInfo("")
-      let response = await fetch("/api/pokemon/small/" + currentPage).then(r => r.json());
-      let result = response;
-      setInitialInfo(result.pokemon);
-      setPageNum(result.pages);
-    }
-    getAllPokemon();
-  }, [currentPage]);
-
-  function AllPokemon() {
-    let PokemonDivs;
-    if(initialInfo.length !== 0) {
-      PokemonDivs = initialInfo.map((entry) => (
-          <div key={entry.pokedexNumber} className="PokemonElement">
-            <a href={"/pokemon/" + entry.pokedexNumber}>
-              <img src={entry.imgurl} alt={entry.name + " image"} />
-              <h4>{entry.name}</h4>
-              <h8>#{entry.pokedexNumber}</h8>
-            </a>
-          </div>
-        
-      ));
-    }
-    return ( 
-      <div className="MainPageList">
-        {PokemonDivs} 
-      </div>
-      );
-  }
-
-  function PageButtons() {
-    let Buttons=[];
-    for(let i = 1; i <= pageNum; i++) {
-      Buttons.push(
-        <button key={i} onClick={() => setCurrentPage(i)}>
-          {i}
-        </button>
-      );
-    }
-    console.log(Buttons);
-    return (
-      <div>
-        {Buttons}
-      </div>
-    );
-  }
-  return (
-      <div>
-        <AllPokemon />
-        <PageButtons />
-      </div>
-  );
-  
-}
-
-
-
-
-
-
 
 
 
