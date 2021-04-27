@@ -44,15 +44,18 @@ function Login() {
   useEffect(() => {
     if(HasAttempted) {
       async function authenticate() {
-        const response = await fetch("/api/auth", {
+        console.log(`${UserName}: ${PassWord}`)
+        const response = await fetch("/api/user/auth", {
           method: "POST",
+          headers: {
+            'Content-Type': 'application/json'
+          },      
           body: JSON.stringify({ 
              username: UserName,
              password: PassWord })
         });
         console.log(response);
         if (!('message' in response)) {
-          alert("Login successful!");
           sessionStorage.set("jwt", response);
         }
         else {
@@ -82,7 +85,7 @@ function Login() {
   return (
     <div className = "login">
       <AlertBox />
-      <Form onSubmit={() => setHasAttempted(true)}>
+      <Form onSubmit={(e) => {setHasAttempted(true); e.preventDefault()}}>
         <Form.Row>
           <Form.Group>
             <Form.Label>Enter Username:</Form.Label>
@@ -92,7 +95,7 @@ function Login() {
         <Form.Row>
           <Form.Group>
             <Form.Label>Enter Password:</Form.Label>
-            <Form.Control as="input" onChange={e => setPassWord(e.target.value)} type="text" value={PassWord}></Form.Control>
+            <Form.Control as="input" onChange={e => setPassWord(e.target.value)} type="password" value={PassWord}></Form.Control>
           </Form.Group>
         </Form.Row>
         <Button variant="primary" type="submit">Login</Button>

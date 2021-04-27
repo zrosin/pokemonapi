@@ -41,6 +41,7 @@ router.post("/create", function (req, res) {
 
 router.post("/auth", (req, res) => {
     if (!req.body.username || !req.body.password) {
+        console.log(req.body);
         res.status(401).send({ 'message': 'Make sure to give me a username and a password!' });
         return;
     }
