@@ -3,9 +3,11 @@
 // This script pulls pictures from a GitHub repository -- make sure you are connected to the internet!
 
 const {Pokemon, MoveSet, Move, Ability} = require("./models/pokemon");
+const User = require("./models/user");
 // const  = require("./models/moves");
 const fs = require('fs');
 const fetch = require('node-fetch');
+const bcrypt = require('bcryptjs');
 
 async function fetchResults(path) {
     return fetch(path)
@@ -16,6 +18,12 @@ async function fetchResults(path) {
       })
   }
 
+async function initUser() {
+    await User.deleteMany({});
+    const user = new User({username: "bsmith", password: bcrypt.hashSync('opensesame', 10)});
+    await user.save();
+    console.log("User bsmith created!")
+}
 async function initPkmn(dex) {
     await Pokemon.deleteMany({});
     let url = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/"
@@ -67,7 +75,7 @@ async function initMoves(moveSet, moves) {
 
 // The all new and improved dataset was provided by the lovely veekun/pokedex project on GitHub, which consists of a bunch of CSV files full of data dumped from the games.
 // I brought that into SQLite, figured out how they setup their data (which is a lot of fun with no documentation) and cut it down to the test data we'd need.
-// (The data was in 3NF, and I didn't completely denormalize, so Mongo isn't running as fast as it would like. Oh well.)
+// (The data was in 3NF, and I didn't completely denormalize, so Mongo isn't running as efficiently as it should be. Oh well.)
 // That project is licensed under the MIT License, but of course the contents (but not the formats) of the files are (c) Nintendo/Creatures/Game Freak.
 
 let promises = [];
@@ -84,6 +92,8 @@ const moveSets = JSON.parse(rawMoveSets);
 const rawMoves = fs.readFileSync("test/data/moves.json");
 const moves = JSON.parse(rawMoves);
 promises.push(initMoves(moveSets, moves));
+
+promises.push(initUser());
 
 async function finish(arr) {
     await Promise.all(arr).then(() => {
