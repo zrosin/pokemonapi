@@ -1,8 +1,11 @@
-const {Pokemon} = require('../models/pokemon');
+const { Pokemon } = require('../models/pokemon');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const server = require('../server');
-
+const User = require('../models/user');
+const { secret } = require('../api/user');
+const bcrypt = require('bcryptjs');
+const jwt = require('jwt-simple');
 // Use should BDD-style syntax
 const should = chai.should();
 
@@ -16,7 +19,7 @@ describe('Pokemon API', () => {
     beforeEach(async () => {
         // Clear database
         await Pokemon.deleteMany({});
-
+        await User.deleteMany({});
         // Clear array
         testPokemonDocs.length = 0;
 
@@ -26,6 +29,9 @@ describe('Pokemon API', () => {
             const pokemonDoc = await pokemon.save();
             testPokemonDocs.push(pokemonDoc);
         }
+        // add test user
+        const user = new User({ username: "bsmith", password: bcrypt.hashSync('opensesame', 10) });
+        await user.save();
     });
 
     const testPokemonDocs = [];
@@ -241,11 +247,13 @@ describe('Pokemon API', () => {
             hiddenAbility: 'Run Away'
         }
     ]
+    const bsmithJwt = jwt.encode({username: "bsmith"}, secret);
 
     describe('GET /pokemon', () => {
         it('should get all the pokemon', (done) => {
             chai.request(server)
                 .get('/api/pokemon/')
+                .set('x-auth', bsmithJwt)
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.body.should.be.a('array');
@@ -261,6 +269,7 @@ describe('Pokemon API', () => {
 
             chai.request(server)
                 .get('/api/pokemon/id/' + pokemon._id)
+                .set('x-auth', bsmithJwt)
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.body.should.be.a('object');
@@ -277,6 +286,7 @@ describe('Pokemon API', () => {
         it('should return 400 with a bad id', (done) => {
             chai.request(server)
                 .get('/api/pokemon/id/badid/')
+                .set('x-auth', bsmithJwt)
                 .end((err, res) => {
                     res.should.have.status(400);
                     res.body.should.be.a('object');
@@ -292,6 +302,7 @@ describe('Pokemon API', () => {
 
             chai.request(server)
                 .get('/api/pokemon/pokedex/' + pokemon.pokedexNumber)
+                .set('x-auth', bsmithJwt)
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.body.should.be.a('object');
@@ -308,6 +319,7 @@ describe('Pokemon API', () => {
         it('should return 404 with a bad pokedex number', (done) => {
             chai.request(server)
                 .get('/api/pokemon/pokedex/11/')
+                .set('x-auth', bsmithJwt)
                 .end((err, res) => {
                     res.should.have.status(404);
                     res.body.should.be.a('object');
@@ -322,6 +334,7 @@ describe('Pokemon API', () => {
 
             chai.request(server)
                 .get('/api/pokemon/type/' + pokemon.types[0])
+                .set('x-auth', bsmithJwt)
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.body.should.be.a('array');
@@ -333,6 +346,7 @@ describe('Pokemon API', () => {
         it('should return 404 on bad type', (done) => {
             chai.request(server)
                 .get('/api/pokemon/type/notatype/')
+                .set('x-auth', bsmithJwt)
                 .end((err, res) => {
                     res.should.have.status(404);
                     res.body.should.be.a('object');
@@ -350,6 +364,7 @@ describe('Pokemon API', () => {
 
             chai.request(server)
                 .post('/api/pokemon/')
+                .set('x-auth', bsmithJwt)
                 .send(pokemon)
                 .end((err, res) => {
                     res.should.have.status(201);
@@ -368,6 +383,7 @@ describe('Pokemon API', () => {
 
             chai.request(server)
                 .post('/api/pokemon/')
+                .set('x-auth', bsmithJwt)
                 .send(pokemon)
                 .end((err, res) => {
                     res.should.have.status(400);
@@ -381,6 +397,7 @@ describe('Pokemon API', () => {
 
             chai.request(server)
                 .post('/api/pokemon/')
+                .set('x-auth', bsmithJwt)
                 .send(pokemon)
                 .end((err, res) => {
                     res.should.have.status(404);
@@ -394,6 +411,7 @@ describe('Pokemon API', () => {
 
             chai.request(server)
                 .post('/api/pokemon/')
+                .set('x-auth', bsmithJwt)
                 .send(pokemon)
                 .end((err, res) => {
                     res.should.have.status(404);
@@ -407,6 +425,7 @@ describe('Pokemon API', () => {
 
             chai.request(server)
                 .post('/api/pokemon/')
+                .set('x-auth', bsmithJwt)
                 .send(pokemon)
                 .end((err, res) => {
                     res.should.have.status(400);
@@ -425,12 +444,14 @@ describe('Pokemon API', () => {
 
             chai.request(server)
                 .put('/api/pokemon/id/' + testPokemonDocs[4]._id)
+                .set('x-auth', bsmithJwt)
                 .send(pokemon)
                 .end((err, res) => {
                     res.should.have.status(200);
 
                     chai.request(server)
                         .get('/api/pokemon/id/' + testPokemonDocs[4]._id)
+                        .set('x-auth', bsmithJwt)
                         .end((err, res) => {
                             res.body.should.have.property('pokedexNumber').eql(pokemon.pokedexNumber);
                             res.body.should.have.property('name').eql(pokemon.name);
@@ -447,12 +468,14 @@ describe('Pokemon API', () => {
 
             chai.request(server)
                 .put('/api/pokemon/id/' + testPokemonDocs[4]._id)
+                .set('x-auth', bsmithJwt)
                 .send(pokemon)
                 .end((err, res) => {
                     res.should.have.status(200);
 
                     chai.request(server)
                         .get('/api/pokemon/id/' + testPokemonDocs[4]._id)
+                        .set('x-auth', bsmithJwt)
                         .end((err, res) => {
                             res.body.should.have.property('pokedexNumber').eql(pokemon.pokedexNumber);
                             res.body.should.have.property('name').eql(pokemon.name);
@@ -470,12 +493,14 @@ describe('Pokemon API', () => {
 
             chai.request(server)
                 .put('/api/pokemon/id/' + testPokemonDocs[6]._id)
+                .set('x-auth', bsmithJwt)
                 .send(pokemon)
                 .end((err, res) => {
                     res.should.have.status(404);
 
                     chai.request(server)
                         .get('/api/pokemon/id/' + testPokemonDocs[6]._id)
+                        .set('x-auth', bsmithJwt)
                         .end((err, res) => {
                             res.body.should.have.property('pokedexNumber').not.eql(pokemon.pokedexNumber);
                             done();
@@ -490,11 +515,13 @@ describe('Pokemon API', () => {
 
             chai.request(server)
                 .delete('/api/pokemon/id/' + pokemon._id)
+                .set('x-auth', bsmithJwt)
                 .end((err, res) => {
                     res.should.have.status(204);
 
                     chai.request(server)
                         .get('/api/pokemon/id/' + pokemon._id)
+                        .set('x-auth', bsmithJwt)
                         .end((err, res) => {
                             res.should.have.status(404);
                             done();
@@ -504,6 +531,7 @@ describe('Pokemon API', () => {
         it('should not delete a pokemon with an invalid id', (done) => {
             chai.request(server)
                 .delete('/api/pokemon/id/badid')
+                .set('x-auth', bsmithJwt)
                 .end((err, res) => {
                     res.should.have.status(400);
                     done();
