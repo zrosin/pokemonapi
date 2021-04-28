@@ -13,23 +13,27 @@ Notes on project proposal;
    We did drop the idea for adding sound, as the images were more than complicated for us, and we were not fond of the idea of using the sound resource if we weren't caching in our own DB.
 
 
-Easton:
+Easton - 40:
 db side user auth
 db overhaul(adding 800 more pokemon to test data, adding moves and abilities)
 react setup
 team builder logic
 
 
-Johnathan:
+Johnathan - 30:
 react side user auth
 detailed info page
 get/post/put react pages - commented out by default
 
 
 
-Zach:
+Zach - 30:
 fixed, edited, and added api routes.
 react main page
 search bar implementation using mongoose-fuzzy-searching
 react skeleton for team builder
 most styling
+
+
+Notes:
+  Easton did much harder elements to the project so we are going to give him slightly more credit. The amount of time was roughly equal, Easton was just more effiecient with it.
