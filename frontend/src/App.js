@@ -111,7 +111,16 @@ function App() {
   const { token, setToken } = useToken();
 
     if(!token) {
-      return <Login setToken={setToken} />
+      return (
+        <>
+          <Router>
+            <Navbar bg="dark" variant="dark">
+              <Navbar.Brand as={Link} to="/login">Login</Navbar.Brand>
+            </Navbar>
+            <Login setToken={setToken} />
+          </Router>
+        </>
+      );
     }
 
     return (
