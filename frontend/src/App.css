@@ -2,6 +2,11 @@
   text-align: center;
 }
 
+.login {
+  padding-left: 20px;
+  padding-top: 15px;
+}
+
 ul {
   display: inline-block;
 }
