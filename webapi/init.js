@@ -2,7 +2,8 @@
 // Based on code from Dr. McCown's Canvas Announcement - https://harding.instructure.com/courses/1226504/discussion_topics/3177364
 // This script pulls pictures from a GitHub repository -- make sure you are connected to the internet!
 
-const {Pokemon, MoveSet, Move, Ability} = require("./models/pokemon");
+const { Pokemon, MoveSet, Move, Ability } = require("./models/pokemon");
+const Team = require("./models/team")
 const User = require("./models/user");
 const fs = require('fs');
 const fetch = require('node-fetch');
@@ -10,16 +11,17 @@ const bcrypt = require('bcryptjs');
 
 async function fetchResults(path) {
     return fetch(path)
-      .then(res=>{return res.buffer();})
-      .then(blob=>{;
-        // console.log(blob);
-        return blob;
-      })
-  }
+        .then(res => { return res.buffer(); })
+        .then(blob => {
+            ;
+            // console.log(blob);
+            return blob;
+        })
+}
 
 async function initUser() {
     await User.deleteMany({});
-    const user = new User({username: "bsmith", password: bcrypt.hashSync('opensesame', 10)});
+    const user = new User({ username: "bsmith", password: bcrypt.hashSync('opensesame', 10) });
     await user.save();
     console.log("User bsmith created!")
 }
@@ -96,10 +98,34 @@ promises.push(initMoves(moveSets, moves));
 
 promises.push(initUser());
 
+
 async function finish(arr) {
-    await Promise.all(arr).then(() => {
+    await Promise.all(arr).then(async () => {
+        // Ugly team demo setup...
+        let teamMembers = await Pokemon.find({})
+            .limit(6)
+            .then((res) =>
+                Promise.all(
+                    res.map(async (i) =>
+                        MoveSet.find({ pokedexNumber: { $eq: i.pokedexNumber } })
+                            .populate("move")
+                            .sort({ level: "descending" })
+                            .select("move")
+                            .limit(4)
+                            .then((j) => {
+                                return { pokemon: i._id, moves: j.map((b) => b._id) };
+                            })
+                    )
+                )
+            );
+        await Team.deleteMany({});
+        let user = await User.findOne({}).select("_id");
+        let newTeam = new Team({name: "My Team", user: user._id, comp: teamMembers});
+        await newTeam.save();
+        await Team.findOne({}).exec().then((x) => console.log(x.comp[0].moves));
+        console.log("Team created!")
         console.log("Database initialized! Have fun! 🎉");
-        process.exit(); 
+        process.exit();
     });
 }
 finish(promises)
