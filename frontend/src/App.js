@@ -12,6 +12,7 @@ import { DetailedPokemon } from './DetailedPokemon';
 import { useHistory } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import { MainPage } from './MainPage';
+import { TeamBuilder } from './TeamBuilder';
 
 
 
@@ -21,6 +22,7 @@ function Navigation() {
       <Navbar.Brand as={Link} to="/">Pokédex!</Navbar.Brand>
       <Nav className="mr-auto">
         <Nav.Link as={Link} to="/">Main Page</Nav.Link>
+        <Nav.Link as={Link} to="/teambuilder">Build a Team!</Nav.Link>
       </Nav>
       </Navbar>
     );
@@ -144,6 +146,11 @@ function App() {
           <Route path="/login">
             <Login />
           </Route>
+          <Route path="/pokemon/:dexNum"></Route>
+          <Route path="/teambuilder">
+            <TeamBuilder />
+          </Route>
+          <Route exact path={["/", "/pokemon"]}></Route>
         </Switch>
         {/* disabled routes. uncomment and fix imports to reenable. */}
         {/* <Switch>     
@@ -175,100 +182,6 @@ function App() {
 export function checkNull(ability) {
   return ability !== null;
 }
-
-
-// function GetPokemonForMainPage() {
-//   const [initialInfo, setInitialInfo] = useState([]);
-//   const [pageNum, setPageNum] = useState(0);
-//   const [currentPage, setCurrentPage] = useState(1);
-  
-  
-//   useEffect(() => {
-//     async function getAllPokemon() {
-//       let token = sessionStorage.getItem("jwt");
-//       setInitialInfo("")
-//       let response = await fetch("/api/pokemon/small/" + currentPage, {
-//         headers: { "x-auth": token }}).then(r => r.json());
-//       let result = response;
-//       setInitialInfo(result.pokemon);
-//       setPageNum(result.pages);
-//     }
-//     getAllPokemon();
-//   }, [currentPage]);
-
-//   function Image(props) {
-//     const [imageUrl, setImageUrl] = useState("");
-//     useEffect(() => {
-//       if(imageUrl === "") {
-//         async function getImage() {
-//           const src = props.url;
-//           const options = {
-//           headers: {
-//             'x-auth': sessionStorage.getItem("jwt")
-//             }
-//           };
-
-//           const imageRes = await fetch(src, options)
-//             .then(res => res.blob())
-//             .then(blob => {
-//               setImageUrl(URL.createObjectURL(blob));
-//           });
-//         }
-//         getImage();
-//       }
-//     });
-
-//     return(
-//       <img src={imageUrl}/>
-//     );
-//   }
-
-//   function AllPokemon() {
-//     let PokemonDivs;
-//     if(initialInfo.length !== 0) {
-//       PokemonDivs = initialInfo.map((entry) => (
-//           <div key={entry.pokedexNumber} className="PokemonElement">
-//             <a href={"/pokemon/" + entry.pokedexNumber}>
-//               <Image url={entry.imgurl} />
-//               <h4>{entry.name}</h4>
-//               <h8>#{entry.pokedexNumber}</h8>
-//             </a>
-//           </div>
-        
-//       ));
-//     }
-//     return ( 
-//       <div className="MainPageList">
-//         {PokemonDivs} 
-//       </div>
-//       );
-//   }
-
-//   function PageButtons() {
-//     let Buttons=[];
-//     for(let i = 1; i <= pageNum; i++) {
-//       Buttons.push(
-//         <button key={i} onClick={() => setCurrentPage(i)}>
-//           {i}
-//         </button>
-//       );
-//     }
-//     return (
-//       <div>
-//         {Buttons}
-//       </div>
-//     );
-//   }
-//   return (
-//       <div>
-//         <AllPokemon />
-//         <PageButtons />
-//       </div>
-//   );
-  
-// }
-
-
 
 
 

@@ -26,6 +26,7 @@ const pokemonSchema = new mongoose.Schema({
 // https://mongoosejs.com/docs/guide.html#virtuals
 pokemonSchema.virtual('imgurl').get(function () {return `/api/pokemon/img/${this.pokedexNumber}`});
 
+
 const Pokemon = mongoose.model('Pokemon', pokemonSchema);
 
 // the collection that stores what moves each pokemon can do. 

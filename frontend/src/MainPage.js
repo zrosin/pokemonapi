@@ -7,9 +7,11 @@ import { Link } from 'react-router-dom';
   
   //I want to split this 
 export function MainPage() {
-  const [initialInfo, setInitialInfo] = useState([]);
+  const [pokemonInfo, setInitialInfo] = useState([]);
   const [pageNum, setPageNum] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const [query, setQuery] = useState("");
+  const [submitQuery, setSubmitQuery] = useState("");
   
   
   useEffect(() => {
@@ -54,8 +56,8 @@ export function MainPage() {
 
   function AllPokemon() {
     let PokemonDivs;
-    if(initialInfo.length !== 0) {
-      PokemonDivs = initialInfo.map((entry) => (
+    if(pokemonInfo.length !== 0) {
+      PokemonDivs = pokemonInfo.map((entry) => (
           <div key={entry.pokedexNumber} className="PokemonElement">
             <Link to={"/pokemon/" + entry.pokedexNumber}>
               <Image url={entry.imgurl} />
@@ -71,6 +73,30 @@ export function MainPage() {
         {PokemonDivs} 
       </div>
       );
+  }
+
+  function SearchBar() {
+    
+    useEffect(() => {
+      async function getQuery() {
+        if (submitQuery) {
+        let response = await fetch("/api/pokemon/small/query/" + submitQuery).then(r => r.json());
+        let result = response;
+        setInitialInfo(result.pokemon);
+        }
+      }
+      getQuery();
+    });
+
+    return (
+        <Form className="SearchBar">
+          <Form.Group>
+            <Form.Control as="input"  onChange={e => setQuery(e.target.value)} type="text" value={query} />
+            <Button variant="outline-primary" onClick={() => setSubmitQuery(query)}>Search</Button>
+            <Button variant="outline-danger" onClick={() => setCurrentPage(1)}>Cancel</Button>
+          </Form.Group>
+        </Form>
+      ); 
   }
 
   function PageButtons() {
@@ -90,6 +116,7 @@ export function MainPage() {
   }
   return (
       <div>
+        {SearchBar()}
         <AllPokemon />
         <PageButtons />
       </div>
