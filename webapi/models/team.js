@@ -26,7 +26,7 @@ const teamSchema = new mongoose.Schema({
 
 // Sorry for adding an additional dependency. This was the only way I could get it to work well.
 teamSchema.plugin(require('mongoose-autopopulate'));
-teamSchema.methods.findTypeWeaknesses = () => {
+teamSchema.methods.findTypeWeaknesses = function() {
     // Full disclosure, this wasn't thoroughly tested.
     let allMessages = [];
     let weaknessCount = {}
@@ -57,10 +57,14 @@ teamSchema.methods.findTypeWeaknesses = () => {
             });
         });
     });
+    try {
     for (let i of strengthCount.entries()) {
         if(strengthCount[i] >= 4 ) {
             allMessages.push({'success': `At least four of your Pokémon are super effective against ${i}-type Pokémon. Cool!`});
         }
+    }
+    } catch {
+        pass
     }
     for (let i of weaknessCount.entries()) {
         if(weaknessCount[i] >= 3 && weaknessCount[i] != 6) {
