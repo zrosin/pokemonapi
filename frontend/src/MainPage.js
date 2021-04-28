@@ -1,6 +1,7 @@
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button'
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 
   
@@ -56,11 +57,11 @@ export function MainPage() {
     if(initialInfo.length !== 0) {
       PokemonDivs = initialInfo.map((entry) => (
           <div key={entry.pokedexNumber} className="PokemonElement">
-            <a href={"/pokemon/" + entry.pokedexNumber}>
+            <Link to={"/pokemon/" + entry.pokedexNumber}>
               <Image url={entry.imgurl} />
               <h4>{entry.name}</h4>
               <h8>#{entry.pokedexNumber}</h8>
-            </a>
+            </Link>
           </div>
         
       ));

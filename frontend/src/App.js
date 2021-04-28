@@ -50,6 +50,9 @@ function Login(props) {
         });
         let tokenResponse = await response.json();
         if (!('message' in response)) {
+          if (tokenResponse.token === undefined) {
+            console.log("You really shouldn't be here.")
+          }
           sessionStorage.setItem("jwt", tokenResponse.token);
           // setIsAuthenticated(true);
           history.push("/");
