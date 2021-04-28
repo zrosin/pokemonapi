@@ -15,7 +15,7 @@ app.use(express.json());
 app.use("/api/user/", cors(), user.router);
 
 // For all API routes that aren't user creation/login, authentication is required. There wasn't another great place to put this middleware, so...
-app.use("/api/", (req, res, next) => {
+app.use("/api/", cors(), (req, res, next) => {
     if (!req.headers["x-auth"]) {
         return res.status(401).send({'message': 'X-Auth header is missing. Did you remember your JWT?'});
     }

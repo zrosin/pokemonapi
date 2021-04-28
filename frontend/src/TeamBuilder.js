@@ -1,38 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
 
+//This function sends a proper request for an image with the authentication header.
+function Image(props) {
+  const [imageUrl, setImageUrl] = useState("");
+  useEffect(() => {
+    if(imageUrl === "") {
+      async function getImage() {
+        const src = props.url;
+        const options = {
+        headers: {
+          'x-auth': sessionStorage.getItem("jwt")
+          }
+        };
+
+        const imageRes = await fetch(src, options)
+          .then(res => res.blob())
+          .then(blob => {
+            setImageUrl(URL.createObjectURL(blob));
+        });
+      }
+      getImage();
+    }
+  });
+
+  return(
+    <img src={imageUrl} />
+  );
+}
 export function TeamBuilder() {
     const [pokemonSelected, setPokemon] = useState("");
     const [analysis, setAnalysis] = useState("");
     const [runAnalysis, addRunAnalysis] = useState(0);
     
-    //This function sends a proper request for an image with the authentication header.
-    function Image(props) {
-        const [imageUrl, setImageUrl] = useState("");
-        useEffect(() => {
-          if(imageUrl === "") {
-            async function getImage() {
-              const src = props.url;
-              const options = {
-              headers: {
-                'x-auth': sessionStorage.getItem("jwt")
-                }
-              };
     
-              const imageRes = await fetch(src, options)
-                .then(res => res.blob())
-                .then(blob => {
-                  setImageUrl(URL.createObjectURL(blob));
-              });
-            }
-            getImage();
-          }
-        });
-    
-        return(
-          <img src={imageUrl}/>
-        );
-      }
     //pokemonSelected needs to be a default mon that just has no info or something.
 
     useEffect(() => {
