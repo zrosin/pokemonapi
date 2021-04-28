@@ -40,7 +40,6 @@ function Login(props) {
   useEffect(() => {
     if(HasAttempted) {
       async function authenticate() {
-        console.log(`${UserName}: ${PassWord}`)
         const response = await fetch("/api/user/auth", {
           method: "POST",
           headers: {
@@ -146,7 +145,7 @@ function App() {
           <Route path="/login">
             <Login />
           </Route>
-          <Route path="/pokemon/:dexNum"></Route>
+          <Route path="/pokemon/:dexNum" />
           <Route path="/teambuilder">
             <TeamBuilder />
           </Route>
@@ -182,10 +181,6 @@ function App() {
 export function checkNull(ability) {
   return ability !== null;
 }
-
-
-
-
 
 
 

@@ -2,10 +2,11 @@
 
 const { Mongoose, Schema } = require("mongoose");
 const mongoose = require("../db");
+const mongoose_fuzzy_searching = require('mongoose-fuzzy-searching');
 
 const pokemonSchema = new mongoose.Schema({
     pokedexNumber: {type: Number, required: true, unique: true},
-    name: {type: String},
+    name: {type: String, index: true},
     height: {type: Number},
     weight: {type: Number},
     types: {type: [String]},
@@ -26,6 +27,8 @@ const pokemonSchema = new mongoose.Schema({
 // https://mongoosejs.com/docs/guide.html#virtuals
 pokemonSchema.virtual('imgurl').get(function () {return `/api/pokemon/img/${this.pokedexNumber}`});
 
+// plugin to improve text searching in mongoose.
+pokemonSchema.plugin(mongoose_fuzzy_searching, { fields: ['name'] });
 
 const Pokemon = mongoose.model('Pokemon', pokemonSchema);
 
