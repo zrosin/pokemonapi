@@ -9,39 +9,30 @@ import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert';
 import Nav from 'react-bootstrap/Nav';
 import { DetailedPokemon } from './DetailedPokemon';
+import { useHistory } from "react-router-dom";
+import { createBrowserHistory } from "history";
 
 
 
 function Navigation() {
-  if(sessionStorage.getItem("jwt")) {
-    return(
-      <Navbar bg="dark" variant="dark">
-        <Navbar.Brand as={Link} to="/">Pokédex!</Navbar.Brand>
-        <Nav className="mr-auto">
-          <Nav.Link as={Link} to="/">Main Page</Nav.Link>
-        </Nav>
+  return(
+    <Navbar bg="dark" variant="dark">
+      <Navbar.Brand as={Link} to="/">Pokédex!</Navbar.Brand>
+      <Nav className="mr-auto">
+        <Nav.Link as={Link} to="/">Main Page</Nav.Link>
+      </Nav>
       </Navbar>
     );
-  }
-  return (
-  <Navbar bg="dark" variant="dark">
-    <Nav className="mr-auto">
-      <Nav.Link as={Link} to="/login">Log in</Nav.Link>
-      {/* links for disabled routes, uncomment routes to make sure these do anything if we want them back. */}
-      {/* <Nav.Link as={Link} to="/updatepokemon">Update Pokemon</Nav.Link>
-      <Nav.Link as={Link} to="/getpokemon">Get Pokemon</Nav.Link>
-      <Nav.Link as={Link} to="/postpokemon">Post Pokemon</Nav.Link>
-      <Nav.Link as={Link} to="/deletepokemon">Delete Pokemon</Nav.Link> */}
-    </Nav>
-  </Navbar>
-  );
 }
 
 function Login() {
+  const history = useHistory();
+
   const [UserName, setUserName] = useState("");
   const [PassWord, setPassWord] = useState("");
   const [HasAttempted, setHasAttempted] = useState(false);
   const [alert, setAlert] = useState("");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     if(HasAttempted) {
@@ -57,9 +48,10 @@ function Login() {
              password: PassWord })
         });
         let tokenResponse = await response.json();
-        console.log(tokenResponse.token);
         if (!('message' in response)) {
           sessionStorage.setItem("jwt", tokenResponse.token);
+          setIsAuthenticated(true);
+          history.push("/");
         }
         else {
           setAlert(response.message);
@@ -68,7 +60,7 @@ function Login() {
       authenticate();
       setHasAttempted(false);
     }
-  }, [HasAttempted, alert, UserName, PassWord]);
+  }, [HasAttempted, alert, UserName, PassWord, isAuthenticated, history]);
 
   function AlertBox() {
     if(alert !== "") {
@@ -78,33 +70,44 @@ function Login() {
         </Alert>
       );
     }
-    else {
+    else if(isAuthenticated) {
       return (
+        <Redirect to="/" />
+      );
+    }
+    else {
+      return(
         ""
       );
     }
   }
-
-  return (
-    <div className = "login">
+  if(!isAuthenticated) {
+    return (
+      <div className = "login">
+        <AlertBox />
+        <Form onSubmit={(e) => {setHasAttempted(true); e.preventDefault()}}>
+          <Form.Row>
+            <Form.Group>
+              <Form.Label>Enter Username:</Form.Label>
+              <Form.Control as="input" onChange={e => setUserName(e.target.value)} type="text" value={UserName}></Form.Control>
+            </Form.Group>
+          </Form.Row>
+          <Form.Row>
+            <Form.Group>
+              <Form.Label>Enter Password:</Form.Label>
+              <Form.Control as="input" onChange={e => setPassWord(e.target.value)} type="password" value={PassWord}></Form.Control>
+            </Form.Group>
+          </Form.Row>
+          <Button variant="primary" type="submit">Login</Button>
+        </Form>
+      </div>
+    );
+  }
+  else {
+    return (
       <AlertBox />
-      <Form onSubmit={(e) => {setHasAttempted(true); e.preventDefault()}}>
-        <Form.Row>
-          <Form.Group>
-            <Form.Label>Enter Username:</Form.Label>
-            <Form.Control as="input" onChange={e => setUserName(e.target.value)} type="text" value={UserName}></Form.Control>
-          </Form.Group>
-        </Form.Row>
-        <Form.Row>
-          <Form.Group>
-            <Form.Label>Enter Password:</Form.Label>
-            <Form.Control as="input" onChange={e => setPassWord(e.target.value)} type="password" value={PassWord}></Form.Control>
-          </Form.Group>
-        </Form.Row>
-        <Button variant="primary" type="submit">Login</Button>
-      </Form>
-    </div>
-  );
+    );
+  }
 }
 
 function AuthenticatedRoutes() {
@@ -126,6 +129,8 @@ function AuthenticatedRoutes() {
 }
 
 function App() {
+  const history = createBrowserHistory();
+
     return (
       <Router>
         <Navigation></Navigation>
