@@ -78,8 +78,10 @@ export function MainPage() {
     
     useEffect(() => {
       async function getQuery() {
+        let token = sessionStorage.getItem("jwt");
         if (submitQuery) {
-        let response = await fetch("/api/pokemon/small/query/" + submitQuery).then(r => r.json());
+        let response = await fetch("/api/pokemon/small/query/" + submitQuery, {
+          headers: { "x-auth": token }}).then(r => r.json());
         let result = response;
         setInitialInfo(result.pokemon);
         }
