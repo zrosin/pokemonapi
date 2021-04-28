@@ -75,7 +75,7 @@ export function DetailedPokemon() {
           setDetailedInfo(
             <div className="neat">
               <h1 className="detailed_name">{response.name}</h1>
-              <Image  className="detailed_image" url={response.imgurl}/>
+              <Image className="detailed_image" url={response.imgurl}/>
               <ul>
                 <li><h4>Pokedex Number: {response.pokedexNumber}</h4></li><br />
                 <li><h4>Height (m): {response.height}</h4></li><br />
