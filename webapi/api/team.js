@@ -130,7 +130,7 @@ router.get("/analyze", (req, res) => {
     //     });
     // })
     res.status(200).json([{'ok': 'This is what a ok message looks like.'}, {'warning': 'this is what a warning message looks like'}, {'error': 'this is what an error message looks like.'}]);
-
+});
 
 
 module.exports = router;
