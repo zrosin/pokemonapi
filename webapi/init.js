@@ -4,7 +4,6 @@
 
 const {Pokemon, MoveSet, Move, Ability} = require("./models/pokemon");
 const User = require("./models/user");
-// const  = require("./models/moves");
 const fs = require('fs');
 const fetch = require('node-fetch');
 const bcrypt = require('bcryptjs');
@@ -39,6 +38,7 @@ async function initPkmn(dex) {
         await pkmn.save();
     })
     );
+    console.log("Starting index build!")
     await Pokemon.syncIndexes();
     console.log("National Pokedex import complete!")
 }
