@@ -7,14 +7,17 @@ import Button from 'react-bootstrap/Button';
 import Nav from 'react-bootstrap/Nav';
 import { DetailedPokemon } from './DetailedPokemon';
 import { useHistory } from "react-router-dom";
-import PropTypes from 'prop-types';
 import { MainPage } from './MainPage';
+import { TeamBuilder } from './TeamBuilder';
+import PropTypes from 'prop-types';
+
 function Navigation() {
   return(
     <Navbar bg="dark" variant="dark">
       <Navbar.Brand as={Link} to="/">Pokédex!</Navbar.Brand>
       <Nav className="mr-auto">
         <Nav.Link as={Link} to="/">Main Page</Nav.Link>
+        <Nav.Link as={Link} to="/teambuilder">Build a Team!</Nav.Link>
       </Nav>
       </Navbar>
     );
@@ -132,6 +135,10 @@ function App() {
           <Route exact path={["/", "/pokemon"]}>
             <MainPage userToken={token} />
           </Route>
+          <Route exact path={["/TeamBuilder"]}>
+            <TeamBuilder />
+          </Route>
+          {/* <Route exact path={["/", "/pokemon"]}></Route> */}
         </Switch>
         {/* disabled routes. uncomment and fix imports to reenable. */}
         {/* <Switch>     
