@@ -39,7 +39,7 @@ export function TeamBuilder() {
     useEffect(() => {
         async function getTeamPokemon() {
           let token = sessionStorage.getItem("jwt");
-          let response = await fetch("http://localhost:8000/api/team/", {
+          let response = await fetch("/api/team/", {
             headers: { "x-auth": token }}).then(r => r.json());
           let result = response;
           setPokemon(result.comp);
@@ -78,7 +78,7 @@ export function TeamBuilder() {
     useEffect(() => {
         async function GetAnalysis() {
           let token = sessionStorage.getItem("jwt");
-          let response = await fetch("http://localhost:8000/api/team/analyze", {
+          let response = await fetch("/api/team/analyze", {
             headers: { "x-auth": token }}).then(r => r.json());
           let result = response;
           setAnalysis(result);
