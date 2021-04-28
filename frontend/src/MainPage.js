@@ -19,6 +19,33 @@ function SearchBar(props) {
   );
 }
 
+function Image(props) {
+  const [imageUrl, setImageUrl] = useState("");
+  useEffect(() => {
+    console.log("UseEffect fired inside image.")
+    if (imageUrl === "") {
+      async function getImage() {
+        const src = props.url;
+        const options = {
+          headers: {
+            'x-auth': props.userToken
+          }
+        };
+
+        await fetch(src, options)
+          .then(res => res.blob())
+          .then(blob => {
+            setImageUrl(URL.createObjectURL(blob));
+          });
+      }
+      getImage();
+    }
+  });
+
+  return (
+    <img src={imageUrl} />
+  );
+}
 
 export function MainPage(props) {
   const [pokemonInfo, setInitialInfo] = useState([]);
@@ -69,33 +96,6 @@ export function MainPage(props) {
   //   getAllPokemon();
   // }, [currentPage]);
 
-  function Image(props) {
-    const [imageUrl, setImageUrl] = useState("");
-    useEffect(() => {
-      console.log("UseEffect fired inside image.")
-      if (imageUrl === "") {
-        async function getImage() {
-          const src = props.url;
-          const options = {
-            headers: {
-              'x-auth': props.userToken
-            }
-          };
-
-          await fetch(src, options)
-            .then(res => res.blob())
-            .then(blob => {
-              setImageUrl(URL.createObjectURL(blob));
-            });
-        }
-        getImage();
-      }
-    });
-
-    return (
-      <Image src={imageUrl} />
-    );
-  }
 
   const allPokemonRendered = useMemo(() => {
     function AllPokemon(pokemonInfo) {
@@ -105,7 +105,7 @@ export function MainPage(props) {
         PokemonDivs = pokemonInfo.map((entry) => (
           <div key={entry.pokedexNumber} className="PokemonElement">
             <a href={"/pokemon/" + entry.pokedexNumber}>
-              <Image url={entry.imgurl} />
+              <Image userToken={props.userToken} url={entry.imgurl} />
               <h4>{entry.name}</h4>
               <h8>#{entry.pokedexNumber}</h8>
             </a>
@@ -114,7 +114,7 @@ export function MainPage(props) {
       }
       return (
         <div className="MainPageList">
-          <PokemonDivs />
+          {PokemonDivs}
         </div>
       );
     }
@@ -139,7 +139,7 @@ export function MainPage(props) {
     return (
       <div>
         <SearchBar setQuery={setQuery} setSubmitQuery={setSubmitQuery} setCurrentPage={setCurrentPage} query={query}/>
-        <allPokemonRendered />
+        {allPokemonRendered}
         <PageButtons />
       </div>
     );

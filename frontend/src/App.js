@@ -95,8 +95,9 @@ function useToken() {
   const [token, setToken] = useState(getToken());
 
   const saveToken = userToken => {
+    console.log(userToken);
     sessionStorage.setItem("jwt", userToken);
-    setToken(userToken.token);
+    setToken(userToken);
   };
 
   return {
