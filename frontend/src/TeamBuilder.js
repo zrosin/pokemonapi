@@ -30,7 +30,7 @@ function Image(props) {
 }
 export function TeamBuilder() {
     const [pokemonSelected, setPokemon] = useState([]);
-    const [analysis, setAnalysis] = useState({});
+    const [analysis, setAnalysis] = useState("");
     const [runAnalysis, addRunAnalysis] = useState(0);
     
     
@@ -93,6 +93,23 @@ export function TeamBuilder() {
         GetAnalysis()
     }, [runAnalysis]);
 
+    function Analysis() {
+        let analysisText = "";
+        if(analysis !== "" && runAnalysis !==0) {
+            analysisText = analysis.map((a) => (
+                <>
+                    <p>{a.ok}</p>
+                    <p>{a.warning}</p>
+                    <p>{a.error}</p>
+                </>
+            ));
+        }
+            
+        return (
+            analysisText
+        );
+    }
+
     //This is what will call whatever we bring up to pick the next pokemon. How exactly thats done will have to wait until i know what that will look like.
     //Should be changed to a react button
     function AddPokemon() {
@@ -115,7 +132,7 @@ export function TeamBuilder() {
             </div>
             <div className='team_analysis'>
                 <AnalyzeButton />
-                {analysis.ok}
+                <Analysis />
             </div>
         </div>
     );
