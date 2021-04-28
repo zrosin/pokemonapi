@@ -25,7 +25,6 @@ export function MainPage() {
         let response = await fetch("/api/pokemon/small/query/" + submitQuery).then(r => r.json());
         let result = response;
         setInitialInfo(result.pokemon);
-        setPageNum(result.pages);
       }
       getQuery();
       getAllPokemon();
@@ -34,7 +33,7 @@ export function MainPage() {
     
 
       function SearchBar() {    
-          return (
+        return (
             <Form className="SearchBar">
               <Form.Group>
                 <Form.Control as="input"  onChange={e => setQuery(e.target.value)} type="text" value={query} />
@@ -92,3 +91,4 @@ export function MainPage() {
     );
     
   }
+  
