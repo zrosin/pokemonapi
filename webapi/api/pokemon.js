@@ -40,7 +40,7 @@ router.get('/small/:page', function(req, res) {
 });
 
 router.get('/small/query/:query/', function(req, res) {
-        Pokemon.fuzzySearch({query: req.params.query}, { sort: {pokedexNumber: 1}, limit: NUMBER_OF_POKEMON_IN_PAGE }).select({ _id:0, name:1, pokedexNumber:1, imgurl:1 }).exec( function(err, pokemon) {
+        Pokemon.fuzzySearch({query: req.params.query}).select({ _id:0, name:1, pokedexNumber:1, imgurl:1 }).exec( function(err, pokemon) {
             if (err) {
                 console.log(err);
                 res.status(400).json({'message': `error: ${err}`});
