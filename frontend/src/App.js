@@ -1,16 +1,11 @@
-//sessionStorage.clear();
-
 import './App.css';
-import { BrowserRouter as Router, Switch, Route, Link, Redirect} from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Link} from 'react-router-dom';
 import React, { useState, useEffect} from 'react';
 import Navbar from 'react-bootstrap/Navbar';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import Alert from 'react-bootstrap/Alert';
 import Nav from 'react-bootstrap/Nav';
 import { DetailedPokemon } from './DetailedPokemon';
-import { useHistory } from "react-router-dom";
-import { createBrowserHistory } from "history";
 import PropTypes from 'prop-types';
 
 function Navigation() {
@@ -25,7 +20,6 @@ function Navigation() {
 }
 
 function Login({setToken}) {
-  const history = useHistory();
 
   const [UserName, setUserName] = useState("");
   const [PassWord, setPassWord] = useState("");
