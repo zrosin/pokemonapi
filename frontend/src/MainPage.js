@@ -80,13 +80,8 @@ export function MainPage() {
       async function getQuery() {
         let token = sessionStorage.getItem("jwt");
         if (submitQuery) {
-<<<<<<< Updated upstream
         let response = await fetch("/api/pokemon/small/query/" + submitQuery, {
           headers: { "x-auth": token }}).then(r => r.json());
-=======
-          let token = sessionStorage.getItem("jwt");
-        let response = await fetch("/api/pokemon/small/query/" + submitQuery, {headers: { "x-auth": token }}).then(r => r.json());
->>>>>>> Stashed changes
         let result = response;
         setInitialInfo(result.pokemon);
         }
