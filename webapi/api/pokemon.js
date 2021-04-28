@@ -266,7 +266,7 @@ router.get('/ability/:name', (req, res) => {
 // get the moveset for a Pokémon based on its Pokédex ID.
 // http://localhost:8000/api/pokemon/moveset/5
 router.get('/moveset/:dexNum', (req, res) => {
-    MoveSet.find({pokedexNumber: {$eq: req.params.dexNum } }).populate('move').exec( (err, moveset) => {
+    MoveSet.find({pokedexNumber: {$eq: req.params.dexNum } }).populate('move').sort({level: 'ascending'}).exec( (err, moveset) => {
             if(err) {
                 console.log(err);
                 res.status(400).json({'message': `error: ${err}`});
