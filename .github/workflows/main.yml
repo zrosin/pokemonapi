@@ -35,6 +35,9 @@ jobs:
     - run: npm install
       working-directory: ${{env.working-directory}}
 
+    - run: npm install mocha chai
+      working-directory: ${{env.working-directory}}
+
     - run: npm test
       working-directory: ${{env.working-directory}}
       env:
