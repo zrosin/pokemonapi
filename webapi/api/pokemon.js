@@ -29,7 +29,7 @@ router.get('/small/:page', function(req, res) {
             res.status(400).json({'message': `error: ${err}`});
         }
         else if (pokemon.length) {
-            res.status(200).json({  'pages' : Math.ceil(pokemon.length / NUMBER_OF_POKEMON_IN_PAGE),
+            res.status(200).json({  'pages' : 23,
                                     'page' : req.params.page,
                                     'pokemon' : pokemon});
         }
