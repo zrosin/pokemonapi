@@ -84,6 +84,7 @@ export function MainPage() {
           headers: { "x-auth": token }}).then(r => r.json());
         let result = response;
         setInitialInfo(result.pokemon);
+        setPageNum(result.pages);
         }
       }
       getQuery();
@@ -92,7 +93,7 @@ export function MainPage() {
     return (
         <Form className="SearchBar">
           <Form.Group>
-            <Form.Control as="input"  onChange={e => setQuery(e.target.value)} type="text" value={query} />
+            <Form.Control id="Search" as="input"  onChange={e => setQuery(e.target.value)} type="text" value={query} />
             <Button variant="outline-primary" onClick={() => setSubmitQuery(query)}>Search</Button>
             <Button variant="outline-danger" onClick={() => setCurrentPage(1)}>Cancel</Button>
           </Form.Group>
