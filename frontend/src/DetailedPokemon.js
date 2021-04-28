@@ -35,7 +35,7 @@ export function DetailedPokemon() {
           const src = props.url;
           const options = {
           headers: {
-            'x-auth': sessionStorage.getItem("jwt")
+            'x-auth': JSON.parse(sessionStorage.getItem("jwt")).token
             }
           };
 
@@ -56,10 +56,11 @@ export function DetailedPokemon() {
 
   useEffect(() => {
     if (DetailedInfo === "") {
-      let token = sessionStorage.getItem("jwt");
       async function getDetails() {
+        let tokenString = sessionStorage.getItem("jwt");
+        let userToken = JSON.parse(tokenString);
         const response = await fetch(`../api/pokemon/pokedex/${params.dexNum}`, {
-          headers: { "x-auth": token }}).then(r => r.json());
+          headers: { "x-auth": userToken.token }}).then(r => r.json());
         if (!('message' in response)) {
           let typeList = response.types[1] == null ? response.types[0] : response.types[0] + ", " + response.types[1];
           let initialAbilityList = response.abilities.filter(checkNull);
@@ -134,9 +135,10 @@ export function MoveSetTable(props) {
   })
   useEffect(() => {
     async function getData() {
-      let token = sessionStorage.getItem("jwt");
+      let tokenString = sessionStorage.getItem("jwt");
+      let userToken = JSON.parse(tokenString);
       const moveSet = await fetch(`/api/pokemon/moveset/${props.mon}`, {
-        headers: { "x-auth": token }}).then(r => r.json());
+        headers: { "x-auth": userToken.token }}).then(r => r.json());
       if ('message' in moveSet) {
         setRequestOk(false);
         return

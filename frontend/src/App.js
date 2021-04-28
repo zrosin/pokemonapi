@@ -11,8 +11,7 @@ import Nav from 'react-bootstrap/Nav';
 import { DetailedPokemon } from './DetailedPokemon';
 import { useHistory } from "react-router-dom";
 import { createBrowserHistory } from "history";
-
-
+import PropTypes from 'prop-types';
 
 function Navigation() {
   return(
@@ -25,7 +24,7 @@ function Navigation() {
     );
 }
 
-function Login(props) {
+function Login({setToken}) {
   const history = useHistory();
 
   const [UserName, setUserName] = useState("");
@@ -45,12 +44,12 @@ function Login(props) {
           body: JSON.stringify({ 
              username: UserName,
              password: PassWord })
-        });
-        let tokenResponse = await response.json();
+        }).then(r => r.json());
         if (!('message' in response)) {
-          sessionStorage.setItem("jwt", tokenResponse.token);
+          console.log(response.token);
+          sessionStorage.setItem("jwt", response);
+          setToken(response);
           // setIsAuthenticated(true);
-          history.push("/");
         }
         else {
           setAlert(response.message);
@@ -59,31 +58,17 @@ function Login(props) {
       authenticate();
       setHasAttempted(false);
     }
-  }, [HasAttempted, alert, UserName, PassWord, isAuthenticated, props.history]);
+  }, [HasAttempted, alert, UserName, PassWord]);
 
-  // function AlertBox() {
-  //   if(alert !== "") {
-  //     return(
-  //       <Alert variant={'danger'}>
-  //         {alert}
-  //       </Alert>
-  //     );
-  //   }
-  //   else if(isAuthenticated) {
-  //     return (
-  //       <Redirect to="/" />
-  //     );
-  //   }
-  //   else {
-  //     return(
-  //       ""
-  //     );
-  //   }
-  // }
-  if(!isAuthenticated) {
+  Login.propTypes = {
+    setToken: PropTypes.func.isRequired
+  }
+
     return (
       <div className = "login">
-        {/* <AlertBox /> */}
+        <div>
+          {alert}
+        </div>
         <Form onSubmit={(e) => {setHasAttempted(true); e.preventDefault()}}>
           <Form.Row>
             <Form.Group>
@@ -101,43 +86,43 @@ function Login(props) {
         </Form>
       </div>
     );
-  }
-  else {
-    // return (
-    //   // <AlertBox />
-    // );
+}
+
+function useToken() {
+  const getToken = () => {
+    const tokenString = sessionStorage.getItem("jwt");
+    const userToken = JSON.parse(tokenString);
+    return userToken?.token
+  };
+  const [token, setToken] = useState(getToken());
+
+  const saveToken = userToken => {
+    sessionStorage.setItem("jwt", JSON.stringify(userToken));
+    setToken(userToken.token);
+  };
+
+  return {
+    setToken: saveToken,
+    token
   }
 }
 
-function AuthenticatedRoutes() {
-  if(sessionStorage.getItem("jwt")) {
-    console.log("Evaluating routes...")
-    return(
+function App() {
+  const { token, setToken } = useToken();
+
+    if(!token) {
+      return <Login setToken={setToken} />
+    }
+
+    return (
+      <Router>
+        <Navigation></Navigation>
         <Switch>
           <Route path="/pokemon/:dexNum">
             <DetailedPokemon />
           </Route>
           <Route exact path={["/", "/pokemon"]}>
             <GetPokemonForMainPage />
-          </Route>
-        </Switch>
-    );
-  }
-  return (
-    <Redirect to='/login' />
-  );
-}
-
-function App() {
-  const history = createBrowserHistory();
-
-    return (
-      <Router>
-        <Navigation></Navigation>
-        <AuthenticatedRoutes />
-        <Switch>
-          <Route path="/login">
-            <Login />
           </Route>
         </Switch>
         {/* disabled routes. uncomment and fix imports to reenable. */}
@@ -180,10 +165,11 @@ function GetPokemonForMainPage() {
   
   useEffect(() => {
     async function getAllPokemon() {
-      let token = sessionStorage.getItem("jwt");
+      let tokenString = sessionStorage.getItem("jwt");
+      let userToken = JSON.parse(tokenString);
       setInitialInfo("")
       let response = await fetch("/api/pokemon/small/" + currentPage, {
-        headers: { "x-auth": token }}).then(r => r.json());
+        headers: { "x-auth": userToken.token }}).then(r => r.json());
       let result = response;
       setInitialInfo(result.pokemon);
       setPageNum(result.pages);
@@ -199,7 +185,7 @@ function GetPokemonForMainPage() {
           const src = props.url;
           const options = {
           headers: {
-            'x-auth': sessionStorage.getItem("jwt")
+            'x-auth': JSON.parse(sessionStorage.getItem("jwt")).token
             }
           };
 
