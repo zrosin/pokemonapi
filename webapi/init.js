@@ -3,6 +3,7 @@
 // This script pulls pictures from a GitHub repository -- make sure you are connected to the internet!
 
 const { Pokemon, MoveSet, Move, Ability } = require("./models/pokemon");
+const { ObjectId }  = require('bson');
 const Team = require("./models/team")
 const User = require("./models/user");
 const fs = require('fs');
@@ -113,7 +114,7 @@ async function finish(arr) {
                             .select("move")
                             .limit(4)
                             .then((j) => {
-                                return { pokemon: i._id, moves: j.map((b) => b._id) };
+                                return { pokemon: i._id, moves: j.map(m =>  ObjectId(m.move._id) ) };
                             })
                     )
                 )
@@ -122,7 +123,7 @@ async function finish(arr) {
         let user = await User.findOne({}).select("_id");
         let newTeam = new Team({name: "My Team", user: user._id, comp: teamMembers});
         await newTeam.save();
-        await Team.findOne({}).exec().then((x) => console.log(x.comp[0].moves));
+        // await Team.findOne({}).exec().then((x) => console.log(x.comp[0].moves[0]));
         console.log("Team created!")
         console.log("Database initialized! Have fun! 🎉");
         process.exit();

@@ -42,7 +42,7 @@ const moveSetSchema = new mongoose.Schema({
     moveId: {type: Number},
     learnedVia: {type: String},
     level: {type: Number},
-    move: [{type: Schema.Types.ObjectId, ref: "Move"}]
+    move: {type: Schema.Types.ObjectId, ref: "Move"}
 })
 
 const MoveSet = mongoose.model('MoveSet', moveSetSchema);

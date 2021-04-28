@@ -11,7 +11,7 @@ const teamSchema = new mongoose.Schema({
         type: [
             {
                 pokemon: { type: Schema.Types.ObjectId, ref: 'Pokemon', autopopulate: true },
-                moves: [{ type: Schema.Types.ObjectId, ref: 'Move', autopopulate: true }],
+                moves: [{ type: Schema.Types.ObjectId, ref: 'Move', autopopulate: true}],
                 ability: {type: Schema.Types.ObjectId, ref: 'Ability', autopopulate: true}
             }], required: true
     },
