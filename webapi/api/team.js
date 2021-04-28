@@ -108,9 +108,28 @@ router.get("/analyze", (req, res) => {
         res.status(401).send({ 'message': `You aren't authenticated. How did you even get here?` });
         return;
     }
-    res.status(418).json([{'ok': 'This is what a ok message looks like.'}, {'warning': 'this is what a warning message looks like'}, {'error': 'this is what an error message looks like.'}]);
     
-})
+    const username = jwt.decode(req.headers["x-auth"], secret).username;
+        User.findOne({ username: username }, (err, user) => {
+            if (err) {
+                res.status(400).json({ 'message': `Error: ${err}` });
+                return;
+            }
+            Team.findOne({ user: user }, async (err, team) => {
+                if (err) {
+                    res.status(400).json({ 'message': `Error: ${err}` });
+                }
+                else if (team) {
+                    let messages = team.findTypeWeaknesses();
+                    res.status(200).json(messages);
+                }
+                else {
+                    res.status(404).json({"message": "team not found"});
+                }
+            });
+        });
+    })
+    // res.status(200).json([{'ok': 'This is what a ok message looks like.'}, {'warning': 'this is what a warning message looks like'}, {'error': 'this is what an error message looks like.'}]);
 
 
 

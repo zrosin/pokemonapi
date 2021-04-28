@@ -28,7 +28,7 @@ const pokemonSchema = new mongoose.Schema({
 pokemonSchema.virtual('imgurl').get(function () {return `/api/pokemon/img/${this.pokedexNumber}`});
 
 // plugin to improve text searching in mongoose.
-pokemonSchema.plugin(mongoose_fuzzy_searching, { fields: ['name'] });
+pokemonSchema.plugin(mongoose_fuzzy_searching, { fields: ['name'], minSize: 4});
 
 const Pokemon = mongoose.model('Pokemon', pokemonSchema);
 

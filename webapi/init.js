@@ -4,7 +4,7 @@
 
 const { Pokemon, MoveSet, Move, Ability } = require("./models/pokemon");
 const { ObjectId }  = require('bson');
-const Team = require("./models/team")
+const {Team, TeamEffectiveness} = require("./models/team")
 const User = require("./models/user");
 const fs = require('fs');
 const fetch = require('node-fetch');
@@ -18,6 +18,20 @@ async function fetchResults(path) {
             // console.log(blob);
             return blob;
         })
+}
+
+async function initTypes(typeEffectiveness) {
+    await TeamEffectiveness.deleteMany({});
+    let types = fs.readFileSync("test/data/type_names.json");
+    types = JSON.parse(types).map(t => t.name);
+    Promise.all(typeEffectiveness.map(async i => {
+        let newCombo = new TeamEffectiveness();
+        newCombo.damageType = types[i.damage_type_id - 1];
+        newCombo.targetType = types[i.target_type_id - 1];
+        newCombo.damageFactor = i.damage_factor;
+        await newCombo.save();
+    }))
+    console.log("Type effectiveness collection built!")
 }
 
 async function initUser() {
@@ -96,6 +110,9 @@ const moveSets = JSON.parse(rawMoveSets);
 const rawMoves = fs.readFileSync("test/data/moves.json");
 const moves = JSON.parse(rawMoves);
 promises.push(initMoves(moveSets, moves));
+const rawTypeEfficiacy = fs.readFileSync("test/data/type_efficacy.json");
+const typeEfficiciacy = JSON.parse(rawTypeEfficiacy);
+promises.push(initTypes(typeEfficiciacy));
 
 promises.push(initUser());
 
