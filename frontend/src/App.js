@@ -1,18 +1,16 @@
 //sessionStorage.clear();
 
 import './App.css';
-import { BrowserRouter as Router, Switch, Route, Link, Redirect} from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Link} from 'react-router-dom';
 import React, { useState, useEffect} from 'react';
 import Navbar from 'react-bootstrap/Navbar';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import Alert from 'react-bootstrap/Alert';
 import Nav from 'react-bootstrap/Nav';
 import { DetailedPokemon } from './DetailedPokemon';
 import { useHistory } from "react-router-dom";
-import { createBrowserHistory } from "history";
 import PropTypes from 'prop-types';
-
+import { MainPage } from './MainPage';
 function Navigation() {
   return(
     <Navbar bg="dark" variant="dark">
@@ -24,6 +22,8 @@ function Navigation() {
     );
 }
 
+
+
 function Login({setToken}) {
   const history = useHistory();
 
@@ -33,9 +33,9 @@ function Login({setToken}) {
   const [alert, setAlert] = useState("");
 
   useEffect(() => {
+    console.log("useEffect fired inside login.");
     if(HasAttempted) {
       async function authenticate() {
-        console.log(`${UserName}: ${PassWord}`)
         const response = await fetch("/api/user/auth", {
           method: "POST",
           headers: {
@@ -47,8 +47,8 @@ function Login({setToken}) {
         }).then(r => r.json());
         if (!('message' in response)) {
           console.log(response.token);
-          sessionStorage.setItem("jwt", response);
-          setToken(response);
+          sessionStorage.setItem("jwt", response.token);
+          setToken(response.token);
           // setIsAuthenticated(true);
         }
         else {
@@ -58,7 +58,7 @@ function Login({setToken}) {
       authenticate();
       setHasAttempted(false);
     }
-  }, [HasAttempted, alert, UserName, PassWord]);
+  }, [HasAttempted, alert, UserName, PassWord, setToken]);
 
   Login.propTypes = {
     setToken: PropTypes.func.isRequired
@@ -91,19 +91,20 @@ function Login({setToken}) {
 function useToken() {
   const getToken = () => {
     const tokenString = sessionStorage.getItem("jwt");
-    const userToken = JSON.parse(tokenString);
-    return userToken?.token
+    // const userToken = JSON.parse(tokenString);
+    // return userToken?.token
+    return tokenString
   };
   const [token, setToken] = useState(getToken());
 
   const saveToken = userToken => {
-    sessionStorage.setItem("jwt", JSON.stringify(userToken));
+    sessionStorage.setItem("jwt", userToken);
     setToken(userToken.token);
   };
 
   return {
-    setToken: saveToken,
-    token
+    token,
+    setToken: saveToken
   }
 }
 
@@ -131,7 +132,7 @@ function App() {
             <DetailedPokemon />
           </Route>
           <Route exact path={["/", "/pokemon"]}>
-            <GetPokemonForMainPage />
+            <MainPage userToken={token} />
           </Route>
         </Switch>
         {/* disabled routes. uncomment and fix imports to reenable. */}
@@ -164,107 +165,6 @@ function App() {
 export function checkNull(ability) {
   return ability !== null;
 }
-
-
-function GetPokemonForMainPage() {
-  const [initialInfo, setInitialInfo] = useState([]);
-  const [pageNum, setPageNum] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
-  
-  
-  useEffect(() => {
-    async function getAllPokemon() {
-      let tokenString = sessionStorage.getItem("jwt");
-      let userToken = JSON.parse(tokenString);
-      setInitialInfo("")
-      let response = await fetch("/api/pokemon/small/" + currentPage, {
-        headers: { "x-auth": userToken.token }}).then(r => r.json());
-      let result = response;
-      setInitialInfo(result.pokemon);
-      setPageNum(result.pages);
-    }
-    getAllPokemon();
-  }, [currentPage]);
-
-  function Image(props) {
-    const [imageUrl, setImageUrl] = useState("");
-    useEffect(() => {
-      if(imageUrl === "") {
-        async function getImage() {
-          const src = props.url;
-          const options = {
-          headers: {
-            'x-auth': JSON.parse(sessionStorage.getItem("jwt")).token
-            }
-          };
-
-          const imageRes = await fetch(src, options)
-            .then(res => res.blob())
-            .then(blob => {
-              setImageUrl(URL.createObjectURL(blob));
-          });
-        }
-        getImage();
-      }
-    });
-
-    return(
-      <img src={imageUrl}/>
-    );
-  }
-
-  function AllPokemon() {
-    let PokemonDivs;
-    if(initialInfo.length !== 0) {
-      PokemonDivs = initialInfo.map((entry) => (
-          <div key={entry.pokedexNumber} className="PokemonElement">
-            <a href={"/pokemon/" + entry.pokedexNumber}>
-              <Image url={entry.imgurl} />
-              <h4>{entry.name}</h4>
-              <h8>#{entry.pokedexNumber}</h8>
-            </a>
-          </div>
-        
-      ));
-    }
-    return ( 
-      <div className="MainPageList">
-        {PokemonDivs} 
-      </div>
-      );
-  }
-
-  function PageButtons() {
-    let Buttons=[];
-    for(let i = 1; i <= pageNum; i++) {
-      Buttons.push(
-        <button key={i} onClick={() => setCurrentPage(i)}>
-          {i}
-        </button>
-      );
-    }
-    return (
-      <div>
-        {Buttons}
-      </div>
-    );
-  }
-  return (
-      <div>
-        <AllPokemon />
-        <PageButtons />
-      </div>
-  );
-  
-}
-
-
-
-
-
-
-
-
 
 
 export default App;

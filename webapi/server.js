@@ -3,7 +3,6 @@ const path = require('path');
 const morgan = require('morgan');
 const cors = require('cors');
 const user = require('./api/user');
-const bcrypt = require('bcryptjs');
 const jwt = require('jwt-simple');
 const app = express();
 
