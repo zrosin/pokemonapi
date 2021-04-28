@@ -32,7 +32,6 @@ function Login() {
   const [PassWord, setPassWord] = useState("");
   const [HasAttempted, setHasAttempted] = useState(false);
   const [alert, setAlert] = useState("");
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     if(HasAttempted) {
@@ -50,7 +49,6 @@ function Login() {
         let tokenResponse = await response.json();
         if (!('message' in response)) {
           sessionStorage.setItem("jwt", tokenResponse.token);
-          setIsAuthenticated(true);
           history.push("/");
         }
         else {
@@ -60,31 +58,10 @@ function Login() {
       authenticate();
       setHasAttempted(false);
     }
-  }, [HasAttempted, alert, UserName, PassWord, isAuthenticated, history]);
+  }, [HasAttempted, alert, UserName, PassWord, history]);
 
-  function AlertBox() {
-    if(alert !== "") {
-      return(
-        <Alert variant={'danger'}>
-          {alert}
-        </Alert>
-      );
-    }
-    else if(isAuthenticated) {
-      return (
-        <Redirect to="/" />
-      );
-    }
-    else {
-      return(
-        ""
-      );
-    }
-  }
-  if(!isAuthenticated) {
     return (
       <div className = "login">
-        <AlertBox />
         <Form onSubmit={(e) => {setHasAttempted(true); e.preventDefault()}}>
           <Form.Row>
             <Form.Group>
@@ -102,12 +79,6 @@ function Login() {
         </Form>
       </div>
     );
-  }
-  else {
-    return (
-      <AlertBox />
-    );
-  }
 }
 
 function AuthenticatedRoutes() {
