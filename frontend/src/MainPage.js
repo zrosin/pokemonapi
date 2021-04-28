@@ -5,7 +5,7 @@ import './App.css'
 
 
 
-//I want to split this 
+
 
 
 function SearchBar(props) {
@@ -13,11 +13,11 @@ function SearchBar(props) {
     <Form className="SearchBar">
       <Form.Group>
         <Form.Control as="input" onChange={e => {props.setQuery(e.target.value); e.preventDefault()}} type="text" value={props.query} />
-        <Button variant="outline-primary" onClick={(e) => {props.setSubmitQuery(props.query); e.preventDefault();}}>Search</Button>
-        <Button variant="outline-danger" onClick={() => props.setCurrentPage(1)}>Cancel</Button>
+        <Button variant="outline-primary" className="search-button" onClick={(e) => {props.setSubmitQuery(props.query); e.preventDefault();}}>Search</Button>
+        
       </Form.Group>
     </Form>
-  );
+  );//<Button variant="outline-danger" onClick={(e) => props.setCurrentPage(1)}>Cancel</Button>
 }
 
 function Image(props) {
