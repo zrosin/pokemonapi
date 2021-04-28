@@ -51,7 +51,7 @@ router.post("/auth", (req, res) => {
         }
         else if (!user) {
             // no user with that name.
-            res.status(400).send({ 'message': 'Invalid username or password.' });
+            res.status(401).send({ 'message': 'Invalid username or password.' });
         }
         else {
             if (bcrypt.compareSync(req.body.password, user.password)) {
@@ -59,7 +59,7 @@ router.post("/auth", (req, res) => {
                 res.status(200).json({token: token});
             }
             else {
-                res.status(400).send({ 'message': 'Invalid username or password.' });
+                res.status(401).send({ 'message': 'Invalid username or password.' });
             }
         }
     });

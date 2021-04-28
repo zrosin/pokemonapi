@@ -29,7 +29,7 @@ app.use("/api/", (req, res, next) => {
     }
 })
 app.use("/api/pokemon", cors(), require("./api/pokemon"));
-
+app.use("/api/team", cors(), require("./api/team"));
 
 // static file handling, and ensures React Router is not interfered with.
 app.use(express.static("static"));

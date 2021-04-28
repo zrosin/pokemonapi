@@ -6,18 +6,18 @@ const { Pokemon, Move, Ability } = require("./pokemon");
 
 const teamSchema = new mongoose.Schema({
     name: { type: String },
-    user: { type: Schema.Types.ObjectId, ref: "user", required: true },
+    user: { type: Schema.Types.ObjectId, ref: "user"},
     comp: {
         type: [
             {
                 pokemon: { type: Schema.Types.ObjectId, ref: 'Pokemon', autopopulate: true },
                 moves: [{ type: Schema.Types.ObjectId, ref: 'Move', autopopulate: true}],
                 ability: {type: Schema.Types.ObjectId, ref: 'Ability', autopopulate: true}
-            }], required: true
+            }] 
     },
 });
 
+// Sorry for adding an additional dependency. This was the only way I could get it to work well.
 teamSchema.plugin(require('mongoose-autopopulate'));
 const Team = new mongoose.model('Team', teamSchema);
-
 module.exports = Team
