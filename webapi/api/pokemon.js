@@ -29,25 +29,32 @@ router.get('/small/:page', function(req, res) {
             res.status(400).json({'message': `error: ${err}`});
         }
         else if (pokemon.length) {
-            Pokemon.count({}, function(err, count) {
-                if (err) {
-                    res.status(400).json({'message': `error: ${err}`});
-                }
-                else if (count) {
-                    res.status(200).json({  'pages' : Math.ceil(count / NUMBER_OF_POKEMON_IN_PAGE),
-                                            'page' : req.params.page,
-                                            'pokemon' : pokemon});
-                }
-                else {
-                    res.status(404).json({'message': "There are no Pokémon in the database!"}); 
-                }
-            });
+            res.status(200).json({  'pages' : Math.ceil(pokemon.length / NUMBER_OF_POKEMON_IN_PAGE),
+                                    'page' : req.params.page,
+                                    'pokemon' : pokemon});
         }
         else {
             res.status(404).json({'message': "There are no Pokémon in the database!"}); 
         }
     });
 });
+
+router.get('/small/query/:query/', function(req, res) {
+        Pokemon.fuzzySearch({query: req.params.query}, { sort: {pokedexNumber: 1}, limit: NUMBER_OF_POKEMON_IN_PAGE }).select({ _id:0, name:1, pokedexNumber:1, imgurl:1 }).exec( function(err, pokemon) {
+            if (err) {
+                console.log(err);
+                res.status(400).json({'message': `error: ${err}`});
+            }
+            else if (pokemon.length) {
+                res.status(200).json({  'pages' : Math.ceil(pokemon.length / NUMBER_OF_POKEMON_IN_PAGE),
+                                        'page' : req.params.page,
+                                        'pokemon' : pokemon});
+            }
+            else {
+                res.status(404).json({'message': "No Pokemon found!"}); 
+            }
+        });
+    });
 
 // Return number of possible pages of pokemon.
 // http://localhost:8000/api/pokemon/pages

@@ -39,6 +39,7 @@ async function initPkmn(dex) {
         await pkmn.save();
     })
     );
+    //await Pokemon.syncIndexes();
     console.log("National Pokedex import complete!")
 }
 
