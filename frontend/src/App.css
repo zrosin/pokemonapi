@@ -105,3 +105,8 @@ ul {
   flex-wrap: wrap;
   text-align: center;
 }
+
+.SearchBar {
+  width: 50%;
+  margin: auto;
+}
