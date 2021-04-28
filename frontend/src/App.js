@@ -9,12 +9,18 @@ import { DetailedPokemon } from './DetailedPokemon';
 import { useHistory } from "react-router-dom";
 import PropTypes from 'prop-types';
 import { MainPage } from './MainPage';
+import { GetPokemonOnDexNum, GetPokemonOnType, GetPokemonOnID, GetAllPokemon } from './get';
+import { PostPokemon, UpdatePokemon, DeletePokemon} from './modify';
 function Navigation() {
   return(
     <Navbar bg="dark" variant="dark">
       <Navbar.Brand as={Link} to="/">Pokédex!</Navbar.Brand>
       <Nav className="mr-auto">
         <Nav.Link as={Link} to="/">Main Page</Nav.Link>
+        <Nav.Link as={Link} to="/get">Get Pokemon</Nav.Link>
+        <Nav.Link as={Link} to="/post">Post Pokemon</Nav.Link>
+        <Nav.Link as={Link} to="/put">Put Pokemon</Nav.Link>
+        <Nav.Link as={Link} to="/delete">Delete Pokemon</Nav.Link>
       </Nav>
       </Navbar>
     );
@@ -131,6 +137,29 @@ function App() {
           </Route>
           <Route exact path={["/", "/pokemon"]}>
             <MainPage userToken={token} />
+          </Route>
+        </Switch>
+        <Switch>
+          <Route path="/get">
+            <GetPokemonOnDexNum userToken = {token}/>
+            <GetPokemonOnType userToken = {token}/>
+            <GetPokemonOnID userToken = {token} mons={5}/>
+            <GetAllPokemon userToken = {token}/>
+          </Route>
+        </Switch>
+        <Switch>
+          <Route path="/post">
+            <PostPokemon userToken = {token}/>
+          </Route>
+        </Switch>
+        <Switch>
+          <Route path="/put">
+            <UpdatePokemon userToken = {token} mons={5}/>
+          </Route>
+        </Switch>     
+        <Switch>
+          <Route path="/delete">
+            <DeletePokemon userToken = {token} mons={5}/>
           </Route>
         </Switch>
         {/* disabled routes. uncomment and fix imports to reenable. */}
