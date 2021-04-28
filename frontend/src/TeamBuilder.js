@@ -25,7 +25,7 @@ function Image(props) {
   });
 
   return(
-    <img src={imageUrl} alt={props.alt} />
+    <img className="team_image" src={imageUrl} alt={props.alt} />
   );
 }
 export function TeamBuilder() {
@@ -53,11 +53,18 @@ export function TeamBuilder() {
         if (pokemonSelected) {
             
             Team = pokemonSelected.map((poke) => (
-                <div className="team_builder_pokemon">
-                    <Image url={poke.pokemon.imgurl} alt={poke.pokemon.name + "image"} />
+                <div id={poke.pokedexNum} className="team_builder_pokemon">
+                    <div>
+                        <Image  url={poke.pokemon.imgurl} alt={poke.pokemon.name + "image"} />
+                    </div>
+                    
                     <div className="team_builder_pokemon_info">
                         <h6>{poke.pokemon.name}</h6>
+                        <p>HP: {poke.pokemon.hp}</p>
+                        <p>Attack: {poke.pokemon.attack}</p>
+                        <p>Defense: {poke.pokemon.defense}</p>
                     </div>
+                    
                 </div>
             ));
         }

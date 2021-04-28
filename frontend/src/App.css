@@ -146,8 +146,15 @@ TEAM BUILDER STYLES
   border-radius: 25px;
   margin: auto;
   margin-top: 15px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
 
+.team_image {
+ max-height: 150px; 
+ margin-left: 25px;
+}
 
 /*****************************************
 DETAILED PAGE STYLES  --- I Can't see the changes I'm making here. If its bad I will fix.
@@ -173,3 +180,6 @@ DETAILED PAGE STYLES  --- I Can't see the changes I'm making here. If its bad I 
   display: flex;
   flex-direction: row;
 }
+
+
+
