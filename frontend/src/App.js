@@ -25,7 +25,7 @@ function Navigation() {
     );
 }
 
-function Login() {
+function Login(props) {
   const history = useHistory();
 
   const [UserName, setUserName] = useState("");
@@ -50,7 +50,7 @@ function Login() {
         let tokenResponse = await response.json();
         if (!('message' in response)) {
           sessionStorage.setItem("jwt", tokenResponse.token);
-          setIsAuthenticated(true);
+          // setIsAuthenticated(true);
           history.push("/");
         }
         else {
@@ -60,31 +60,31 @@ function Login() {
       authenticate();
       setHasAttempted(false);
     }
-  }, [HasAttempted, alert, UserName, PassWord, isAuthenticated, history]);
+  }, [HasAttempted, alert, UserName, PassWord, isAuthenticated, props.history]);
 
-  function AlertBox() {
-    if(alert !== "") {
-      return(
-        <Alert variant={'danger'}>
-          {alert}
-        </Alert>
-      );
-    }
-    else if(isAuthenticated) {
-      return (
-        <Redirect to="/" />
-      );
-    }
-    else {
-      return(
-        ""
-      );
-    }
-  }
+  // function AlertBox() {
+  //   if(alert !== "") {
+  //     return(
+  //       <Alert variant={'danger'}>
+  //         {alert}
+  //       </Alert>
+  //     );
+  //   }
+  //   else if(isAuthenticated) {
+  //     return (
+  //       <Redirect to="/" />
+  //     );
+  //   }
+  //   else {
+  //     return(
+  //       ""
+  //     );
+  //   }
+  // }
   if(!isAuthenticated) {
     return (
       <div className = "login">
-        <AlertBox />
+        {/* <AlertBox /> */}
         <Form onSubmit={(e) => {setHasAttempted(true); e.preventDefault()}}>
           <Form.Row>
             <Form.Group>
@@ -104,14 +104,15 @@ function Login() {
     );
   }
   else {
-    return (
-      <AlertBox />
-    );
+    // return (
+    //   // <AlertBox />
+    // );
   }
 }
 
 function AuthenticatedRoutes() {
   if(sessionStorage.getItem("jwt")) {
+    console.log("Evaluating routes...")
     return(
         <Switch>
           <Route path="/pokemon/:dexNum">
