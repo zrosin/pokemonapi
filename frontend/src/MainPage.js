@@ -1,6 +1,7 @@
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button'
 import React, { useState, useEffect, useMemo } from 'react';
+import './App.css'
 
 
 
@@ -22,7 +23,6 @@ function SearchBar(props) {
 function Image(props) {
   const [imageUrl, setImageUrl] = useState("");
   useEffect(() => {
-    console.log("UseEffect fired inside image.")
     if (imageUrl === "") {
       async function getImage() {
         const src = props.url;
@@ -43,6 +43,7 @@ function Image(props) {
   });
 
   return (
+    // eslint-disable-next-line jsx-a11y/alt-text
     <img src={imageUrl} />
   );
 }
@@ -56,7 +57,6 @@ export function MainPage(props) {
 
 
   useEffect(() => {
-    console.log("useEffect fired inside mainpage.");
     async function getAllPokemon() {
       setInitialInfo([])
       let response = await fetch("/api/pokemon/small/" + currentPage, {
@@ -119,7 +119,7 @@ export function MainPage(props) {
       );
     }
     return AllPokemon(pokemonInfo);
-  }, [pokemonInfo])
+  }, [pokemonInfo, props.userInfo])
 
     function PageButtons() {
       let Buttons = [];
