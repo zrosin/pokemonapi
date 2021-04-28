@@ -33,12 +33,13 @@ async function initPkmn(dex) {
         const pkmn = new Pokemon(i);
         path = url + pkmn.pokedexNumber + ".png";
 
-        pkmn.image = await fetchResults(path);
-        pkmn.image.contentType = "image/png"
+        // pkmn.image = await fetchResults(path);
+        // pkmn.image.contentType = "image/png"
 
         await pkmn.save();
     })
     );
+    await Pokemon.syncIndexes();
     console.log("National Pokedex import complete!")
 }
 
