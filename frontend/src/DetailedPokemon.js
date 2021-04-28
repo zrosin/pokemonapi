@@ -9,6 +9,32 @@ import filterFactory, { selectFilter } from 'react-bootstrap-table2-filter'
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 
+function Image(props) {
+  const [imageUrl, setImageUrl] = useState("");
+  useEffect(() => {
+    if(imageUrl === "") {
+      async function getImage() {
+        const src = props.url;
+        const options = {
+        headers: {
+          'x-auth': sessionStorage.getItem("jwt")
+          }
+        };
+
+        const imageRes = await fetch(src, options)
+          .then(res => res.blob())
+          .then(blob => {
+            setImageUrl(URL.createObjectURL(blob));
+        });
+      }
+      getImage();
+    }
+  });
+
+  return(
+    <img src={imageUrl}/>
+  );
+}
 
 export function formatAbilities(abilityList) {
   let initialAbilityList = abilityList.filter(checkNull);
@@ -27,39 +53,15 @@ export function DetailedPokemon() {
   const params = useParams();
   const [DetailedInfo, setDetailedInfo] = useState("");
 
-  function Image(props) {
-    const [imageUrl, setImageUrl] = useState("");
-    useEffect(() => {
-      if(imageUrl === "") {
-        async function getImage() {
-          const src = props.url;
-          const options = {
-          headers: {
-            'x-auth': sessionStorage.getItem("jwt")
-            }
-          };
-
-          const imageRes = await fetch(src, options)
-            .then(res => res.blob())
-            .then(blob => {
-              setImageUrl(URL.createObjectURL(blob));
-          });
-        }
-        getImage();
-      }
-    });
-
-    return(
-      <img src={imageUrl}/>
-    );
-  }
+  
 
   useEffect(() => {
     if (DetailedInfo === "") {
-      let token = sessionStorage.getItem("jwt");
       async function getDetails() {
+        let tokenString = sessionStorage.getItem("jwt");
+        //let userToken = JSON.parse(tokenString);
         const response = await fetch(`../api/pokemon/pokedex/${params.dexNum}`, {
-          headers: { "x-auth": token }}).then(r => r.json());
+          headers: { "x-auth": tokenString }}).then(r => r.json());
         if (!('message' in response)) {
           let typeList = response.types[1] == null ? response.types[0] : response.types[0] + ", " + response.types[1];
           let initialAbilityList = response.abilities.filter(checkNull);
@@ -134,16 +136,17 @@ export function MoveSetTable(props) {
   })
   useEffect(() => {
     async function getData() {
-      let token = sessionStorage.getItem("jwt");
+      let tokenString = sessionStorage.getItem("jwt");
+      //let userToken = JSON.parse(tokenString);
       const moveSet = await fetch(`/api/pokemon/moveset/${props.mon}`, {
-        headers: { "x-auth": token }}).then(r => r.json());
+        headers: { "x-auth": tokenString }}).then(r => r.json());
       if ('message' in moveSet) {
         setRequestOk(false);
         return
       }
       let types = {};
       const moveValues = moveSet.map((i) => {
-        i.move = i.move[0]
+        // i.move =
         i.move.power = (i.move.power === null) ? 0 : i.move.power;
         if (!(i.move.type in types)) {
           types[i.move.type] = i.move.type;

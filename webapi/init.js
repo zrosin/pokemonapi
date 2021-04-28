@@ -123,7 +123,7 @@ async function finish(arr) {
         let user = await User.findOne({}).select("_id");
         let newTeam = new Team({name: "My Team", user: user._id, comp: teamMembers});
         await newTeam.save();
-        await Team.findOne({}).exec().then((x) => console.log(x));
+        // await Team.findOne({}).exec().then((x) => console.log(x));
         console.log("Team created!")
         console.log("Database initialized! Have fun! 🎉");
         process.exit();

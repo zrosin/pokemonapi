@@ -1,7 +1,5 @@
-//sessionStorage.clear();
-
 import './App.css';
-import { BrowserRouter as Router, Switch, Route, Link, Redirect} from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Link} from 'react-router-dom';
 import React, { useState, useEffect} from 'react';
 import Navbar from 'react-bootstrap/Navbar';
 import Form from 'react-bootstrap/Form';
@@ -11,8 +9,7 @@ import { DetailedPokemon } from './DetailedPokemon';
 import { useHistory } from "react-router-dom";
 import { MainPage } from './MainPage';
 import { TeamBuilder } from './TeamBuilder';
-
-
+import PropTypes from 'prop-types';
 
 function Navigation() {
   return(
@@ -26,16 +23,17 @@ function Navigation() {
     );
 }
 
-function Login(props) {
-  const history = useHistory();
+
+
+function Login({setToken}) {
 
   const [UserName, setUserName] = useState("");
   const [PassWord, setPassWord] = useState("");
   const [HasAttempted, setHasAttempted] = useState(false);
   const [alert, setAlert] = useState("");
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
+    console.log("useEffect fired inside login.");
     if(HasAttempted) {
       async function authenticate() {
         const response = await fetch("/api/user/auth", {
@@ -46,15 +44,12 @@ function Login(props) {
           body: JSON.stringify({ 
              username: UserName,
              password: PassWord })
-        });
-        let tokenResponse = await response.json();
+        }).then(r => r.json());
         if (!('message' in response)) {
-          if (tokenResponse.token === undefined) {
-            console.log("You really shouldn't be here.")
-          }
-          sessionStorage.setItem("jwt", tokenResponse.token);
+          console.log(response.token);
+          sessionStorage.setItem("jwt", response.token);
+          setToken(response.token);
           // setIsAuthenticated(true);
-          history.push("/");
         }
         else {
           setAlert(response.message);
@@ -63,31 +58,17 @@ function Login(props) {
       authenticate();
       setHasAttempted(false);
     }
-  }, [HasAttempted, alert, UserName, PassWord, history]);
+  }, [HasAttempted, alert, UserName, PassWord, setToken]);
 
-  // function AlertBox() {
-  //   if(alert !== "") {
-  //     return(
-  //       <Alert variant={'danger'}>
-  //         {alert}
-  //       </Alert>
-  //     );
-  //   }
-  //   else if(isAuthenticated) {
-  //     return (
-  //       <Redirect to="/" />
-  //     );
-  //   }
-  //   else {
-  //     return(
-  //       ""
-  //     );
-  //   }
-  // }
-  if(!isAuthenticated) {
+  Login.propTypes = {
+    setToken: PropTypes.func.isRequired
+  }
+
     return (
       <div className = "login">
-        {/* <AlertBox /> */}
+        <div>
+          {alert}
+        </div>
         <Form onSubmit={(e) => {setHasAttempted(true); e.preventDefault()}}>
           <Form.Row>
             <Form.Group>
@@ -105,48 +86,59 @@ function Login(props) {
         </Form>
       </div>
     );
-  }
-  else {
-    // return (
-    //   // <AlertBox />
-    // );
+}
+
+function useToken() {
+  const getToken = () => {
+    const tokenString = sessionStorage.getItem("jwt");
+    // const userToken = JSON.parse(tokenString);
+    // return userToken?.token
+    return tokenString
+  };
+  const [token, setToken] = useState(getToken());
+
+  const saveToken = userToken => {
+    console.log(userToken);
+    sessionStorage.setItem("jwt", userToken);
+    setToken(userToken);
+  };
+
+  return {
+    token,
+    setToken: saveToken
   }
 }
 
-function AuthenticatedRoutes() {
-  if(sessionStorage.getItem("jwt")) {
-    console.log("Evaluating routes...")
-    return(
+function App() {
+  const { token, setToken } = useToken();
+
+    if(!token) {
+      return (
+        <>
+          <Router>
+            <Navbar bg="dark" variant="dark">
+              <Navbar.Brand as={Link} to="/login">Login</Navbar.Brand>
+            </Navbar>
+            <Login setToken={setToken} />
+          </Router>
+        </>
+      );
+    }
+
+    return (
+      <Router>
+        <Navigation></Navigation>
         <Switch>
           <Route path="/pokemon/:dexNum">
             <DetailedPokemon />
           </Route>
           <Route exact path={["/", "/pokemon"]}>
-            <MainPage />
+            <MainPage userToken={token} />
           </Route>
-        </Switch>
-    );
-  }
-  return (
-    <Redirect to='/login' />
-  );
-}
-
-function App() {
-
-    return (
-      <Router>
-        <Navigation></Navigation>
-        <AuthenticatedRoutes />
-        <Switch>
-          <Route path="/login">
-            <Login />
-          </Route>
-          <Route path="/pokemon/:dexNum" />
-          <Route path="/teambuilder">
+          <Route exact path={["/TeamBuilder"]}>
             <TeamBuilder />
           </Route>
-          <Route exact path={["/", "/pokemon"]}></Route>
+          {/* <Route exact path={["/", "/pokemon"]}></Route> */}
         </Switch>
         {/* disabled routes. uncomment and fix imports to reenable. */}
         {/* <Switch>     
@@ -178,8 +170,6 @@ function App() {
 export function checkNull(ability) {
   return ability !== null;
 }
-
-
 
 
 export default App;
