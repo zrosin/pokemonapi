@@ -4,7 +4,7 @@ const router = require('express').Router();
 const { secret } = require('./user');
 const { ObjectId } = require('mongoose');
 const jwt = require('jwt-simple');
-const Team = require('../models/team');
+const {Team} = require('../models/team');
 const User = require('../models/user');
 const { Pokemon } = require('../models/pokemon');
 
