@@ -55,7 +55,6 @@ export function MainPage() {
                   <h8>#{entry.pokedexNumber}</h8>
                 </a>
               </div>
-            
           ));
         }
         return ( 
