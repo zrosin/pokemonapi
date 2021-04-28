@@ -27,10 +27,39 @@ export function DetailedPokemon() {
   const params = useParams();
   const [DetailedInfo, setDetailedInfo] = useState("");
 
+  function Image(props) {
+    const [imageUrl, setImageUrl] = useState("");
+    useEffect(() => {
+      if(imageUrl === "") {
+        async function getImage() {
+          const src = props.url;
+          const options = {
+          headers: {
+            'x-auth': sessionStorage.getItem("jwt")
+            }
+          };
+
+          const imageRes = await fetch(src, options)
+            .then(res => res.blob())
+            .then(blob => {
+              setImageUrl(URL.createObjectURL(blob));
+          });
+        }
+        getImage();
+      }
+    });
+
+    return(
+      <img src={imageUrl}/>
+    );
+  }
+
   useEffect(() => {
     if (DetailedInfo === "") {
+      let token = sessionStorage.getItem("jwt");
       async function getDetails() {
-        const response = await fetch(`../api/pokemon/pokedex/${params.dexNum}`).then((r) => r.json());
+        const response = await fetch(`../api/pokemon/pokedex/${params.dexNum}`, {
+          headers: { "x-auth": token }}).then(r => r.json());
         if (!('message' in response)) {
           let typeList = response.types[1] == null ? response.types[0] : response.types[0] + ", " + response.types[1];
           let initialAbilityList = response.abilities.filter(checkNull);
@@ -46,7 +75,7 @@ export function DetailedPokemon() {
           setDetailedInfo(
             <div className="neat">
               <h1>{response.name}</h1>
-              <img src={response.imgurl} alt=" " width="400" height="400" />
+              <Image url={response.imgurl}/>
               <ul>
                 <li><h4>Pokedex Number: {response.pokedexNumber}</h4></li><br />
                 <li><h4>Height (m): {response.height}</h4></li><br />
@@ -105,7 +134,9 @@ export function MoveSetTable(props) {
   })
   useEffect(() => {
     async function getData() {
-      const moveSet = await fetch(`/api/pokemon/moveset/${props.mon}`).then(r => r.json());
+      let token = sessionStorage.getItem("jwt");
+      const moveSet = await fetch(`/api/pokemon/moveset/${props.mon}`, {
+        headers: { "x-auth": token }}).then(r => r.json());
       if ('message' in moveSet) {
         setRequestOk(false);
         return
@@ -128,7 +159,6 @@ export function MoveSetTable(props) {
           flavorText: i.move.flavorText
         }
       });
-      console.log(types);
       // don't ask me why React Bootstrap Table needs the filterables sent like this.
       setFilterableTypes(types);
       setTableData(moveValues);

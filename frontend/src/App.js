@@ -1,3 +1,5 @@
+//sessionStorage.clear();
+
 import './App.css';
 import { BrowserRouter as Router, Switch, Route, Link, Redirect} from 'react-router-dom';
 import React, { useState, useEffect} from 'react';
@@ -54,9 +56,10 @@ function Login() {
              username: UserName,
              password: PassWord })
         });
-        console.log(response);
+        let tokenResponse = await response.json();
+        console.log(tokenResponse.token);
         if (!('message' in response)) {
-          sessionStorage.set("jwt", response);
+          sessionStorage.setItem("jwt", tokenResponse.token);
         }
         else {
           setAlert(response.message);
@@ -164,7 +167,6 @@ export function checkNull(ability) {
 }
 
 
-
 function GetPokemonForMainPage() {
   const [initialInfo, setInitialInfo] = useState([]);
   const [pageNum, setPageNum] = useState(0);
@@ -173,8 +175,10 @@ function GetPokemonForMainPage() {
   
   useEffect(() => {
     async function getAllPokemon() {
+      let token = sessionStorage.getItem("jwt");
       setInitialInfo("")
-      let response = await fetch("/api/pokemon/small/" + currentPage).then(r => r.json());
+      let response = await fetch("/api/pokemon/small/" + currentPage, {
+        headers: { "x-auth": token }}).then(r => r.json());
       let result = response;
       setInitialInfo(result.pokemon);
       setPageNum(result.pages);
@@ -182,13 +186,40 @@ function GetPokemonForMainPage() {
     getAllPokemon();
   }, [currentPage]);
 
+  function Image(props) {
+    const [imageUrl, setImageUrl] = useState("");
+    useEffect(() => {
+      if(imageUrl === "") {
+        async function getImage() {
+          const src = props.url;
+          const options = {
+          headers: {
+            'x-auth': sessionStorage.getItem("jwt")
+            }
+          };
+
+          const imageRes = await fetch(src, options)
+            .then(res => res.blob())
+            .then(blob => {
+              setImageUrl(URL.createObjectURL(blob));
+          });
+        }
+        getImage();
+      }
+    });
+
+    return(
+      <img src={imageUrl}/>
+    );
+  }
+
   function AllPokemon() {
     let PokemonDivs;
     if(initialInfo.length !== 0) {
       PokemonDivs = initialInfo.map((entry) => (
           <div key={entry.pokedexNumber} className="PokemonElement">
             <a href={"/pokemon/" + entry.pokedexNumber}>
-              <img src={entry.imgurl} alt={entry.name + " image"} />
+              <Image url={entry.imgurl} />
               <h4>{entry.name}</h4>
               <h8>#{entry.pokedexNumber}</h8>
             </a>
@@ -212,7 +243,6 @@ function GetPokemonForMainPage() {
         </button>
       );
     }
-    console.log(Buttons);
     return (
       <div>
         {Buttons}
