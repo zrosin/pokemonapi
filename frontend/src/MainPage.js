@@ -1,7 +1,7 @@
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button'
 import React, { useState, useEffect } from 'react';
-
+import { Link } from 'react-router-dom';
 
   
   //I want to split this 
@@ -38,7 +38,7 @@ export function MainPage() {
             }
           };
 
-          const imageRes = await fetch(src, options)
+          await fetch(src, options)
             .then(res => res.blob())
             .then(blob => {
               setImageUrl(URL.createObjectURL(blob));

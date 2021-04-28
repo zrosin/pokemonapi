@@ -6,11 +6,9 @@ import React, { useState, useEffect} from 'react';
 import Navbar from 'react-bootstrap/Navbar';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import Alert from 'react-bootstrap/Alert';
 import Nav from 'react-bootstrap/Nav';
 import { DetailedPokemon } from './DetailedPokemon';
 import { useHistory } from "react-router-dom";
-import { createBrowserHistory } from "history";
 import { MainPage } from './MainPage';
 import { TeamBuilder } from './TeamBuilder';
 
@@ -65,7 +63,7 @@ function Login(props) {
       authenticate();
       setHasAttempted(false);
     }
-  }, [HasAttempted, alert, UserName, PassWord, isAuthenticated, props.history]);
+  }, [HasAttempted, alert, UserName, PassWord, history]);
 
   // function AlertBox() {
   //   if(alert !== "") {
@@ -135,7 +133,6 @@ function AuthenticatedRoutes() {
 }
 
 function App() {
-  const history = createBrowserHistory();
 
     return (
       <Router>
