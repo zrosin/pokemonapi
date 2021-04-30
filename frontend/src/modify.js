@@ -7,7 +7,7 @@ import Button from 'react-bootstrap/Button'
 import { formatAbilities } from "./DetailedPokemon"
 
 
-export function PostPokemon() {
+export function PostPokemon(props) {
     const [IsPosted, setIsPosted] = useState(false);
     const [pokeDexNum1, setPokeDexNum1] = useState(0);
     const [pokeName, setPokeName] = useState("");
@@ -37,7 +37,8 @@ export function PostPokemon() {
                     newPokemon.abilities = abilityList;
                     let response = await fetch("/api/pokemon/", {
                         method: "POST",
-                        headers: { "Content-Type": "application/json" },
+                        headers: { "Content-Type": "application/json",
+                                    "x-auth" : props.userToken },
                         body: (JSON.stringify(newPokemon))
                     }).then(r => r.json());
                     if (!('message' in response)) {
@@ -84,24 +85,24 @@ export function PostPokemon() {
                         <Form.Label>Type 1:</Form.Label>
                         <Form.Control as="select" onChange={e => setPokeType1(e.target.value)}>
                             <option value="">Type 1</option>
-                            <option value="grass">Grass</option>
-                            <option value="water">Water</option>
-                            <option value="fire">Fire</option>
-                            <option value="poison">Poison</option>
-                            <option value="flying">Flying</option>
-                            <option value="rock">Rock</option>
-                            <option value="ground">Ground</option>
-                            <option value="electric">Electric</option>
-                            <option value="ghost">Ghost</option>
-                            <option value="dark">Dark</option>
-                            <option value="bug">Bug</option>
-                            <option value="steel">Steel</option>
-                            <option value="normal">Normal</option>
-                            <option value="psychic">Psychic</option>
-                            <option value="fighting">Fighting</option>
-                            <option value="fairy">Fairy</option>
-                            <option value="dragon">Dragon</option>
-                            <option value="ice">Ice</option>
+                            <option value="Grass">Grass</option>
+                            <option value="Water">Water</option>
+                            <option value="Fire">Fire</option>
+                            <option value="Poison">Poison</option>
+                            <option value="Flying">Flying</option>
+                            <option value="Rock">Rock</option>
+                            <option value="Ground">Ground</option>
+                            <option value="Electric">Electric</option>
+                            <option value="Ghost">Ghost</option>
+                            <option value="Dark">Dark</option>
+                            <option value="Bug">Bug</option>
+                            <option value="Steel">Steel</option>
+                            <option value="Normal">Normal</option>
+                            <option value="Psychic">Psychic</option>
+                            <option value="Fighting">Fighting</option>
+                            <option value="Fairy">Fairy</option>
+                            <option value="Dragon">Dragon</option>
+                            <option value="Ice">Ice</option>
                         </Form.Control>
                     </Form.Group>
               &nbsp;&nbsp;&nbsp;
@@ -109,24 +110,24 @@ export function PostPokemon() {
                         <Form.Label>Type 2:</Form.Label>
                         <Form.Control as="select" onChange={e => setPokeType2(e.target.value)}>
                             <option value="">Type 2</option>
-                            <option value="grass">Grass</option>
-                            <option value="water">Water</option>
-                            <option value="fire">Fire</option>
-                            <option value="poison">Poison</option>
-                            <option value="flying">Flying</option>
-                            <option value="rock">Rock</option>
-                            <option value="ground">Ground</option>
-                            <option value="electric">Electric</option>
-                            <option value="ghost">Ghost</option>
-                            <option value="dark">Dark</option>
-                            <option value="bug">Bug</option>
-                            <option value="steel">Steel</option>
-                            <option value="normal">Normal</option>
-                            <option value="psychic">Psychic</option>
-                            <option value="fighting">Fighting</option>
-                            <option value="fairy">Fairy</option>
-                            <option value="dragon">Dragon</option>
-                            <option value="ice">Ice</option>
+                            <option value="Grass">Grass</option>
+                            <option value="Water">Water</option>
+                            <option value="Fire">Fire</option>
+                            <option value="Poison">Poison</option>
+                            <option value="Flying">Flying</option>
+                            <option value="Rock">Rock</option>
+                            <option value="Ground">Ground</option>
+                            <option value="Electric">Electric</option>
+                            <option value="Ghost">Ghost</option>
+                            <option value="Dark">Dark</option>
+                            <option value="Bug">Bug</option>
+                            <option value="Steel">Steel</option>
+                            <option value="Normal">Normal</option>
+                            <option value="Psychic">Psychic</option>
+                            <option value="Fighting">Fighting</option>
+                            <option value="Fairy">Fairy</option>
+                            <option value="Dragon">Dragon</option>
+                            <option value="Ice">Ice</option>
                         </Form.Control>
                     </Form.Group>
               &nbsp;&nbsp;&nbsp;
@@ -151,7 +152,9 @@ export function DeletePokemon(props) {
         async function getMons() {
             const dexNumbers = Array(props.mons).fill(0).map(() => (Math.floor(Math.random() * 151) + 1));
             const pokemon = await Promise.all(dexNumbers.map(async i => {
-                let r = await fetch(`/api/pokemon/pokedex/${i}`);
+                let r = await fetch(`/api/pokemon/pokedex/${i}`, {
+                    headers: { "x-auth": props.userToken }
+                });
                 if (r.ok) {
                     let value = await r.json();
                     return value
@@ -175,7 +178,7 @@ export function DeletePokemon(props) {
         useEffect(() => {
             if (isPressed) {
                 async function deletePokemon() {
-                    const response = await fetch(`/api/pokemon/id/${id}`, { method: "DELETE" });
+                    const response = await fetch(`/api/pokemon/id/${id}`, { method: "DELETE", headers: { "x-auth": props.userToken } });
                     if (response.status === 204) {
                         alert(`Deleted object with objectID = ${id}`);
                     }
@@ -204,14 +207,18 @@ export function DeletePokemon(props) {
     }
 
     return (
-        <>
-            <h4>Delete By ID</h4>
-            <select key={id} value={id} onChange={(e) => { setID(e.target.value) }}>
-                <option key={1} value={""}>Select a Mystery Pokemon</option>
-                {options}
-            </select>
+        <div className="DeleteMenu">
+            <Form>
+                <Form.Group>
+                    <Form.Label><h4>Delete By ID</h4></Form.Label>
+                    <Form.Control as="select" key={id} value={id} onChange={(e) => { setID(e.target.value) }}>
+                         <option key={1} value={""}>Select a Mystery Pokemon</option>
+                        {options}
+                    </Form.Control>
+                </Form.Group>
+            </Form>
             <IDInfo />
-        </>
+        </div>
     );
 }
 
@@ -223,7 +230,9 @@ export function UpdatePokemon(props) {
         async function getMons() {
             const dexNumbers = Array(props.mons).fill(0).map(() => (Math.floor(Math.random() * 151) + 1));
             const pokemon = await Promise.all(dexNumbers.map(async i => {
-                let r = await fetch(`/api/pokemon/pokedex/${i}`);
+                let r = await fetch(`/api/pokemon/pokedex/${i}`, {
+                    headers: { "x-auth": props.userToken }
+                });
                 if (r.ok) {
                     let value = await r.json();
                     return value
@@ -268,7 +277,8 @@ export function UpdatePokemon(props) {
                         updatedPokemon.abilities = abilityList;
                         let response = await fetch(`/api/pokemon/id/${updatedPokemon._id}`, {
                             method: "PUT",
-                            headers: { "Content-Type": "application/json" },
+                            headers: { "Content-Type": "application/json",
+                                        "x-auth" : props.userToken },
                             body: (JSON.stringify(updatedPokemon))
                         });
                         if (!('message' in response)) {
@@ -316,24 +326,24 @@ export function UpdatePokemon(props) {
                                     <Form.Label>Type(s) - were {i.types[1] == null ? i.types[0] : i.types[0] + ", " + i.types[1]}: </Form.Label>
                                     <Form.Control as="select" onChange={e => setPokeType1(e.target.value)}>
                                         <option value="">Type 1</option>
-                                        <option value="grass">Grass</option>
-                                        <option value="water">Water</option>
-                                        <option value="fire">Fire</option>
-                                        <option value="poison">Poison</option>
-                                        <option value="flying">Flying</option>
-                                        <option value="rock">Rock</option>
-                                        <option value="ground">Ground</option>
-                                        <option value="electric">Electric</option>
-                                        <option value="ghost">Ghost</option>
-                                        <option value="dark">Dark</option>
-                                        <option value="bug">Bug</option>
-                                        <option value="steel">Steel</option>
-                                        <option value="normal">Normal</option>
-                                        <option value="psychic">Psychic</option>
-                                        <option value="fighting">Fighting</option>
-                                        <option value="fairy">Fairy</option>
-                                        <option value="dragon">Dragon</option>
-                                        <option value="ice">Ice</option>
+                                        <option value="Grass">Grass</option>
+                                        <option value="Water">Water</option>
+                                        <option value="Fire">Fire</option>
+                                        <option value="Poison">Poison</option>
+                                        <option value="Flying">Flying</option>
+                                        <option value="Rock">Rock</option>
+                                        <option value="Ground">Ground</option>
+                                        <option value="Electric">Electric</option>
+                                        <option value="Ghost">Ghost</option>
+                                        <option value="Dark">Dark</option>
+                                        <option value="Bug">Bug</option>
+                                        <option value="Steel">Steel</option>
+                                        <option value="Normal">Normal</option>
+                                        <option value="Psychic">Psychic</option>
+                                        <option value="Fighting">Fighting</option>
+                                        <option value="Fairy">Fairy</option>
+                                        <option value="Dragon">Dragon</option>
+                                        <option value="Ice">Ice</option>
                                     </Form.Control>
                                 </Form.Group>
                 &nbsp;&nbsp;&nbsp;
@@ -341,24 +351,24 @@ export function UpdatePokemon(props) {
                                     <Form.Label>&nbsp; </Form.Label>
                                     <Form.Control as="select" onChange={e => setPokeType2(e.target.value)}>
                                         <option value="">Type 2</option>
-                                        <option value="grass">Grass</option>
-                                        <option value="water">Water</option>
-                                        <option value="fire">Fire</option>
-                                        <option value="poison">Poison</option>
-                                        <option value="flying">Flying</option>
-                                        <option value="rock">Rock</option>
-                                        <option value="ground">Ground</option>
-                                        <option value="electric">Electric</option>
-                                        <option value="ghost">Ghost</option>
-                                        <option value="dark">Dark</option>
-                                        <option value="bug">Bug</option>
-                                        <option value="steel">Steel</option>
-                                        <option value="normal">Normal</option>
-                                        <option value="psychic">Psychic</option>
-                                        <option value="fighting">Fighting</option>
-                                        <option value="fairy">Fairy</option>
-                                        <option value="dragon">Dragon</option>
-                                        <option value="ice">Ice</option>
+                                        <option value="Grass">Grass</option>
+                                        <option value="Water">Water</option>
+                                        <option value="Fire">Fire</option>
+                                        <option value="Poison">Poison</option>
+                                        <option value="Flying">Flying</option>
+                                        <option value="Rock">Rock</option>
+                                        <option value="Ground">Ground</option>
+                                        <option value="Electric">Electric</option>
+                                        <option value="Ghost">Ghost</option>
+                                        <option value="Dark">Dark</option>
+                                        <option value="Bug">Bug</option>
+                                        <option value="Steel">Steel</option>
+                                        <option value="Normal">Normal</option>
+                                        <option value="Psychic">Psychic</option>
+                                        <option value="Fighting">Fighting</option>
+                                        <option value="Fairy">Fairy</option>
+                                        <option value="Dragon">Dragon</option>
+                                        <option value="Ice">Ice</option>
                                     </Form.Control>
                                 </Form.Group>
                 &nbsp;&nbsp;&nbsp;
