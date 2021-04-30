@@ -5,7 +5,7 @@ RUN npm install
 RUN npm run build
 
 
-FROM node:current-alpine
+FROM node:16
 WORKDIR /app
 COPY ./webapi/ .
 COPY --from=build-react-app /app/build/ /app/static/
