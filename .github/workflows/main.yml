@@ -35,10 +35,10 @@ jobs:
     - run: npm install
       working-directory: ${{env.working-directory}}
 
-    - run: npm install mocha chai
-      working-directory: ${{env.working-directory}}
+    # - run: npm install mocha chai
+    #   working-directory: ${{env.working-directory}}
 
-    - run: npx mocha --timeout 10000 --exit
+    - run: ./node_modules/mocha/bin/mocha --timeout 10000 --exit
       working-directory: ${{env.working-directory}}
       env:
         test: true
