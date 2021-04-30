@@ -1,11 +1,11 @@
-FROM node:15 AS build-react-app
+FROM node:current-alpine AS build-react-app
 WORKDIR /app
 COPY ./frontend/  .
 RUN npm install
 RUN npm run build
 
 
-FROM node:15
+FROM node:current-alpine
 WORKDIR /app
 COPY ./webapi/ .
 COPY --from=build-react-app /app/build/ /app/static/
