@@ -2,10 +2,37 @@
 import React, { useState, useEffect } from 'react';
 import Form from 'react-bootstrap/Form';
 import Table from 'react-bootstrap/Table'
-import Button from 'react-boostrap/Button'
+import Button from 'react-bootstrap/Button'
 import {formatAbilities} from './DetailedPokemon'
 
-export function GetPokemonOnDexNum() {
+function Image(props) {
+    let [imageUrl, setImageUrl] = useState("");
+    useEffect(() => {
+      console.log("UseEffect fired inside image.")
+        async function getImage() {
+          const src = props.url;
+          const options = {
+            headers: {
+              'x-auth': props.userToken
+            }
+          };
+  
+          await fetch(src, options)
+            .then(res => res.blob())
+            .then(blob => {
+              setImageUrl(URL.createObjectURL(blob));
+            });
+        }
+        getImage();
+        console.log(imageUrl);
+    }, [props.url]);
+  
+    return (
+      <img src={imageUrl} />
+    );
+  }
+
+export function GetPokemonOnDexNum(props) {
 
     const [pokeDexNum, setPokeDexNum] = useState(0);
     const [dexInfo, setdexInfo] = useState("");
@@ -13,11 +40,13 @@ export function GetPokemonOnDexNum() {
     useEffect(() => {
         if (pokeDexNum > 0) {
             async function getPokeDexNumber() {
-                const response = await fetch(`api/pokemon/pokedex/${pokeDexNum}`).then((r) => r.json());
+                const response = await fetch(`api/pokemon/pokedex/${pokeDexNum}`, {
+                    headers: { "x-auth": props.userToken }
+                  }).then(r => r.json());
                 if (!('message' in response)) {
                     let typeList = response.types[1] === null ? response.types[0] : response.types[0] + ", " + response.types[1];
                     let abilityList = formatAbilities(response.abilities);
-                    console.log(response.img);
+                    console.log(response.imgurl);
                     setdexInfo(
                         <div>
                             <h1>{response.name}</h1>
@@ -28,7 +57,7 @@ export function GetPokemonOnDexNum() {
                                 <li>Types: {typeList}</li><br />
                                 <li>Abilities: {abilityList}</li><br />
                             </ul>
-                            <img src={response.imgurl} alt=" " width="150" height="150" />
+                            <Image url={response.imgurl} userToken={props.userToken} alt=" " width="150" height="150" />
                         </div>);
                 }
             }
@@ -55,14 +84,16 @@ export function GetPokemonOnDexNum() {
     );
 }
 
-export function GetPokemonOnType() {
+export function GetPokemonOnType(props) {
     const [pokeType, setPokeType] = useState("");
     const [initialInfo, setInitialInfo] = useState([]);
 
     useEffect(() => {
         if (pokeType !== "") {
             async function getPokemonOnType() {
-                const response = await fetch(`/api/pokemon/type/${pokeType}`).then((r) => r.json());
+                const response = await fetch(`/api/pokemon/type/${pokeType}`, {
+                    headers: { "x-auth": props.userToken }
+                  }).then(r => r.json());
                 let result = response;
                 setInitialInfo(result);
             }
@@ -108,24 +139,24 @@ export function GetPokemonOnType() {
                         <Form.Label><h4>Get By Type!</h4></Form.Label>
                         <Form.Control as="select" onChange={e => setPokeType(e.target.value)}>
                             <option value="">Select a type!</option>
-                            <option value="grass">Grass</option>
-                            <option value="water">Water</option>
-                            <option value="fire">Fire</option>
-                            <option value="poison">Poison</option>
-                            <option value="flying">Flying</option>
-                            <option value="rock">Rock</option>
-                            <option value="ground">Ground</option>
-                            <option value="electric">Electric</option>
-                            <option value="ghost">Ghost</option>
-                            <option value="dark">Dark</option>
-                            <option value="bug">Bug</option>
-                            <option value="steel">Steel</option>
-                            <option value="normal">Normal</option>
-                            <option value="psychic">Psychic</option>
-                            <option value="fighting">Fighting</option>
-                            <option value="fairy">Fairy</option>
-                            <option value="dragon">Dragon</option>
-                            <option value="ice">Ice</option>
+                            <option value="Grass">Grass</option>
+                            <option value="Water">Water</option>
+                            <option value="Fire">Fire</option>
+                            <option value="Poison">Poison</option>
+                            <option value="Flying">Flying</option>
+                            <option value="Rock">Rock</option>
+                            <option value="Ground">Ground</option>
+                            <option value="Electric">Electric</option>
+                            <option value="Ghost">Ghost</option>
+                            <option value="Dark">Dark</option>
+                            <option value="Bug">Bug</option>
+                            <option value="Steel">Steel</option>
+                            <option value="Normal">Normal</option>
+                            <option value="Psychic">Psychic</option>
+                            <option value="Fighting">Fighting</option>
+                            <option value="Fairy">Fairy</option>
+                            <option value="Dragon">Dragon</option>
+                            <option value="Ice">Ice</option>
                         </Form.Control>
                     </Form.Group>
                 </Form>
@@ -144,7 +175,9 @@ export function GetPokemonOnID(props) {
         async function getMons() {
             const dexNumbers = Array(props.mons).fill(0).map(() => (Math.floor(Math.random() * 151) + 1));
             const pokemon = await Promise.all(dexNumbers.map(async i => {
-                let r = await fetch(`/api/pokemon/pokedex/${i}`);
+                let r = await fetch(`/api/pokemon/pokedex/${i}`, {
+                    headers: { "x-auth": props.userToken }
+                });
                 if (r.ok) {
                     let value = await r.json();
                     return value
@@ -174,7 +207,7 @@ export function GetPokemonOnID(props) {
                                 <li>Type(s): {i.types[1] === null ? i.types[0] : i.types[0] + ", " + i.types[1]}</li><br />
                                 <li>Abilities: {formatAbilities(i.abilities)}</li><br />
                             </ul>
-                            <img src={i.imgurl} alt=" " width="150" height="150" />
+                            <Image url={i.imgurl} userToken={props.userToken} alt=" " width="150" height="150" />
                         </div>;
                 }
             }
@@ -201,14 +234,16 @@ export function GetPokemonOnID(props) {
     )
 }
 
-export function GetAllPokemon() {
+export function GetAllPokemon(props) {
     const [showPressed, setShowPressed] = useState(false);
     const [initialInfo, setInitialInfo] = useState([]);
   
     useEffect(() => {
       if(showPressed) {
         async function getAllPokemon() {
-          let response = await fetch("/api/pokemon/").then(r => r.json());
+          let response = await fetch("/api/pokemon/", {
+            headers: { "x-auth": props.userToken }
+          }).then(r => r.json());
           let result = response;
           setInitialInfo(result);
         }
