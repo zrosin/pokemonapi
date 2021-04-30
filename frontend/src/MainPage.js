@@ -1,10 +1,11 @@
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button'
 import React, { useState, useEffect, useMemo } from 'react';
+import './App.css'
 
 
 
-//I want to split this 
+
 
 
 function SearchBar(props) {
@@ -12,17 +13,16 @@ function SearchBar(props) {
     <Form className="SearchBar">
       <Form.Group>
         <Form.Control as="input" onChange={e => {props.setQuery(e.target.value); e.preventDefault()}} type="text" value={props.query} />
-        <Button variant="outline-primary" onClick={(e) => {props.setSubmitQuery(props.query); e.preventDefault();}}>Search</Button>
-        <Button variant="outline-danger" onClick={() => props.setCurrentPage(1)}>Cancel</Button>
+        <Button variant="outline-primary" className="search-button" onClick={(e) => {props.setSubmitQuery(props.query); e.preventDefault();}}>Search</Button>
+        
       </Form.Group>
     </Form>
-  );
+  );//<Button variant="outline-danger" onClick={(e) => props.setCurrentPage(1)}>Cancel</Button>
 }
 
 function Image(props) {
   const [imageUrl, setImageUrl] = useState("");
   useEffect(() => {
-    console.log("UseEffect fired inside image.")
     if (imageUrl === "") {
       async function getImage() {
         const src = props.url;
@@ -43,6 +43,7 @@ function Image(props) {
   });
 
   return (
+    // eslint-disable-next-line jsx-a11y/alt-text
     <img src={imageUrl} />
   );
 }
@@ -56,7 +57,6 @@ export function MainPage(props) {
 
 
   useEffect(() => {
-    console.log("useEffect fired inside mainpage.");
     async function getAllPokemon() {
       setInitialInfo([])
       let response = await fetch("/api/pokemon/small/" + currentPage, {
@@ -119,7 +119,7 @@ export function MainPage(props) {
       );
     }
     return AllPokemon(pokemonInfo);
-  }, [pokemonInfo])
+  }, [pokemonInfo, props.userInfo])
 
     function PageButtons() {
       let Buttons = [];

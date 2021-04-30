@@ -7,10 +7,12 @@ import Button from 'react-bootstrap/Button';
 import Nav from 'react-bootstrap/Nav';
 import { DetailedPokemon } from './DetailedPokemon';
 import { useHistory } from "react-router-dom";
-import PropTypes from 'prop-types';
 import { MainPage } from './MainPage';
 import { GetPokemonOnDexNum, GetPokemonOnType, GetPokemonOnID, GetAllPokemon } from './get';
 import { PostPokemon, UpdatePokemon, DeletePokemon} from './modify';
+import { TeamBuilder } from './TeamBuilder';
+import PropTypes from 'prop-types';
+
 function Navigation() {
   return(
     <Navbar bg="dark" variant="dark">
@@ -21,6 +23,7 @@ function Navigation() {
         <Nav.Link as={Link} to="/post">Post Pokemon</Nav.Link>
         <Nav.Link as={Link} to="/put">Put Pokemon</Nav.Link>
         <Nav.Link as={Link} to="/delete">Delete Pokemon</Nav.Link>
+        <Nav.Link as={Link} to="/teambuilder">Build a Team!</Nav.Link>
       </Nav>
       </Navbar>
     );
@@ -138,6 +141,10 @@ function App() {
           <Route exact path={["/", "/pokemon"]}>
             <MainPage userToken={token} />
           </Route>
+          <Route exact path={["/TeamBuilder"]}>
+            <TeamBuilder />
+          </Route>
+          {/* <Route exact path={["/", "/pokemon"]}></Route> */}
         </Switch>
         <Switch>
           <Route path="/get">

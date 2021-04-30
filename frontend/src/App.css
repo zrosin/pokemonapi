@@ -70,6 +70,10 @@ ul {
   }
 }
 
+/*****************************************
+MAIN PAGE STYLES
+*****************************************/
+
 .PokemonElement {
   width: 19%;
   border: 1px solid black;
@@ -116,7 +120,71 @@ ul {
   text-align: center;
 }
 
-.SearchBar {
+/*****************************************
+TEAM BUILDER STYLES
+*****************************************/
+
+.team_builder_main {
+  display: flex;
+  flex-direction: row;
+}
+
+.team_lineup {
+  display: flex;
+  flex-direction: column;
   width: 50%;
+}
+
+.team_analysis {
+  width: 50%;
+}
+
+.team_builder_add_pokemon {
+  width: fit-content;
   margin: auto;
 }
+
+.team_builder_pokemon {
+  width: 80%;
+  border: 1px solid black;
+  text-align: center;
+  border-radius: 25px;
+  margin: auto;
+  margin-top: 15px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.team_image {
+ max-height: 150px; 
+ margin-left: 25px;
+}
+
+/*****************************************
+DETAILED PAGE STYLES  --- I Can't see the changes I'm making here. If its bad I will fix.
+*****************************************/
+
+.detailed_poke_info {
+  border-radius: 10px;
+  width: 85%;
+  /*would be awesome if I could recolor this based on the pokemon type*/
+  background-color: lightsalmon;
+  margin: auto;
+}
+
+.detailed_name {
+  margin: auto;
+}
+
+.detailed_image {
+  background-color: lightskyblue;
+}
+
+.detailed_info_dump {
+  display: flex;
+  flex-direction: row;
+}
+
+
+

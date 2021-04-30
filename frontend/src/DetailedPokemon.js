@@ -9,6 +9,32 @@ import filterFactory, { selectFilter } from 'react-bootstrap-table2-filter'
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 
+function Image(props) {
+  const [imageUrl, setImageUrl] = useState("");
+  useEffect(() => {
+    if(imageUrl === "") {
+      async function getImage() {
+        const src = props.url;
+        const options = {
+        headers: {
+          'x-auth': sessionStorage.getItem("jwt")
+          }
+        };
+
+        const imageRes = await fetch(src, options)
+          .then(res => res.blob())
+          .then(blob => {
+            setImageUrl(URL.createObjectURL(blob));
+        });
+      }
+      getImage();
+    }
+  });
+
+  return(
+    <img src={imageUrl}/>
+  );
+}
 
 export function formatAbilities(abilityList) {
   let initialAbilityList = abilityList.filter(checkNull);
@@ -27,32 +53,7 @@ export function DetailedPokemon() {
   const params = useParams();
   const [DetailedInfo, setDetailedInfo] = useState("");
 
-  function Image(props) {
-    const [imageUrl, setImageUrl] = useState("");
-    useEffect(() => {
-      if(imageUrl === "") {
-        async function getImage() {
-          const src = props.url;
-          const options = {
-          headers: {
-            'x-auth': sessionStorage.getItem("jwt")
-            }
-          };
-
-          const imageRes = await fetch(src, options)
-            .then(res => res.blob())
-            .then(blob => {
-              setImageUrl(URL.createObjectURL(blob));
-          });
-        }
-        getImage();
-      }
-    });
-
-    return(
-      <img src={imageUrl}/>
-    );
-  }
+  
 
   useEffect(() => {
     if (DetailedInfo === "") {
@@ -75,8 +76,8 @@ export function DetailedPokemon() {
           }
           setDetailedInfo(
             <div className="neat">
-              <h1>{response.name}</h1>
-              <Image url={response.imgurl}/>
+              <h1 className="detailed_name">{response.name}</h1>
+              <Image className="detailed_image" url={response.imgurl}/>
               <ul>
                 <li><h4>Pokedex Number: {response.pokedexNumber}</h4></li><br />
                 <li><h4>Height (m): {response.height}</h4></li><br />
@@ -145,7 +146,7 @@ export function MoveSetTable(props) {
       }
       let types = {};
       const moveValues = moveSet.map((i) => {
-        i.move = i.move[0]
+        // i.move =
         i.move.power = (i.move.power === null) ? 0 : i.move.power;
         if (!(i.move.type in types)) {
           types[i.move.type] = i.move.type;
