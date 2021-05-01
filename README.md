@@ -33,6 +33,7 @@ Johnathan - 30:
 
 Zach - 30:
 - fixed, edited, and added api routes.
+- db side images implementation
 - react main page
 - search bar implementation using mongoose-fuzzy-searching
 - react team builder
