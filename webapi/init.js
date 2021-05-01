@@ -111,6 +111,7 @@ const rawMoves = fs.readFileSync("test/data/moves.json");
 const moves = JSON.parse(rawMoves);
 promises.push(initMoves(moveSets, moves));
 const rawTypeEfficiacy = fs.readFileSync("test/data/type_efficacy.json");
+console.log("Starting type efficacy promise.")
 const typeEfficiciacy = JSON.parse(rawTypeEfficiacy);
 promises.push(initTypes(typeEfficiciacy));
 
