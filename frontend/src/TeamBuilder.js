@@ -29,7 +29,7 @@ function Image(props) {
   });
 
   return(
-    <img className="team_image" src={imageUrl} alt={props.alt} />
+    <img className="team_image" src={imageUrl} alt={props.alt} width={200}/>
   );
 }
 
@@ -61,6 +61,15 @@ export function TeamBuilder() {
         }
         
         getTeamPokemon();
+
+        async function getPokemonList() {
+          let token = sessionStorage.getItem("jwt");
+          let response = await fetch("/api/pokemon/names/", {
+            headers: { "x-auth": token }}).then(r => r.json());
+          let result = response;
+          changePokeList(result);
+        }
+        getPokemonList();
     }, []);
 
     function TeamDisplay() {
@@ -91,7 +100,7 @@ export function TeamBuilder() {
             Team
         );
     }
-
+    /*
     useEffect(() => {
         async function getPokeList() {
             let token = sessionStorage.getItem("jwt");
@@ -102,7 +111,7 @@ export function TeamBuilder() {
             }
         getPokeList();
     }, []);
-
+    */
     
 
     function PokeCard() {
@@ -204,14 +213,7 @@ export function TeamBuilder() {
                     <Form>
                         <label>
                             Or pick a new pokemon:   
-                            {/* Not sure if I should sort by pokedex or alphabetical. 
-                            With a list so long I'm inclined to choose alphabet, 
-                            but you can change the API call I made if you desire. */}
-                            <select value={newPokemon} onChange={(e) => changeNewPokemon(e.target.value)}>
-                                {pokeList.pokemon.map((poke) => (
-                                    <option value={poke.id}>{poke.name}</option>
-                                ))}
-                            </select>
+                          {selectPokemon()}
                         </label>
                     <Button onClick={changePokemon}>Change</Button>
                     </Form>
@@ -220,6 +222,17 @@ export function TeamBuilder() {
               }
           }
           getDetails();
+
+          function selectPokemon() {
+            return(
+              <select onChange={(e) => {changeNewPokemon(e.target.value); e.preventDefault();}}>
+                <option value={null}>None</option>
+                {pokeList.pokemon.map((poke) => (
+                  <option value={poke.id}>{poke.name}</option>
+                ))}
+              </select>
+            );
+          }
 
           function selectMove(num) {
               // I'm not sure if this is actually how you are supposed to access a prop array
@@ -254,6 +267,9 @@ export function TeamBuilder() {
         //I dont know the API request to change the pokemon in list.
         //This functtion needs to refresh page on exec, to grab new mon from api.
         //console.log("test change");
+        let oldId = selectedPoke._id;
+        console.log(newPokemon);
+
     }
 
     function doSomething() {
