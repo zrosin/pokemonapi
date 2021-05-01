@@ -52,6 +52,7 @@ router.put("/", (req, res) => {
 
     if (req.body.length < 1 || req.body.length > 6) {
         res.status(400).json({ "message": `The body array is the wrong length (expected >=1 && < 6, got ${req.body.length}).` })
+        return;
     }
     if (req.headers["x-auth"] === undefined) {
         res.status(401).json({ 'message': `You aren't authenticated. How did you even get here?` });
@@ -104,7 +105,6 @@ router.get("/analyze", (req, res) => {
     // The endpoint which triggers an analysis.
     // The box on the page needs to take in a array with a list of objects in this form:
     // {'success/warning/danger': 'message'}, where success/warning/danger determines the coloring of the text on the page, and message is the message.
-    // this endpoint will return a fake message until I write the real one later today (god willing).
     if (req.headers["x-auth"] === undefined) {
         res.status(401).send({ 'message': `You aren't authenticated. How did you even get here?` });
         return;
