@@ -26,61 +26,62 @@ const teamSchema = new mongoose.Schema({
 
 // Sorry for adding an additional dependency. This was the only way I could get it to work well.
 teamSchema.plugin(require('mongoose-autopopulate'));
-teamSchema.methods.findTypeWeaknesses = function() {
+
+teamSchema.methods.findTypeWeaknesses = async function() {
     // Full disclosure, this wasn't thoroughly tested.
+    if (this.comp.length == 0) return [{"error": "It's not safe to go out there without any Pokémon. Add at least one to your team and try again!"}]
     let allMessages = [];
-    let weaknessCount = {}
-    let Rattata = 0;
-    let strengthCount = {};
-    let effectiveness = this.comp.map(p => {
-        if (p.pokemon.name == "Rattata") { Rattata = 1;}
-        TeamEffectiveness.find({$or: [{targetType: p.pokemon.types[0]}, {targetType: p.pokemon.types[1]}]}, (err, effect) => {
+    let weaknessCount = new Map();
+    let strengthCount = new Map();
+    let Rattata = false;
+    let effectiveness = await Promise.all(this.comp.map(async p => {
+        if (p.pokemon.name == "Rattata") { Rattata = true;}
+        await TeamEffectiveness.find({$or: [{targetType: p.pokemon.types[0]}, {targetType: p.pokemon.types[1]}]}, (err, effect) => {
             if (err) {
                 throw (err);
             }
             effect.map(e => {
                 // super effective?
                 if (e.damageFactor > 100) {
-                weaknessCount[e] ? weaknessCount[e]++ : weaknessCount[e] = 1;
+                weaknessCount.set(e.damageType, (weaknessCount.get(e.damageType) ? (weaknessCount.get(e.damageType) + 1) : 1));
                 }
             });
         });
-        TeamEffectiveness.find({$or: [{damageType: p.pokemon.types[0]}, {damageType: p.pokemon.types[1]}]}, (err, effect) => {
+        await TeamEffectiveness.find({$or: [{damageType: p.pokemon.types[0]}, {damageType: p.pokemon.types[1]}]}, (err, effect) => {
             if (err) {
                 throw (err);
             }
             effect.map(e => {
                 // super effective?
                 if (e.damageFactor > 100) {
-                strengthCount[e] ? weaknessCount[e]++ : weaknessCount[e] = 1;
+                    strengthCount.set(e.damageType, (strengthCount.get(e.damageType) ? (strengthCount.get(e.damageType) + 1) : 1));
                 }
             });
         });
-    });
-    try {
-    for (let i of strengthCount.entries()) {
-        if(strengthCount[i] >= 4 ) {
-            allMessages.push({'success': `At least four of your Pokémon are super effective against ${i}-type Pokémon. Cool!`});
+    }));
+    // return strengthCount;
+    // console.log(`The strength count loop! ${strengthCount.entries()}`);
+    for(let [k, v] of strengthCount.entries()) {
+        if(v >= 3 ) {
+            allMessages.push({'success': `At least three of your Pokémon are super effective against ${k}-type Pokémon. Cool!`});
         }
     }
-    } catch {
-        pass
-    }
-    for (let i of weaknessCount.entries()) {
-        if(weaknessCount[i] >= 3 && weaknessCount[i] != 6) {
-            allMessages.push({'warning': `At least four of your Pokémon are vulnerable against ${i}-type Pokémon. Consider rebalancing your team.`});
+    for (let [k, v] of weaknessCount.entries()) {
+        if(v >= 3 && v != 6) {
+            allMessages.push({'warning': `At least three of your Pokémon are vulnerable against ${k}-type Pokémon. Consider rebalancing your team.`});
         }
-        if(weaknessCount[i] == 6) {
-            allMessages.push({'error': `All of your Pokémon are vulnerable against ${i}-type Pokémon. Consider rebalancing your team.`});
+        if(v == 6) {
+            allMessages.push({'error': `All of your Pokémon are vulnerable against ${k}-type Pokémon. Consider rebalancing your team.`});
         }
     }
-    if (Rattata == 1) {
+    if (this.comp.length < 6) {
+        allMessages.push({'warning': `You only have ${this.comp.length} Pokémon. Consider filling up your team!`})
+    }
+    if (Rattata) {
         allMessages.push({'success': 'I hear your Rattata is in the top percentage of Rattata.'});
     }
     return allMessages;
 }
 const Team = new mongoose.model('Team', teamSchema);
-
-
 
 module.exports = {Team, TeamEffectiveness}
