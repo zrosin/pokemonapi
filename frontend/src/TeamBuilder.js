@@ -198,7 +198,7 @@ export function TeamBuilder() {
                                 <option value={a}>a</option>
                             ))}
                         </label>
-                        <Button onClick={updatePokemon}>Save</Button>
+                        <Button onClick={await updatePokemon}>Save</Button>
                     </Form>
                     {/*form to change pokemon*/}
                     <Form>
@@ -207,7 +207,7 @@ export function TeamBuilder() {
                             {/* Not sure if I should sort by pokedex or alphabetical. 
                             With a list so long I'm inclined to choose alphabet, 
                             but you can change the API call I made if you desire. */}
-                            <select value={newPokemon} onChange={(e) => changeNewPokemon(e.target.value)}>
+                            <select value={newPokemon} onChange={(e) => changeNewPokemon(e.target.value) }>
                                 {pokeList.pokemon.map((poke) => (
                                     <option value={poke.id}>{poke.name}</option>
                                 ))}
@@ -243,10 +243,30 @@ export function TeamBuilder() {
         );
     }
 
-    function updatePokemon() {
+    async function updatePokemon() {
         //See note in selectMove. You can also change value to be whatever is needed.
         //New requested moves in moves which should be an array of 4 moves, though i might not have done it right.
         //console.log("test update");
+            async function putPokemon(updateList) {
+                let token = sessionStorage.getItem("jwt");
+                let response = await fetch("/api/team/", {
+                    method: 'PUT',
+                    headers: {  "Content-Type": "application/json",
+                                "x-auth": token },
+                    body: JSON.stringify(updateList)
+                }).then(result => result.json());
+                let result = response;
+                console.log(result);
+            }
+
+            let updateList = [];
+            updateList = pokemonTeam;
+            for(let i=0; i<pokemonTeam.length; i++) {
+                updateList[i].pokemon = pokemonTeam[i].id;
+            }
+            //console.log(updateList);
+            putPokemon(updateList);
+        
     }
 
     function changePokemon() {
