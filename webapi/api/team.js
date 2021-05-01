@@ -79,12 +79,13 @@ router.put("/", (req, res) => {
 
         // we assume moves are right due to them being pulled from the moveset API. and sometimes you want anything goes anyway.
         const username = jwt.decode(req.headers["x-auth"], secret).username;
+        const update = req.body.map(p => {return {"pokemon": ObjectId(p.pokemon), "moves": (p.moves.map(m => ObjectId(m))), "ability": ObjectId(p.ability)}});
         User.findOne({ username: username }, (err, user) => {
             if (err) {
                 res.status(400).json({ 'message': `Error: ${err}` });
                 return;
             }
-            Team.updateOne({ User: req.params.id }, { 'comp': req.body }, function (err, result) {
+            Team.updateOne({ User: req.params.id }, { 'comp': update }, function (err, result) {
                 if (err) {
                     res.status(400).json({ 'message': `error: ${err}` });
                 }
