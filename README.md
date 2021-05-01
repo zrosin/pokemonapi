@@ -39,8 +39,10 @@ Zach - 30:
 - most styling
 
 
-Notes:
-  Easton did much harder elements to the project so we are going to give him slightly more credit. The amount of time was roughly equal, Easton was just more effiecient with it.
+# Notes:
+- Easton did much harder elements to the project so we are going to give him slightly more credit. The amount of time was roughly equal, Easton was just more effiecient with it.
+- We have some pull requests to show partially completed code without affecting main, relating to team backend which is only 90% done.
+- Team backend is fully implimented except for the ability to change pokemon or selected moves, which could take another day or two to implement, and we don't think that 1 section is worth 20% off to get working.
 
 
 # Technical note
