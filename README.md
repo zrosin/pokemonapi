@@ -24,6 +24,7 @@ Johnathan - 30:
 react side user auth
 detailed info page
 get/post/put react pages - commented out by default
+creating image function to pass user auth headers
 
 
 
@@ -31,7 +32,7 @@ Zach - 30:
 fixed, edited, and added api routes.
 react main page
 search bar implementation using mongoose-fuzzy-searching
-react skeleton for team builder
+react team builder
 most styling
 
 
