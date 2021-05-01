@@ -184,19 +184,13 @@ export function TeamBuilder() {
                     {/*form to edit moves*/}
                     <Form>
                         <label>
-                            Do not duplicate moves 
+                            Select moves:   
                             <label>
                                 {selectMove(1)}
                                 {selectMove(2)}
                                 {selectMove(3)}
                                 {selectMove(4)}
                             </label>
-                        </label>
-                        <label>
-                            Change Ability:
-                            {selectedPoke.abilities.map((a) => (
-                                <option value={a}>a</option>
-                            ))}
                         </label>
                         <Button onClick={updatePokemon}>Save</Button>
                     </Form>
