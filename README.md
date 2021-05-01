@@ -14,25 +14,29 @@ Notes on project proposal;
 
 
 Easton - 40:
-db side user auth
-db overhaul(adding 800 more pokemon to test data, adding moves and abilities)
-react setup
-team builder logic
+- db side user auth
+- db overhaul(adding 800 more pokemon to test data, adding moves and abilities)
+- react setup
+- team builder logic
+- Moveset table for details page.
+- Added API routes for new collections.
+- Did GitHub merges (hey, I thought those were hard) and code cleanup (not that much was necessary).
 
 
 Johnathan - 30:
-react side user auth
-detailed info page
-get/post/put react pages - commented out by default
+- react side user auth
+- detailed info page
+- get/post/put react pages.
+- creating image function to pass user auth headers
 
 
 
 Zach - 30:
-fixed, edited, and added api routes.
-react main page
-search bar implementation using mongoose-fuzzy-searching
-react skeleton for team builder
-most styling
+- fixed, edited, and added api routes.
+- react main page
+- search bar implementation using mongoose-fuzzy-searching
+- react team builder
+- most styling
 
 
 Notes:
@@ -58,4 +62,4 @@ async function authenticate() {
 
 You may say, huh? Well, Create React App includes a really cool thing called the [proxy option](https://create-react-app.dev/docs/proxying-api-requests-in-development/) where it will proxy all requests that it can't handle to another server, in this case our backend server running on port 8000. This means that we don't have to have some kind of weird build time option where our all of our API request urls are changed to whatever they will need to be in production, but instead, the React app just assumes the API is running on the same origin. 
 
-This also means our app builds, and will run if you copy the files from the frontend/build folder into the static directory of the API server. Or, even better, if you have Docker installed, you can do `docker-compose up` and watch as it comes to life. I did this to ensure we didn't have any dependencies missing from package.json or odd bugs from one of us having a different database init script, etc. Of course, CORS is still implemented if you want to run them separately.
+This also means our app builds, and will run if you copy the files from the frontend/build folder into the static directory of the API server. Or, even better, if you have Docker installed, you can do `docker-compose up` and watch as it comes to life on port 8000. I did this to ensure we didn't have any dependencies missing from package.json or odd bugs from one of us having a different database init script, etc. Of course, CORS is still implemented if you want to run them separately.
