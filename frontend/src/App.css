@@ -132,11 +132,11 @@ TEAM BUILDER STYLES
 .team_lineup {
   display: flex;
   flex-direction: column;
-  width: 50%;
+  width: 25%;
 }
 
 .team_analysis {
-  width: 50%;
+  width: 75%;
 }
 
 .team_builder_add_pokemon {
@@ -144,21 +144,41 @@ TEAM BUILDER STYLES
   margin: auto;
 }
 
-.team_builder_pokemon {
-  width: 80%;
+.team_builder_pokemon_button {
+  height:auto;
+  margin: 5px;
+}
+
+.team_card {
+  width: 90%;
   border: 1px solid black;
+  margin: auto;
+}
+
+.team_card_image {
+  width: 90%;
+  border: 1px solid black;
+  margin: auto;
+}
+
+.team_builder_pokemon {
   text-align: center;
   border-radius: 25px;
   margin: auto;
   margin-top: 15px;
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  float: center;
 }
 
 .team_image {
  max-height: 150px; 
+ max-width: 150px;
  margin-left: 25px;
+}
+
+.analyis {
+  margin: auto;
 }
 
 /*****************************************
