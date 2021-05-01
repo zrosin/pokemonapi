@@ -210,7 +210,10 @@ export function TeamBuilder() {
 
           function selectMove(num) {
               // I'm not sure if this is actually how you are supposed to access a prop array
-              // React and select dont get along well.
+              // If this doesnt work the easiest fix is to copy paste it into where its being called, 
+              // and change the moves array to be 4 different variables.
+
+              //Note 2: why you booly me move.name
             return (
                 <select value={moves[num]} onchange={(e) => changeMove(e.target.value)}>
                     <option>None</option>
