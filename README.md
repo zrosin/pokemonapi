@@ -10,7 +10,7 @@ This is a MERN app that implements a fully fledged pokedex like you would see on
 Google Doc Project proposal: https://docs.google.com/document/d/1NO6_h6G2KTTSbKVz10bbOxxJ-reTcxLTnIJsB-N_WNo/edit?usp=sharing
 Notes on project proposal:
 - The team builder and its associated infrastructure (database changes, api routes, etc.) constituted well over 50% of the work, which is quite a bit more than we anticipated from the beginning.
--  We did drop the idea for adding sound, as the images were more than complicated for us, and we were not fond of the idea of using the sound resource if we weren't caching in our own DB.
+-  We did drop the idea for adding sound, as the images were more than complicated enough for us, and we were not fond of the idea of using the sound resource if we weren't caching in our own DB.
 
 
 Easton - 40:
