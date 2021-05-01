@@ -19,6 +19,23 @@ router.get("/", function(req, res) {
         }
     });
 });
+
+router.get('/names/', function(req, res) {
+    Pokemon.find({}, { _id:1, name:1}, { sort: {name: 1} }, function(err, pokemon) {
+        if (err) {
+            console.log(err);
+            res.status(400).json({'message': `error: ${err}`});
+        }
+        else if (pokemon.length) {
+            res.status(200).json({ 'pokemon' : pokemon});
+        }
+        else {
+            res.status(404).json({'message': "There are no Pokémon in the database!"}); 
+        }
+    });
+});
+
+
  
 // Get all pokemon in pages, with only relevant info for a title card
 // http://localhost:8000/api/pokemon/small/:page
