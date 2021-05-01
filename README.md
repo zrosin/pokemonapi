@@ -18,6 +18,7 @@ Easton - 40:
 - db overhaul(adding 800 more pokemon to test data, adding moves and abilities)
 - react setup
 - team builder logic
+- Moveset table for details page.
 - Added API routes for new collections.
 - Did GitHub merges (hey, I thought those were hard) and code cleanup (not that much was necessary).
 
